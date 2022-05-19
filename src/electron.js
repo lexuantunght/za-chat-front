@@ -9,17 +9,18 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: 960, 
         height: 640, 
-        minWidth: 256,
+        minWidth: 480,
+        minHeight: 480,
         title: "Za Chat",
         icon: __dirname + '/../public/favicon.ico',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            devTools: false,
+            devTools: true,
         }
     });
 
-    mainWindow.removeMenu();
+    //mainWindow.removeMenu();
 
     const startUrl = process.env.ELECTRON_START_URL || url.format({
         pathname: path.join(__dirname, '/../build/index.html'),

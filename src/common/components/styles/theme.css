@@ -1,0 +1,27 @@
+.za-component:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.za-button {
+    border: none;
+    cursor: pointer;
+    padding: var(--padding-y) var(--padding-x);
+    border-radius: var(--border-radius);
+    background-color: var(--primary);
+    color: #ffffff;
+}
+.za-button:hover:enabled {
+    background-color: var(--hover-primary);
+}
+
+.za-inputtext {
+    border: 1px solid var(--secondary);
+    border-radius: var(--border-radius);
+    padding: var(--padding-y);
+}
+.za-inputtext input {
+    border: none;
+    outline: none;
+    width: 100%;
+}

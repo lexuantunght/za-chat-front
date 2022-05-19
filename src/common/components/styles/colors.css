@@ -1,0 +1,8 @@
+:root {
+    --primary: #4b7be5;
+    --hover-primary: #2155cd;
+    --secondary: #789395;
+    --border-radius: 8px;
+    --padding-x: 1rem;
+    --padding-y: 0.5rem;
+}
