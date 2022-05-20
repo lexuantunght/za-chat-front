@@ -2,9 +2,8 @@ type UserData = {
     _id: string;
     name: string;
     avatar?: string;
-    email?: string;
+    phoneNumber?: string;
     username: string;
-    cv: string;
-}
+};
 
 export default UserData;

@@ -32,6 +32,7 @@ const LoginScreen: React.FC = () => {
                     value={formik.values.username}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
+                    disabled={formik.isSubmitting}
                 />
                 <InputText
                     type="password"
@@ -41,6 +42,7 @@ const LoginScreen: React.FC = () => {
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
+                    disabled={formik.isSubmitting}
                 />
                 <Button type="submit" disabled={formik.isSubmitting || !formik.isValid} loading={formik.isSubmitting}>
                     Đăng nhập
@@ -48,7 +50,7 @@ const LoginScreen: React.FC = () => {
             </form>
             <div className="login-signup-link">
                 <span>Chưa có tài khoản?</span>
-                <Button className="signup-link" variant="text" onClick={onRegisterClick}>
+                <Button className="signup-link" variant="text" onClick={onRegisterClick} disabled={formik.isSubmitting}>
                     Đăng ký
                 </Button>
             </div>

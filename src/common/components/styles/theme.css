@@ -56,7 +56,7 @@
 
 .za-spin {
     border: 2px solid #ffffff;
-    border-top: 2px solid var(--primary);
+    border-top: 2px solid transparent;
     border-radius: 50%;
     width: 0.8rem;
     height: 0.8rem;
@@ -73,6 +73,8 @@
 }
 
 .za-avatar-uploader {
+    position: relative;
+    cursor: pointer;
 }
 
 .za-avatar-uploader > input {
@@ -84,4 +86,11 @@
     height: 6rem;
     border-radius: 50%;
     object-fit: cover;
+}
+
+.za-avatar-button {
+    position: absolute;
+    top: 2.25rem;
+    left: 2.25rem;
+    opacity: 0.2;
 }

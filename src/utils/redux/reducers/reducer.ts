@@ -9,7 +9,7 @@ type AppState = {
 
 const defaultAppStates: AppState = {
     isError: false,
-    userData: undefined,
+    userData: undefined
 };
 
 const appReducer = (state = defaultAppStates, action: any) => {
@@ -24,7 +24,7 @@ const appReducer = (state = defaultAppStates, action: any) => {
 };
 
 const reducer = combineReducers({
-    app: appReducer,
+    app: appReducer
 });
 
 export default reducer;

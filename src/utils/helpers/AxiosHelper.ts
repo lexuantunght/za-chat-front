@@ -1,12 +1,12 @@
 import axios from 'axios';
 import DispatchType from '../../common/constants/DispatchType';
-import RestResponse from '../../common/models/ResResponse';
+import DataResponse from '../../common/models/DataResponse';
 import store from '../redux/store';
 import CookiesHelper from './CookiesHelper';
 
 const defaultHeader = {
     'Content-Type': 'application/json',
-    Accept: 'application/json',
+    Accept: 'application/json'
 };
 
 const handleError = (err: any) => {
@@ -19,7 +19,7 @@ const handleError = (err: any) => {
     store.dispatch({ type: DispatchType.APP.ERROR, data: errMsg });
     return {
         status: 'fail',
-        message: errMsg,
+        message: errMsg
     };
 };
 
@@ -32,14 +32,10 @@ export const getHelper = async (api: string, headers: any = defaultHeader) => {
         .get(api, { headers })
         .then((response) => response.data)
         .catch(handleError);
-    return data as RestResponse;
+    return data as DataResponse;
 };
 
-export const postHelper = async (
-    api: string,
-    body: any,
-    headers: any = defaultHeader
-) => {
+export const postHelper = async (api: string, body: any, headers: any = defaultHeader) => {
     const token = await CookiesHelper.get('token');
     if (token) {
         headers['x-access-token'] = token;
@@ -48,14 +44,10 @@ export const postHelper = async (
         .post(api, body, { headers })
         .then((response) => response.data)
         .catch(handleError);
-    return data as RestResponse;
+    return data as DataResponse;
 };
 
-export const putHelper = async (
-    api: string,
-    body: any,
-    headers: any = defaultHeader
-) => {
+export const putHelper = async (api: string, body: any, headers: any = defaultHeader) => {
     const token = await CookiesHelper.get('token');
     if (token) {
         headers['x-access-token'] = token;
@@ -64,13 +56,10 @@ export const putHelper = async (
         .put(api, body, { headers })
         .then((response) => response.data)
         .catch(handleError);
-    return data as RestResponse;
+    return data as DataResponse;
 };
 
-export const deleteHelper = async (
-    api: string,
-    headers: any = defaultHeader
-) => {
+export const deleteHelper = async (api: string, headers: any = defaultHeader) => {
     const token = await CookiesHelper.get('token');
     if (token) {
         headers['x-access-token'] = token;
@@ -79,5 +68,5 @@ export const deleteHelper = async (
         .delete(api, { headers })
         .then((response) => response.data)
         .catch(handleError);
-    return data as RestResponse;
+    return data as DataResponse;
 };

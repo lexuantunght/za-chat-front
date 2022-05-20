@@ -1,4 +1,6 @@
-const host = 'https://shibala-api.herokuapp.com';
-const domain = '.homify-demo.herokuapp.com'; // for save token
+const baseUrl = 'http://localhost:8080';
+const domain = 'localhost'; // for save token
 
-export { host, domain };
+const appConfig = { baseUrl, domain };
+
+export default appConfig;

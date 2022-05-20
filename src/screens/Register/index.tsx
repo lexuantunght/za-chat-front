@@ -21,7 +21,7 @@ const RegisterScreen: React.FC = () => {
                 <InputText type="text" placeholder="Tên tài khoản" />
                 <InputText type="password" placeholder="Mật khẩu" />
                 <InputText type="password" placeholder="Xác nhận mật khẩu" />
-                <AvatarUploader className="register-avatar" />
+                <AvatarUploader className="register-avatar" defaultSrc="/resources/default-avatar.png" />
                 <Button type="submit">Đăng ký</Button>
             </form>
             <div className="register-login-link">

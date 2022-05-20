@@ -1,7 +1,7 @@
-type RestResponse = {
+type DataResponse = {
     status: 'success' | 'fail';
     data?: any;
     message?: string;
 };
 
-export default RestResponse;
+export default DataResponse;
