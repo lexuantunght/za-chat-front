@@ -3,9 +3,10 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 const url = require('url');
+const ipcMain = electron.ipcMain;
 
 let mainWindow;
-let loginWindow;
+let authWindow;
 
 function createWindow() {
     // Create the browser window.
@@ -26,19 +27,21 @@ function createWindow() {
 
     //mainWindow.removeMenu();
 
-    const startUrl = url.format({
-        pathname: path.join(__dirname, '/../build/index.html'),
-        protocol: 'file:',
-        slashes: true
-    });
+    const startUrl =
+        process.env.ELECTRON_START_URL ||
+        url.format({
+            pathname: path.join(__dirname, '/../build/index.html'),
+            protocol: 'file:',
+            slashes: true
+        });
     mainWindow.loadURL(startUrl);
     mainWindow.on('closed', function () {
         mainWindow = null;
     });
 
-    // child window
-    loginWindow = new BrowserWindow({
-        width: 400,
+    // auth window
+    authWindow = new BrowserWindow({
+        width: 360,
         height: 540,
         title: 'Login to ZaChat',
         icon: __dirname + './favicon.ico',
@@ -47,17 +50,19 @@ function createWindow() {
             contextIsolation: false,
             devTools: true
         },
-        maximizable: false
+        maximizable: false,
+        resizable: false
     });
-    const loginUrl = url.format({
-        pathname: path.join(__dirname, '/../build/login.html'),
-        protocol: 'file:',
-        slashes: true
-    });
-    loginWindow.loadURL(loginUrl);
-    loginWindow.on('closed', function () {
-        loginWindow = null;
-        mainWindow.show();
+    const loginUrl =
+        process.env.ELECTRON_LOGIN_URL ||
+        url.format({
+            pathname: path.join(__dirname, '/../build/login.html'),
+            protocol: 'file:',
+            slashes: true
+        });
+    authWindow.loadURL(loginUrl);
+    authWindow.on('closed', function () {
+        authWindow = null;
     });
 }
 app.disableHardwareAcceleration();
@@ -71,4 +76,8 @@ app.on('activate', function () {
     if (mainWindow === null) {
         createWindow();
     }
+});
+
+ipcMain.on('navigation', (events, windowName) => {
+    authWindow.loadURL(`http://localhost:3000/${windowName}.html`);
 });

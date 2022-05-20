@@ -6,7 +6,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 module.exports = {
     entry: {
         index: './src/index.tsx',
-        login: './src/screens/Login'
+        login: './src/screens/Login',
+        register: './src/screens/Register'
     },
     output: { path: path.join(__dirname, 'build'), filename: '[name].bundle.js' },
     mode: process.env.NODE_ENV || 'development',
@@ -51,9 +52,15 @@ module.exports = {
             inject: true
         }),
         new HtmlWebpackPlugin({
-            template: path.join(__dirname, 'public', 'login.html'),
+            template: path.join(__dirname, 'public', 'index.html'),
             filename: 'login.html',
             chunks: ['login'],
+            inject: true
+        }),
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, 'public', 'index.html'),
+            filename: 'register.html',
+            chunks: ['register'],
             inject: true
         })
         //new BundleAnalyzerPlugin(),

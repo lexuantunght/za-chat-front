@@ -1,0 +1,39 @@
+@import url('./global.css');
+
+.register-container {
+    width: 70%;
+    min-height: 100vh;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.register-logo {
+    width: 40%;
+    aspect-ratio: 1 / 1;
+    margin: 2rem auto 1rem auto;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.register-form > input {
+    margin-top: 0.5rem;
+}
+
+.register-form > button {
+    margin-top: 1.5rem;
+}
+
+.register-avatar {
+    margin: 1rem auto 0 auto;
+}
+
+.register-login-link {
+    margin: 2rem auto;
+}
+.register-login-link > .login-link {
+    margin-left: 0.5rem;
+}

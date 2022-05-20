@@ -9,7 +9,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "webpack-dev-server --mode development --hot",
         "build": "webpack --mode production",
-        "electron-dev": "set ELECTRON_START_URL=http://localhost:3000 && electron .",
+        "electron-dev": "set ELECTRON_START_URL=http://localhost:3000 && set ELECTRON_LOGIN_URL=http://localhost:3000/login.html && electron .",
         "pack": "electron-builder --dir",
         "dist": "electron-builder"
     },
@@ -61,7 +61,7 @@
         "@types/react-dom": "17.0.14",
         "babel-loader": "8.2.3",
         "css-loader": "6.7.1",
-        "electron": "^18.2.3",
+        "electron": "^18.2.4",
         "electron-builder": "^23.0.3",
         "file-loader": "6.2.0",
         "html-webpack-plugin": "5.5.0",

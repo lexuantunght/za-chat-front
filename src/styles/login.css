@@ -1,0 +1,35 @@
+@import url('./global.css');
+
+.login-container {
+    width: 70%;
+    min-height: 100vh;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-logo {
+    width: 40%;
+    aspect-ratio: 1 / 1;
+    margin: 2rem auto 1rem auto;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form > input {
+    margin-top: 0.5rem;
+}
+
+.login-form > button {
+    margin-top: 1.5rem;
+}
+
+.login-signup-link {
+    margin: 2rem auto;
+}
+.login-signup-link > .signup-link {
+    margin-left: 0.5rem;
+}
