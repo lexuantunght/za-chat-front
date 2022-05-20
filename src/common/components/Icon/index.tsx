@@ -12,8 +12,7 @@ const Icon: React.FC<IconProps> = ({ name, ...rest }): JSX.Element | null => {
         setLoading(true);
         const importIcon = async (): Promise<void> => {
             try {
-                ImportedIconRef.current = (await import(`./icons/${name}.svg`)).default;
-                console.log(await import(`./icons/${name}.svg`));
+                ImportedIconRef.current = (await import(`./icons/${name}.svg`)).ReactComponent;
             } catch (err) {
                 console.log(err);
             } finally {

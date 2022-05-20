@@ -20,8 +20,10 @@
     border-radius: var(--border-radius);
     padding: var(--padding-y);
 }
-.za-inputtext input {
-    border: none;
+.za-inputtext:hover:enabled {
+    border-color: var(--hover-primary);
+}
+.za-inputtext:focus {
     outline: none;
-    width: 100%;
+    border-color: var(--hover-primary);
 }

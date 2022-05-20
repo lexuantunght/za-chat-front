@@ -1,18 +1,20 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
-    entry: "./src/index.tsx",
-    output: { path: path.join(__dirname, "build"), filename: "index.bundle.js" },
-    mode: process.env.NODE_ENV || "development",
+    entry: {
+        index: './src/index.tsx',
+        login: './src/screens/Login'
+    },
+    output: { path: path.join(__dirname, 'build'), filename: '[name].bundle.js' },
+    mode: process.env.NODE_ENV || 'development',
     target: 'electron-renderer',
     resolve: {
-        extensions: [".tsx", ".ts", ".js"],
+        extensions: ['.tsx', '.ts', '.js']
     },
-    devServer: { 
-        historyApiFallback: {
-            index: "/index.html"
-        },
+    devServer: {
         port: 3000
     },
     module: {
@@ -20,27 +22,49 @@ module.exports = {
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                use: ["babel-loader"],
+                use: ['babel-loader']
             },
             {
                 test: /\.(ts|tsx)$/,
                 exclude: /node_modules/,
-                use: ["ts-loader"],
+                use: ['ts-loader']
             },
             {
                 test: /\.(css|scss|sass)$/,
-                use: ["style-loader", "css-loader", "sass-loader"],
+                use: ['style-loader', 'css-loader', 'sass-loader']
             },
             {
-                test: /\.(jpg|jpeg|png|gif|mp3|svg)$/,
-                use: ["file-loader"],
+                test: /\.svg$/i,
+                use: ['@svgr/webpack', 'file-loader']
             },
-        ],
+            {
+                test: /\.(jpg|jpeg|png|gif|mp3)$/,
+                use: ['file-loader']
+            }
+        ]
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: path.join(__dirname, "public", "index.html"),
-            favicon: path.join(__dirname, "public", "favicon.ico"),
+            template: path.join(__dirname, 'public', 'index.html'),
+            filename: 'index.html',
+            chunks: ['index'],
+            inject: true
         }),
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, 'public', 'login.html'),
+            filename: 'login.html',
+            chunks: ['login'],
+            inject: true
+        })
+        //new BundleAnalyzerPlugin(),
     ],
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                test: /\.js(\?.*)?$/i
+            })
+        ],
+        runtimeChunk: true
+    }
 };

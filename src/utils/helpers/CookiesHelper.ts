@@ -12,14 +12,14 @@ const set = (name: string, value: any) => {
 const remove = (name: string) => {
     Cookies.remove(name, {
         path: '/',
-        domain: domain,
+        domain: domain
     });
 };
 
 const CookiesHelper = {
     get,
     set,
-    remove,
+    remove
 };
 
 export default CookiesHelper;
