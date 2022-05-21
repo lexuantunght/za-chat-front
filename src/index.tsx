@@ -1,5 +1,3 @@
-import './styles/index.css';
-import './common/components/styles/index.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter, Switch, Route } from 'react-router-dom';

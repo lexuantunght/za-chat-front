@@ -48,11 +48,12 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            devTools: true
+            devTools: false
         },
         maximizable: false,
         resizable: false
     });
+    authWindow.removeMenu();
     const loginUrl =
         process.env.ELECTRON_LOGIN_URL ||
         url.format({

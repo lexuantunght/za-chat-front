@@ -1,0 +1,39 @@
+@import url('../common/components/styles/index.css');
+
+* {
+    font-family: 'Open Sans', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    overflow: overlay;
+    --scrollbar-color: #00000000;
+}
+
+body.scrolling {
+    --scrollbar-color: #00000030 !important;
+}
+
+::-webkit-scrollbar {
+    display: block;
+    width: 10px;
+}
+
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #00000000;
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: #00000000;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-color);
+    border-radius: 24px;
+}

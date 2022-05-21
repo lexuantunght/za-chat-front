@@ -14,7 +14,7 @@ const handleError = (err: any) => {
     if (err.response) {
         errMsg = err.response.data.message;
     } else {
-        errMsg = err;
+        errMsg = 'Đã xảy ra lỗi, vui lòng thử lại sau';
     }
     store.dispatch({ type: DispatchType.APP.ERROR, data: errMsg });
     return {

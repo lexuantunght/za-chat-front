@@ -1,5 +1,3 @@
-import '../../styles/login.css';
-import '../../common/components/styles/index.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { useFormik } from 'formik';
@@ -21,7 +19,7 @@ const LoginScreen: React.FC = () => {
     });
     return (
         <div className="login-container">
-            <img className="login-logo" src="/logo.png" alt="logo" />
+            <img className="login-logo" src="/resources/logo.png" alt="logo" />
             <h3>Đăng nhập</h3>
             <form className="login-form" onSubmit={formik.handleSubmit}>
                 <InputText

@@ -1,6 +1,2 @@
-const baseUrl = 'http://localhost:8080';
-const domain = 'localhost'; // for save token
-
-const appConfig = { baseUrl, domain };
-
-export default appConfig;
+export const baseUrl = 'http://localhost:8080';
+export const domain = 'localhost'; // for save token

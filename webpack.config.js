@@ -2,12 +2,14 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const TerserPlugin = require('terser-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 module.exports = {
     entry: {
-        index: './src/index.tsx',
-        login: './src/screens/Login',
-        register: './src/screens/Register'
+        index: ['./src/index.tsx', './src/styles/index.scss'],
+        login: ['./src/screens/Login', './src/styles/login.scss'],
+        register: ['./src/screens/Register', './src/styles/register.scss']
     },
     output: { path: path.join(__dirname, 'build'), filename: '[name].bundle.js' },
     mode: process.env.NODE_ENV || 'development',
@@ -32,7 +34,7 @@ module.exports = {
             },
             {
                 test: /\.(css|scss|sass)$/,
-                use: ['style-loader', 'css-loader', 'sass-loader']
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
             },
             {
                 test: /\.svg$/i,
@@ -62,6 +64,9 @@ module.exports = {
             filename: 'register.html',
             chunks: ['register'],
             inject: true
+        }),
+        new MiniCssExtractPlugin({
+            filename: '[name].min.css'
         })
         //new BundleAnalyzerPlugin(),
     ],
@@ -70,8 +75,8 @@ module.exports = {
         minimizer: [
             new TerserPlugin({
                 test: /\.js(\?.*)?$/i
-            })
-        ],
-        runtimeChunk: true
+            }),
+            new CssMinimizerPlugin()
+        ]
     }
 };
