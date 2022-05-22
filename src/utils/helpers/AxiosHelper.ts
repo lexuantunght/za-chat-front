@@ -1,5 +1,5 @@
 import axios from 'axios';
-import DispatchType from '../../common/constants/DispatchType';
+import createDispatch from '../../common/actions/createDispatch';
 import DataResponse from '../../common/models/DataResponse';
 import store from '../redux/store';
 import CookiesHelper from './CookiesHelper';
@@ -16,7 +16,8 @@ const handleError = (err: any) => {
     } else {
         errMsg = 'Đã xảy ra lỗi, vui lòng thử lại sau';
     }
-    store.dispatch({ type: DispatchType.APP.ERROR, data: errMsg });
+    store.dispatch(createDispatch('app.errorMsg', errMsg));
+    store.dispatch(createDispatch('app.isError', true));
     return {
         status: 'fail',
         message: errMsg

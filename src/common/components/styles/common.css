@@ -1,0 +1,7 @@
+.za-component {
+    font-size: var(--font-size);
+}
+.za-component:disabled {
+    opacity: 0.6;
+    cursor: default;
+}

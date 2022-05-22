@@ -2,7 +2,7 @@ import React from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     loading?: boolean;
-    variant?: 'text' | 'default';
+    variant?: 'text' | 'default' | 'outlined';
 }
 
 const buildClassName = ({ variant, className }: ButtonProps) => {
@@ -10,6 +10,9 @@ const buildClassName = ({ variant, className }: ButtonProps) => {
     switch (variant) {
         case 'text':
             defaultClass += ' za-button-text';
+            break;
+        case 'outlined':
+            defaultClass += ' za-button-outlined';
             break;
         default:
             defaultClass += ' za-button';

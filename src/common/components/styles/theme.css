@@ -1,102 +1,11 @@
-.za-component {
-    font-size: var(--font-size);
-}
-.za-component:disabled {
-    opacity: 0.6;
-    cursor: default;
-}
-
-.za-button {
-    border: none;
-    cursor: pointer;
-    padding: var(--padding-y) var(--padding-x);
-    border-radius: var(--border-radius);
-    background-color: var(--primary);
-    color: #ffffff;
-    display: flex;
-    justify-content: center;
-}
-.za-button:hover:enabled {
-    background-color: var(--hover-primary);
-}
-.za-button-text {
-    border: none;
-    cursor: pointer;
-    background-color: transparent;
-    padding: 0;
-    color: var(--primary);
-}
-.za-button-text:hover:enabled {
-    color: var(--hover-primary);
-}
-
-.za-inputtext {
-    border: 1px solid var(--secondary);
-    border-radius: var(--border-radius);
-    padding: var(--padding-y);
-}
-.za-inputtext:hover:enabled {
-    border-color: var(--hover-primary);
-}
-.za-inputtext:focus {
-    outline: none;
-    border-color: var(--hover-primary);
-}
-.za-inputtext-error,
-.za-inputtext-error:focus,
-.za-inputtext-error:hover:enabled {
-    border-color: var(--error-color);
-}
-
-.za-error-text {
-    color: var(--error-color);
-    font-size: smaller;
-    margin-top: 1px;
-}
-
-.za-spin {
-    border: 2px solid #ffffff;
-    border-top: 2px solid transparent;
-    border-radius: 50%;
-    width: 0.8rem;
-    height: 0.8rem;
-    animation: spin 1s linear infinite;
-    margin-right: 0.5rem;
-}
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-.za-avatar-uploader {
-    position: relative;
-}
-
-.za-avatar-uploader > input {
-    display: none;
-}
-
-.za-avatar-uploader > img {
-    width: 6rem;
-    height: 6rem;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.za-avatar-button {
-    position: absolute;
-    width: 3rem;
-    height: 3rem;
-    top: 1.5rem;
-    left: 1.5rem;
-    opacity: 0.2;
-    border: none;
-    background-color: transparent;
-}
-.za-avatar-button:enabled {
-    cursor: pointer;
+:root {
+    --primary: #4b7be5;
+    --hover-primary: #2155cd;
+    --secondary: #789395;
+    --error-color: #f32424;
+    --success-color: #2eb086;
+    --border-radius: 8px;
+    --padding-x: 1rem;
+    --padding-y: 0.5rem;
+    --font-size: 14px;
 }

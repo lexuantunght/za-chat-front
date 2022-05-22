@@ -1,0 +1,186 @@
+.za-button {
+    border: 1px solid var(--primary);
+    cursor: pointer;
+    padding: var(--padding-y) var(--padding-x);
+    border-radius: var(--border-radius);
+    background-color: var(--primary);
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+}
+.za-button:hover:enabled {
+    border-color: var(--hover-primary);
+    background-color: var(--hover-primary);
+}
+.za-button-text {
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    padding: 0;
+    color: var(--primary);
+}
+.za-button-text:hover:enabled {
+    color: var(--hover-primary);
+}
+.za-button-outlined {
+    cursor: pointer;
+    border: 1px solid var(--primary);
+    background-color: #ffffff;
+    color: var(--primary);
+    padding: var(--padding-y) var(--padding-x);
+    border-radius: var(--border-radius);
+    display: flex;
+    justify-content: center;
+}
+
+.za-button-outlined:hover:enabled {
+    border-color: var(--hover-primary);
+    color: var(--hover-primary);
+}
+
+.za-inputtext {
+    border: 1px solid var(--secondary);
+    border-radius: var(--border-radius);
+    padding: var(--padding-y);
+}
+.za-inputtext:hover:enabled {
+    border-color: var(--hover-primary);
+}
+.za-inputtext:focus {
+    outline: none;
+    border-color: var(--hover-primary);
+}
+.za-inputtext-error,
+.za-inputtext-error:focus,
+.za-inputtext-error:hover:enabled {
+    border-color: var(--error-color);
+}
+
+.za-error-text {
+    color: var(--error-color);
+    font-size: smaller;
+    margin-top: 1px;
+}
+
+.za-spin {
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    width: 0.8rem;
+    height: 0.8rem;
+    animation: spin 1s linear infinite;
+    margin-right: 0.5rem;
+}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.za-avatar-uploader {
+    position: relative;
+}
+
+.za-avatar-uploader > input {
+    display: none;
+}
+
+.za-avatar-uploader > img {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.za-avatar-button {
+    position: absolute;
+    width: 3rem;
+    height: 3rem;
+    top: 1.5rem;
+    left: 1rem;
+    opacity: 0.2;
+    border: none;
+    background-color: transparent;
+}
+.za-avatar-button:enabled {
+    cursor: pointer;
+}
+.za-avatar-button:hover:enabled {
+    opacity: 0.6;
+}
+.za-avatar-remove {
+    position: absolute;
+    width: 2rem;
+    height: 2rem;
+    top: 1.5rem;
+    right: 1rem;
+    cursor: pointer;
+    opacity: 0.2;
+}
+.za-avatar-remove:hover:enabled {
+    opacity: 0.6;
+}
+
+.za-modal {
+    transition: all 500ms;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.za-modal.za-modal-open {
+    opacity: 1;
+}
+
+.za-modal.za-modal-closed {
+    opacity: 0;
+}
+
+.za-modal.za-modal-will-open {
+    opacity: 1;
+}
+
+.za-modal.za-modal-will-close {
+    opacity: 0;
+}
+
+.za-modal-content {
+    max-width: 80%;
+    background-color: white;
+    padding: 1rem;
+    box-sizing: border-box;
+    border-radius: var(--border-radius);
+}
+
+.za-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.za-modal-title {
+    font-weight: 700;
+}
+
+.za-modal-body {
+    margin-top: 1rem;
+}
+
+.za-alert-footer {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    margin-top: 1rem;
+}
+.za-alert-accept {
+    margin-left: 0.5rem;
+}

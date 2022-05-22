@@ -1,10 +1,11 @@
 enum AppDispatch {
-    'USER_DATA' = 'SET_APP_USER_DATA',
-    'ERROR' = 'SET_APP_ERROR',
+    'userData' = 'SET_APP_USER_DATA',
+    'isError' = 'SET_APP_ERROR',
+    'errorMsg' = 'SET_APP_ERROR_MSG'
 }
 
 const DispatchType = {
-    APP: AppDispatch,
+    app: AppDispatch
 };
 
 export default DispatchType;
