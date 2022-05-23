@@ -32,7 +32,7 @@ function createAuthWindows() {
         resizable: false
     });
     authWindow.removeMenu();
-    authWindow.loadURL(getWindowUrl('login'));
+    authWindow.loadURL(getWindowUrl('authLoader'));
 }
 
 function createMainWindow() {

@@ -9,7 +9,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "webpack-dev-server --mode development --hot",
         "build": "webpack --mode production",
-        "electron-dev": "set ELECTRON_START_URL=http://localhost:3000 && set ELECTRON_LOGIN_URL=http://localhost:3000/login.html && electron .",
+        "electron-dev": "set ELECTRON_START_URL=http://localhost:3000 && set ELECTRON_AUTH_URL=http://localhost:3000/authLoader.html && electron .",
         "electron": "electron .",
         "pack": "electron-builder --dir",
         "dist": "electron-builder"
