@@ -2,7 +2,6 @@ import axios from 'axios';
 import createDispatch from '../../common/actions/createDispatch';
 import DataResponse from '../../common/models/DataResponse';
 import store from '../redux/store';
-import CookiesHelper from './CookiesHelper';
 
 const defaultHeader = {
     'Content-Type': 'application/json',
@@ -25,19 +24,16 @@ const handleError = (err: any) => {
 };
 
 export const getHelper = async (api: string, headers: any = defaultHeader) => {
-    const token = await CookiesHelper.get('token');
+    const token = window.localStorage.getItem('accessToken');
     if (token) {
         headers['x-access-token'] = token;
     }
-    const data = await axios
-        .get(api, { headers })
-        .then((response) => response.data)
-        .catch(handleError);
+    const data = await axios.get(api, { headers }).then((response) => response.data);
     return data as DataResponse;
 };
 
 export const postHelper = async (api: string, body: any, headers: any = defaultHeader) => {
-    const token = await CookiesHelper.get('token');
+    const token = window.localStorage.getItem('accessToken');
     if (token) {
         headers['x-access-token'] = token;
     }
@@ -49,7 +45,7 @@ export const postHelper = async (api: string, body: any, headers: any = defaultH
 };
 
 export const putHelper = async (api: string, body: any, headers: any = defaultHeader) => {
-    const token = await CookiesHelper.get('token');
+    const token = window.localStorage.getItem('accessToken');
     if (token) {
         headers['x-access-token'] = token;
     }
@@ -61,7 +57,7 @@ export const putHelper = async (api: string, body: any, headers: any = defaultHe
 };
 
 export const deleteHelper = async (api: string, headers: any = defaultHeader) => {
-    const token = await CookiesHelper.get('token');
+    const token = window.localStorage.getItem('accessToken');
     if (token) {
         headers['x-access-token'] = token;
     }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useFormik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
+import avatarIcon from '../../../common/resources/default-avatar.png';
 import InputText from '../../../common/components/InputText';
 import AvatarUploader from '../../../common/components/AvatarUploader';
 import Button from '../../../common/components/Button';
@@ -111,7 +112,7 @@ const RegisterForm: React.FC<{
                 id="avatar"
                 name="avatar"
                 className="register-avatar"
-                defaultSrc="/resources/default-avatar.png"
+                defaultSrc={avatarIcon}
                 onChange={(file) => formik.setFieldValue('avatar', file)}
                 disabled={formik.isSubmitting}
             />

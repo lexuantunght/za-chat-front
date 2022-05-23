@@ -1,18 +1,20 @@
 import React from 'react';
 import { FormikHelpers, useFormik } from 'formik';
-import { ipcRenderer, safeStorage } from 'electron';
+import { ipcRenderer } from 'electron';
 import * as Yup from 'yup';
 import InputText from '../../common/components/InputText';
 import Button from '../../common/components/Button';
+import logoIcon from '../../common/resources/logo.png';
+import LoadingMask from '../../common/components/LoadingMask';
 import LoginRequest from '../../common/models/LoginRequest';
-import { useLogin } from '../../hooks/authentication';
+import { useFetchCurrent, useLogin } from '../../hooks/authentication';
 import withQueryClient from '../../common/context/withQueryClient';
 
 const LoginScreen: React.FC = () => {
     const { mutateAsync: login } = useLogin();
 
     const onRegisterClick = () => {
-        ipcRenderer.send('openRegister');
+        ipcRenderer.send('navigation', 'register');
     };
 
     const openMainApp = () => {
@@ -23,7 +25,7 @@ const LoginScreen: React.FC = () => {
         const response = await login(value);
         setSubmitting(false);
         if (response.status === 'success') {
-            //safeStorage.encryptString(response.data?.accessToken);
+            window.localStorage.setItem('accessToken', response.data?.accessToken);
             openMainApp();
         }
     };
@@ -45,9 +47,10 @@ const LoginScreen: React.FC = () => {
         }),
         onSubmit: onLogin
     });
+
     return (
         <div className="login-container">
-            <img className="login-logo" src="/resources/logo.png" alt="logo" />
+            <img className="login-logo" src={logoIcon} alt="logo" />
             <h3>Đăng nhập</h3>
             <form className="login-form" onSubmit={formik.handleSubmit}>
                 <InputText

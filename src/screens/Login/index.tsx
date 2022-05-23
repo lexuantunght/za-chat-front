@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import LoginScreen from './LoginScreen';
 import withRedux from '../../common/context/withRedux';
+import LoginScreen from './LoginScreen';
 
 const Login = withRedux(LoginScreen);
 

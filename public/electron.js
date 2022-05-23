@@ -6,13 +6,11 @@ const url = require('url');
 const ipcMain = electron.ipcMain;
 
 function getWindowUrl(windowName = 'index') {
-    return process.env.ELECTRON_START_URL
-        ? `${process.env.ELECTRON_START_URL}/${windowName}.html`
-        : url.format({
-              pathname: path.join(__dirname, `/../build/${windowName}.html`),
-              protocol: 'file:',
-              slashes: true
-          });
+    return url.format({
+        pathname: path.join(__dirname, `/../build/${windowName}.html`),
+        protocol: 'file:',
+        slashes: true
+    });
 }
 
 let appWindow;
@@ -22,25 +20,19 @@ function createAuthWindows() {
     authWindow = new BrowserWindow({
         width: 360,
         height: 540,
-        title: 'Login to ZaChat',
+        title: 'ZaChat',
         icon: __dirname + './favicon.ico',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            devTools: false
+            devTools: false,
+            webSecurity: false
         },
         maximizable: false,
         resizable: false
     });
     authWindow.removeMenu();
-    const url =
-        process.env.ELECTRON_LOGIN_URL ||
-        url.format({
-            pathname: path.join(__dirname, `/../build/login.html`),
-            protocol: 'file:',
-            slashes: true
-        });
-    authWindow.loadURL(url);
+    authWindow.loadURL(getWindowUrl('login'));
 }
 
 function createMainWindow() {
@@ -54,7 +46,8 @@ function createMainWindow() {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            devTools: false
+            devTools: false,
+            webSecurity: false
         },
         show: true
     });
@@ -76,8 +69,8 @@ app.on('activate', function () {
     }
 });
 
-ipcMain.on('openRegister', () => {
-    authWindow.loadURL(getWindowUrl('register'));
+ipcMain.on('navigation', (events, windowName) => {
+    authWindow.loadURL(getWindowUrl(windowName));
 });
 
 ipcMain.on('openApp', () => {

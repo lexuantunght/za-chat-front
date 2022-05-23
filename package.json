@@ -79,5 +79,16 @@
         "webpack-bundle-analyzer": "^4.5.0",
         "webpack-cli": "4.9.2",
         "webpack-dev-server": "4.7.4"
+    },
+    "build": {
+        "appId": "com.tunglx2.zachat",
+        "productName": "ZaChat",
+        "files": [
+            "build/**/*",
+            "public/electron.js"
+        ],
+        "win": {
+            "target": "nsis"
+        }
     }
 }

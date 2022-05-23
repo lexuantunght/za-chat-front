@@ -202,3 +202,15 @@
 .za-alert-accept {
     margin-left: 0.5rem;
 }
+
+.za-loading-mask {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.za-loading-mask > .za-spin {
+    border-color: var(--primary);
+    border-top-color: transparent;
+    margin-bottom: 0.5rem;
+}

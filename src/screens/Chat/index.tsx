@@ -6,6 +6,9 @@ const ChatScreen: React.FC = () => {
     const onClickLogin = () => {
         ipcRenderer.send('login', { name: 'Login' });
     };
+    React.useEffect(() => {
+        console.log(window.localStorage.getItem('accessToken'));
+    }, []);
     return (
         <div>
             <div>chat</div>
