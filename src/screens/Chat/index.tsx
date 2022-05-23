@@ -9,7 +9,6 @@ const ChatScreen: React.FC = () => {
     return (
         <div>
             <div>chat</div>
-            <Button onClick={onClickLogin}>go to login</Button>
         </div>
     );
 };

@@ -5,41 +5,20 @@ const path = require('path');
 const url = require('url');
 const ipcMain = electron.ipcMain;
 
-let mainWindow;
+function getWindowUrl(windowName = 'index') {
+    return process.env.ELECTRON_START_URL
+        ? `${process.env.ELECTRON_START_URL}/${windowName}.html`
+        : url.format({
+              pathname: path.join(__dirname, `/../build/${windowName}.html`),
+              protocol: 'file:',
+              slashes: true
+          });
+}
+
+let appWindow;
 let authWindow;
 
-function createWindow() {
-    // Create the browser window.
-    mainWindow = new BrowserWindow({
-        width: 960,
-        height: 640,
-        minWidth: 480,
-        minHeight: 480,
-        title: 'ZaChat',
-        icon: __dirname + './favicon.ico',
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            devTools: true
-        },
-        show: false
-    });
-
-    //mainWindow.removeMenu();
-
-    const startUrl =
-        process.env.ELECTRON_START_URL ||
-        url.format({
-            pathname: path.join(__dirname, '/../build/index.html'),
-            protocol: 'file:',
-            slashes: true
-        });
-    mainWindow.loadURL(startUrl);
-    mainWindow.on('closed', function () {
-        mainWindow = null;
-    });
-
-    // auth window
+function createAuthWindows() {
     authWindow = new BrowserWindow({
         width: 360,
         height: 540,
@@ -54,31 +33,54 @@ function createWindow() {
         resizable: false
     });
     authWindow.removeMenu();
-    const loginUrl =
+    const url =
         process.env.ELECTRON_LOGIN_URL ||
         url.format({
-            pathname: path.join(__dirname, '/../build/login.html'),
+            pathname: path.join(__dirname, `/../build/login.html`),
             protocol: 'file:',
             slashes: true
         });
-    authWindow.loadURL(loginUrl);
-    authWindow.on('closed', function () {
-        authWindow = null;
-    });
+    authWindow.loadURL(url);
 }
+
+function createMainWindow() {
+    appWindow = new BrowserWindow({
+        width: 960,
+        height: 640,
+        minWidth: 480,
+        minHeight: 480,
+        title: 'ZaChat',
+        icon: __dirname + './favicon.ico',
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            devTools: false
+        },
+        show: true
+    });
+    appWindow.removeMenu();
+    appWindow.maximize();
+    appWindow.loadURL(getWindowUrl());
+}
+
 app.disableHardwareAcceleration();
-app.on('ready', createWindow);
+app.on('ready', createAuthWindows);
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
         app.quit();
     }
 });
 app.on('activate', function () {
-    if (mainWindow === null) {
-        createWindow();
+    if (appWindow === null) {
+        //createMainWindow();
     }
 });
 
-ipcMain.on('navigation', (events, windowName) => {
-    authWindow.loadURL(`http://localhost:3000/${windowName}.html`);
+ipcMain.on('openRegister', () => {
+    authWindow.loadURL(getWindowUrl('register'));
+});
+
+ipcMain.on('openApp', () => {
+    authWindow.close();
+    createMainWindow();
 });
