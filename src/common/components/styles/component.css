@@ -82,6 +82,9 @@
 
 .za-avatar-uploader {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .za-avatar-uploader > input {
@@ -100,7 +103,7 @@
     width: 3rem;
     height: 3rem;
     top: 1.5rem;
-    left: 1rem;
+    left: calc(50% - 1.5rem);
     opacity: 0.2;
     border: none;
     background-color: transparent;
@@ -111,17 +114,32 @@
 .za-avatar-button:hover:enabled {
     opacity: 0.6;
 }
+
 .za-avatar-remove {
-    position: absolute;
-    width: 2rem;
-    height: 2rem;
-    top: 1.5rem;
-    right: 1rem;
-    cursor: pointer;
-    opacity: 0.2;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    margin-left: 0.5rem;
 }
-.za-avatar-remove:hover:enabled {
+.za-avatar-remove:enabled {
+    cursor: pointer;
+}
+.za-avatar-remove .za-avatar-cancel-icon {
     opacity: 0.6;
+}
+
+.za-avatar-selected {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+.za-avatar-selected div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 8rem;
 }
 
 .za-modal {

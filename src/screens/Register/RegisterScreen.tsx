@@ -5,8 +5,10 @@ import withQueryClient from '../../common/context/withQueryClient';
 import Button from '../../common/components/Button';
 import { useSignup } from '../../hooks/authentication';
 import RegisterForm, { RegisterFormValues } from './components/RegisterForm';
+import Alert from '../../common/components/Alert';
 
 const RegisterScreen: React.FC = () => {
+    const [showSuccessMsg, setShowSuccessMsg] = React.useState(false);
     const { mutateAsync: signup } = useSignup();
 
     const onNavigateLogin = () => {
@@ -19,6 +21,9 @@ const RegisterScreen: React.FC = () => {
     ) => {
         const response = await signup(values);
         setSubmitting(false);
+        if (response.status === 'success') {
+            setShowSuccessMsg(true);
+        }
     };
 
     return (
@@ -32,6 +37,13 @@ const RegisterScreen: React.FC = () => {
                     Đăng nhập
                 </Button>
             </div>
+            <Alert
+                title="Thông báo"
+                content="Đăng ký tài khoản thành công. Đăng nhập ngay?"
+                isShow={showSuccessMsg}
+                onAccept={onNavigateLogin}
+                onCancel={() => setShowSuccessMsg(false)}
+            />
         </div>
     );
 };

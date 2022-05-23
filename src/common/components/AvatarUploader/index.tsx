@@ -26,6 +26,9 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
     const onRemove = () => {
         setImageUrl(defaultSrc);
         onChange?.();
+        if (inputRef.current?.value) {
+            inputRef.current.value = '';
+        }
     };
 
     return (
@@ -60,8 +63,11 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
                 <Icon name="plus" />
             </button>
             {imageUrl && imageUrl !== defaultSrc && (
-                <div className="za-avatar-remove" onClick={onRemove}>
-                    <Icon name="cancel" />
+                <div className="za-avatar-selected">
+                    <div>{inputRef.current?.files?.[0].name}</div>
+                    <button className="za-avatar-remove" onClick={onRemove} disabled={disabled}>
+                        <Icon name="cancel" className="za-avatar-cancel-icon" />
+                    </button>
                 </div>
             )}
         </div>
