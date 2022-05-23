@@ -5,9 +5,8 @@ import * as Yup from 'yup';
 import InputText from '../../common/components/InputText';
 import Button from '../../common/components/Button';
 import logoIcon from '../../common/resources/logo.png';
-import LoadingMask from '../../common/components/LoadingMask';
 import LoginRequest from '../../common/models/LoginRequest';
-import { useFetchCurrent, useLogin } from '../../hooks/authentication';
+import { useLogin } from '../../hooks/authentication';
 import withQueryClient from '../../common/context/withQueryClient';
 
 const LoginScreen: React.FC = () => {
@@ -26,6 +25,7 @@ const LoginScreen: React.FC = () => {
         setSubmitting(false);
         if (response.status === 'success') {
             window.localStorage.setItem('accessToken', response.data?.accessToken);
+            window.localStorage.setItem('userData', JSON.stringify(response.data));
             openMainApp();
         }
     };
