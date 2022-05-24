@@ -8,6 +8,7 @@ import SideBar from './SideBar';
 
 const App: React.FC = () => {
     const userData: UserData = JSON.parse(window.localStorage.getItem('userData') || '');
+
     return (
         <HashRouter>
             <div className="app-content">

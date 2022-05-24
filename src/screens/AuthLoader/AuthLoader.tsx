@@ -3,7 +3,6 @@ import { ipcRenderer } from 'electron';
 import LoadingMask from '../../common/components/LoadingMask';
 import withQueryClient from '../../common/context/withQueryClient';
 import { useFetchCurrent } from '../../hooks/authentication';
-import UserData from '../../common/models/UserData';
 
 const AuthLoader: React.FC = () => {
     const { data: userData, isLoading } = useFetchCurrent();

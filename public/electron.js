@@ -29,10 +29,12 @@ function createAuthWindows() {
             webSecurity: false
         },
         maximizable: false,
-        resizable: false
+        resizable: false,
+        show: false
     });
     authWindow.removeMenu();
     authWindow.loadURL(getWindowUrl('authLoader'));
+    authWindow.on('ready-to-show', () => authWindow.show());
 }
 
 function createMainWindow() {
@@ -46,14 +48,16 @@ function createMainWindow() {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            devTools: false,
+            devTools: true,
             webSecurity: false
         },
-        show: true
+        show: false,
+        hasShadow: true
     });
-    appWindow.removeMenu();
+    //appWindow.removeMenu();
     appWindow.maximize();
-    appWindow.loadURL(getWindowUrl());
+    appWindow.loadURL(process.env.ELECTRON_START_URL);
+    appWindow.on('ready-to-show', () => appWindow.show());
 }
 
 app.disableHardwareAcceleration();
