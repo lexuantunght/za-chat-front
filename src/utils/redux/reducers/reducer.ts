@@ -10,7 +10,7 @@ type AppState = {
 };
 
 const defaultAppStates: AppState = {
-    isError: false
+    isError: false,
 };
 
 const appReducer = (state = defaultAppStates, action: AnyAction) => {
@@ -28,7 +28,7 @@ const appReducer = (state = defaultAppStates, action: AnyAction) => {
 
 const reducer = combineReducers({
     app: appReducer,
-    chat: chatReducer
+    chat: chatReducer,
 });
 
 export default reducer;

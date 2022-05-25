@@ -27,6 +27,7 @@ const ErrorHandler: React.FC = () => {
 };
 
 function withRedux<P>(Component: React.ComponentType<P>) {
+    // eslint-disable-next-line react/display-name
     return (props: P) => (
         <Provider store={store}>
             <ErrorHandler />

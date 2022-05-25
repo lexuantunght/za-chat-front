@@ -1,3 +1,4 @@
+/* eslint-disable */
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -5,11 +6,16 @@ const path = require('path');
 const url = require('url');
 const ipcMain = electron.ipcMain;
 
+const isDev = process.env.NODE_ENV === 'development';
+
 function getWindowUrl(windowName = 'index') {
+    if (isDev) {
+        return `${process.env.ELECTRON_START_URL}/${windowName}.html`;
+    }
     return url.format({
         pathname: path.join(__dirname, `/../build/${windowName}.html`),
         protocol: 'file:',
-        slashes: true
+        slashes: true,
     });
 }
 
@@ -25,12 +31,12 @@ function createAuthWindows() {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            devTools: false,
-            webSecurity: false
+            devTools: isDev,
+            webSecurity: false,
         },
         maximizable: false,
         resizable: false,
-        show: false
+        show: false,
     });
     authWindow.removeMenu();
     authWindow.loadURL(getWindowUrl('authLoader'));
@@ -48,15 +54,15 @@ function createMainWindow() {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            devTools: true,
-            webSecurity: false
+            devTools: isDev,
+            webSecurity: false,
         },
         show: false,
-        hasShadow: true
+        hasShadow: true,
     });
     //appWindow.removeMenu();
     appWindow.maximize();
-    appWindow.loadURL(process.env.ELECTRON_START_URL);
+    appWindow.loadURL(getWindowUrl());
     appWindow.on('ready-to-show', () => appWindow.show());
 }
 

@@ -6,12 +6,13 @@ const queryClient = new QueryClient({
         queries: {
             refetchOnWindowFocus: false,
             refetchOnMount: true,
-            retry: 3
-        }
-    }
+            retry: 3,
+        },
+    },
 });
 
 function withQueryClient<P>(Component: React.ComponentType<P>) {
+    // eslint-disable-next-line react/display-name
     return (props: P) => (
         <QueryClientProvider client={queryClient}>
             <Component {...props} />

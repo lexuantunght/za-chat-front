@@ -12,14 +12,14 @@ const menuItems = [
         id: 0,
         name: 'Tin nhắn',
         icon: 'message',
-        path: '/'
+        path: '/',
     },
     {
         id: 1,
         name: 'Danh bạ',
         icon: 'contact',
-        path: '/contacts'
-    }
+        path: '/contacts',
+    },
 ];
 
 const findRouteId = (pathname: string) => {
@@ -46,7 +46,9 @@ const SideBar: React.FC<SideBarProps> = ({ avatarUrl }) => {
             {menuItems.map((item, key) => (
                 <button
                     key={'app-sidebar-item-' + key}
-                    className={`app-sidebar-item ${selectedItem === item.id ? 'app-sidebar-selected' : ''}`}
+                    className={`app-sidebar-item ${
+                        selectedItem === item.id ? 'app-sidebar-selected' : ''
+                    }`}
                     onClick={() => onClickItem(item.path, item.id)}>
                     <Icon name={item.icon} />
                 </button>

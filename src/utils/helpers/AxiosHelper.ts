@@ -5,9 +5,10 @@ import store from '../redux/store';
 
 const defaultHeader = {
     'Content-Type': 'application/json',
-    Accept: 'application/json'
+    Accept: 'application/json',
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const handleError = (err: any) => {
     let errMsg;
     if (err.response) {
@@ -19,20 +20,26 @@ const handleError = (err: any) => {
     store.dispatch(createDispatch('app.isError', true));
     return {
         status: 'fail',
-        message: errMsg
+        message: errMsg,
     };
 };
 
-export const getHelper = async (api: string, headers: any = defaultHeader) => {
+export const getHelper = async (api: string, headers: Record<string, string> = defaultHeader) => {
     const token = window.localStorage.getItem('accessToken');
     if (token) {
         headers['x-access-token'] = token;
     }
-    const data = await axios.get(api, { headers, withCredentials: true }).then((response) => response.data);
+    const data = await axios
+        .get(api, { headers, withCredentials: true })
+        .then((response) => response.data);
     return data as DataResponse;
 };
 
-export const postHelper = async (api: string, body: any, headers: any = defaultHeader) => {
+export const postHelper = async (
+    api: string,
+    body: Record<string, string> | FormData,
+    headers: Record<string, string> = defaultHeader
+) => {
     const token = window.localStorage.getItem('accessToken');
     if (token) {
         headers['x-access-token'] = token;
@@ -44,7 +51,11 @@ export const postHelper = async (api: string, body: any, headers: any = defaultH
     return data as DataResponse;
 };
 
-export const putHelper = async (api: string, body: any, headers: any = defaultHeader) => {
+export const putHelper = async (
+    api: string,
+    body: Record<string, string> | FormData,
+    headers: Record<string, string> = defaultHeader
+) => {
     const token = window.localStorage.getItem('accessToken');
     if (token) {
         headers['x-access-token'] = token;
@@ -56,7 +67,10 @@ export const putHelper = async (api: string, body: any, headers: any = defaultHe
     return data as DataResponse;
 };
 
-export const deleteHelper = async (api: string, headers: any = defaultHeader) => {
+export const deleteHelper = async (
+    api: string,
+    headers: Record<string, string> = defaultHeader
+) => {
     const token = window.localStorage.getItem('accessToken');
     if (token) {
         headers['x-access-token'] = token;

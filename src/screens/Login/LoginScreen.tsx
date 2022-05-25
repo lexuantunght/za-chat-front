@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import InputText from '../../common/components/InputText';
 import Button from '../../common/components/Button';
 import logoIcon from '../../common/resources/logo.png';
-import LoginRequest from '../../common/models/LoginRequest';
+import LoginRequest from '../../common/models/request/LoginRequest';
 import { useLogin } from '../../hooks/authentication';
 import withQueryClient from '../../common/context/withQueryClient';
 
@@ -33,7 +33,7 @@ const LoginScreen: React.FC = () => {
     const formik = useFormik<LoginRequest>({
         initialValues: {
             username: '',
-            password: ''
+            password: '',
         },
         validationSchema: Yup.object({
             username: Yup.string()
@@ -43,9 +43,9 @@ const LoginScreen: React.FC = () => {
             password: Yup.string()
                 .min(6, 'Mật khẩu tối thiểu 6 ký tự')
                 .max(50, 'Mật khẩu tối đa 50 ký tự')
-                .required('Vui lòng nhập mật khẩu')
+                .required('Vui lòng nhập mật khẩu'),
         }),
-        onSubmit: onLogin
+        onSubmit: onLogin,
     });
 
     return (
@@ -77,13 +77,20 @@ const LoginScreen: React.FC = () => {
                     isError={Boolean(formik.touched.password && formik.errors.password)}
                     errorText={formik.errors.password}
                 />
-                <Button type="submit" disabled={formik.isSubmitting || !formik.isValid} loading={formik.isSubmitting}>
+                <Button
+                    type="submit"
+                    disabled={formik.isSubmitting || !formik.isValid}
+                    loading={formik.isSubmitting}>
                     Đăng nhập
                 </Button>
             </form>
             <div className="login-signup-link">
                 <span>Chưa có tài khoản?</span>
-                <Button className="signup-link" variant="text" onClick={onRegisterClick} disabled={formik.isSubmitting}>
+                <Button
+                    className="signup-link"
+                    variant="text"
+                    onClick={onRegisterClick}
+                    disabled={formik.isSubmitting}>
                     Đăng ký
                 </Button>
             </div>

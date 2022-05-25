@@ -17,7 +17,14 @@ const buildClassName = ({ className, isError }: InputTextProps) => {
     return defaultClass;
 };
 
-const InputText: React.FC<InputTextProps> = ({ className, isError, errorText, onChange, numberOnly, ...rest }) => {
+const InputText: React.FC<InputTextProps> = ({
+    className,
+    isError,
+    errorText,
+    onChange,
+    numberOnly,
+    ...rest
+}) => {
     const onChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!numberOnly) {
             onChange?.(e);
@@ -30,7 +37,11 @@ const InputText: React.FC<InputTextProps> = ({ className, isError, errorText, on
     };
     return (
         <>
-            <input {...rest} className={buildClassName({ className, isError })} onChange={onChangeText} />
+            <input
+                {...rest}
+                className={buildClassName({ className, isError })}
+                onChange={onChangeText}
+            />
             {isError && errorText && <small className="za-error-text">{errorText}</small>}
         </>
     );

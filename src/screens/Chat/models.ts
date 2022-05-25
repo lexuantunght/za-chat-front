@@ -1,14 +1,22 @@
-export type Message = {
+export interface Message {
     content?: string;
     created_at: Date;
-    chatItemId: string;
+    conversationId: string;
     userId: string;
-};
+}
 
-export type ChatItem = {
+export interface ChatItem {
     _id: string;
     avatar?: string;
     name?: string;
+    users: [
+        {
+            _id: string;
+            name: string;
+            avatar: string;
+        }
+    ];
     latestMessage?: Message;
-    messages?: Message[];
-};
+    created_at?: Date;
+    updated_at?: Date;
+}

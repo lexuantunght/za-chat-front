@@ -7,7 +7,7 @@ type ChatState = {
 };
 
 const defaultState: ChatState = {
-    selectedChatItem: undefined
+    selectedChatItem: undefined,
 };
 
 const chatReducer = (state = defaultState, action: AnyAction) => {

@@ -23,7 +23,7 @@ const Alert: React.FC<AlertProps> = ({
     content,
     cancelText = 'Hủy',
     acceptText = 'Đồng ý',
-    className
+    className,
 }) => {
     return (
         <Modal title={title} isOpen={isShow} onClose={onClose} className={className}>

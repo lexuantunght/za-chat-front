@@ -16,7 +16,7 @@ type DelayedPortalProps = {
 
 type DelayedPortalStates = {
     isOpen: boolean;
-    willChangeTo: any;
+    willChangeTo: 'open' | 'closed' | null;
 };
 
 class DelayedPortal extends React.Component<DelayedPortalProps, DelayedPortalStates> {
@@ -29,7 +29,7 @@ class DelayedPortal extends React.Component<DelayedPortalProps, DelayedPortalSta
         this.state = {
             // This lags the `isOpen` prop by the specified delays
             isOpen: false,
-            willChangeTo: null
+            willChangeTo: null,
         };
     }
 
@@ -58,13 +58,13 @@ class DelayedPortal extends React.Component<DelayedPortalProps, DelayedPortalSta
         this.node && this.node.scrollTop;
 
         this.setState({
-            willChangeTo: 'open'
+            willChangeTo: 'open',
         });
 
         this.didChangeTimeout = setTimeout(() => {
             this.setState({
                 isOpen: true,
-                willChangeTo: null
+                willChangeTo: null,
             });
         }, this.props.openDelay);
     }
@@ -73,13 +73,13 @@ class DelayedPortal extends React.Component<DelayedPortalProps, DelayedPortalSta
         this.cancelQueue();
 
         this.setState({
-            willChangeTo: 'closed'
+            willChangeTo: 'closed',
         });
 
         this.didChangeTimeout = setTimeout(() => {
             this.setState({
                 isOpen: false,
-                willChangeTo: null
+                willChangeTo: null,
             });
         }, this.props.closeDelay);
     }
@@ -105,7 +105,7 @@ class DelayedPortal extends React.Component<DelayedPortalProps, DelayedPortalSta
             this.props.children({
                 isOpen: this.state.isOpen,
                 willOpen: this.state.willChangeTo === 'open',
-                willClose: this.state.willChangeTo === 'closed'
+                willClose: this.state.willChangeTo === 'closed',
             }),
             this.node
         );

@@ -4,12 +4,21 @@ import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import { ChatItem } from '../models';
 import ChatTyping from './ChatTyping';
+import { useFetchMessages } from '../../../hooks/chat';
+import UserData from '../../../common/models/UserData';
 
 type ChatSectionProps = {
     chatItem: ChatItem;
+    user?: UserData;
 };
 
-const ChatSection: React.FC<ChatSectionProps> = ({ chatItem }) => {
+const ChatSection: React.FC<ChatSectionProps> = ({ chatItem, user }) => {
+    const { data: messages = [], isLoading } = useFetchMessages({ conversationId: chatItem._id });
+
+    if (isLoading) {
+        return null;
+    }
+
     return (
         <div className="chat-section">
             <div className="chat-section-title">
@@ -29,22 +38,27 @@ const ChatSection: React.FC<ChatSectionProps> = ({ chatItem }) => {
             </div>
             <div className="chat-section-body custom-scroll scrolling">
                 <br />
-                {chatItem.messages?.map((message, index) => (
+                {messages.map((message, index) => (
                     <div
-                        key={message.chatItemId + index}
-                        className={`chat-message-item ${message.userId === '12345' ? 'chat-self-message' : ''}`}>
+                        key={message.conversationId + index}
+                        className={`chat-message-item ${
+                            message.userId === user?._id ? 'chat-self-message' : ''
+                        }`}>
                         <img
                             className={`chat-avatar ${
-                                index > 0 && message.userId === chatItem.messages?.[index - 1].userId
+                                index < messages.length - 1 &&
+                                message.userId === messages[index + 1].userId
                                     ? 'chat-avatar-invisible'
                                     : ''
                             }`}
-                            src={chatItem.avatar}
+                            src={message.userId === user?._id ? user.avatar : chatItem.avatar}
                         />
 
                         <div>
                             <div className="chat-message-content">{message.content}</div>
-                            <small className="chat-message-time">{moment(message.created_at).format('hh:mm')}</small>
+                            <small className="chat-message-time">
+                                {moment(message.created_at).format('hh:mm')}
+                            </small>
                         </div>
                     </div>
                 ))}

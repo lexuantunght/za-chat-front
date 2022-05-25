@@ -31,6 +31,7 @@
 .chat-section-name {
     font-weight: 600;
     font-size: large;
+    margin-bottom: 0.25rem;
 }
 
 .chat-search {
@@ -84,17 +85,19 @@
 .chat-name {
     font-size: 1rem;
     text-overflow: ellipsis;
+    margin-bottom: 0.25rem;
 }
 
 .chat-message {
     color: #555555;
     text-overflow: ellipsis;
+    font-size: small;
 }
 
 .chat-latest-time {
     font-size: smaller;
     color: #555555;
-    height: 2rem;
+    height: 2.25rem;
     margin-left: 0.5rem;
 }
 
