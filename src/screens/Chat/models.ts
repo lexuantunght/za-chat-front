@@ -3,6 +3,8 @@ export interface Message {
     created_at?: Date;
     conversationId: string;
     userId: string;
+    seen?: string[];
+    status?: 'sent' | 'received' | 'seen' | 'failed';
 }
 
 export interface ChatItem {

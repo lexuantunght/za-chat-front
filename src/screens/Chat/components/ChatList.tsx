@@ -30,7 +30,7 @@ const ChatList: React.FC<ChatListProps> = ({ data = [], selectedItem, onSelected
                         </div>
                     </div>
                     <div className="chat-latest-time">
-                        {moment(chatItem.updated_at).locale('vi').fromNow(true)}
+                        {moment(chatItem.latestMessage?.created_at).locale('vi').fromNow(true)}
                     </div>
                 </div>
             ))}
