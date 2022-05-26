@@ -2,18 +2,45 @@ import React from 'react';
 import moment from 'moment';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
-import { ChatItem } from '../models';
+import { ChatItem, Message } from '../models';
 import ChatTyping from './ChatTyping';
 import { useFetchMessages } from '../../../hooks/chat';
 import UserData from '../../../common/models/UserData';
+import { socket } from '../../../utils/helpers/SocketHelper';
 
 type ChatSectionProps = {
     chatItem: ChatItem;
     user?: UserData;
+    onSend: (message: Message) => void;
 };
 
-const ChatSection: React.FC<ChatSectionProps> = ({ chatItem, user }) => {
-    const { data: messages = [], isLoading } = useFetchMessages({ conversationId: chatItem._id });
+const ChatSection: React.FC<ChatSectionProps> = ({ chatItem, user, onSend }) => {
+    const {
+        data: messages = [],
+        isLoading,
+        isSuccess,
+    } = useFetchMessages({ conversationId: chatItem._id });
+    const [messageList, setMessageList] = React.useState<Message[]>([]);
+
+    socket.on('receive-message', (msg: Message) => {
+        setMessageList([msg, ...messageList]);
+    });
+
+    React.useEffect(() => {
+        if (isSuccess) {
+            setMessageList(messages);
+        }
+    }, [isSuccess, chatItem._id]);
+
+    const onSendMessage = (content: string) => {
+        const msg = {
+            content,
+            conversationId: chatItem._id,
+            userId: user?._id || '',
+        };
+        setMessageList([msg, ...messageList]);
+        onSend(msg);
+    };
 
     if (isLoading) {
         return null;
@@ -38,7 +65,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({ chatItem, user }) => {
             </div>
             <div className="chat-section-body custom-scroll scrolling">
                 <br />
-                {messages.map((message, index) => (
+                {messageList.map((message, index, msgArr) => (
                     <div
                         key={message.conversationId + index}
                         className={`chat-message-item ${
@@ -46,8 +73,8 @@ const ChatSection: React.FC<ChatSectionProps> = ({ chatItem, user }) => {
                         }`}>
                         <img
                             className={`chat-avatar ${
-                                index < messages.length - 1 &&
-                                message.userId === messages[index + 1].userId
+                                index < msgArr.length - 1 &&
+                                message.userId === msgArr[index + 1].userId
                                     ? 'chat-avatar-invisible'
                                     : ''
                             }`}
@@ -64,7 +91,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({ chatItem, user }) => {
                 ))}
                 <br />
             </div>
-            <ChatTyping />
+            <ChatTyping onSend={onSendMessage} />
         </div>
     );
 };

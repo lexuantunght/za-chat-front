@@ -1,6 +1,6 @@
 export interface Message {
     content?: string;
-    created_at: Date;
+    created_at?: Date;
     conversationId: string;
     userId: string;
 }

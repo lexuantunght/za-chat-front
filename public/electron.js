@@ -20,10 +20,9 @@ function getWindowUrl(windowName = 'index') {
 }
 
 let appWindow;
-let authWindow;
 
 function createAuthWindows() {
-    authWindow = new BrowserWindow({
+    appWindow = new BrowserWindow({
         width: 360,
         height: 540,
         title: 'ZaChat',
@@ -38,29 +37,15 @@ function createAuthWindows() {
         resizable: false,
         show: false,
     });
-    authWindow.removeMenu();
-    authWindow.loadURL(getWindowUrl('authLoader'));
-    authWindow.on('ready-to-show', () => authWindow.show());
+    appWindow.loadURL(getWindowUrl('authLoader'));
+    appWindow.on('ready-to-show', () => appWindow.show());
 }
 
 function createMainWindow() {
-    appWindow = new BrowserWindow({
-        width: 960,
-        height: 640,
-        minWidth: 480,
-        minHeight: 480,
-        title: 'ZaChat',
-        icon: __dirname + './favicon.ico',
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            devTools: isDev,
-            webSecurity: false,
-        },
-        show: false,
-        hasShadow: true,
-    });
-    //appWindow.removeMenu();
+    appWindow.setMinimumSize(480, 480);
+    appWindow.setSize(960, 640);
+    appWindow.setMaximizable(true);
+    appWindow.setResizable(true);
     appWindow.maximize();
     appWindow.loadURL(getWindowUrl());
     appWindow.on('ready-to-show', () => appWindow.show());
@@ -80,10 +65,9 @@ app.on('activate', function () {
 });
 
 ipcMain.on('navigation', (events, windowName) => {
-    authWindow.loadURL(getWindowUrl(windowName));
+    appWindow.loadURL(getWindowUrl(windowName));
 });
 
 ipcMain.on('openApp', () => {
-    authWindow.close();
     createMainWindow();
 });

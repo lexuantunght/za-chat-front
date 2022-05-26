@@ -5,6 +5,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 module.exports = {
     entry: {
@@ -75,6 +76,12 @@ module.exports = {
         }),
         new MiniCssExtractPlugin({
             filename: '[name].min.css',
+        }),
+        new CircularDependencyPlugin({
+            exclude: /a\.js|node_modules/,
+            failOnError: true,
+            allowAsyncCycles: false,
+            cwd: process.cwd(),
         }),
         //new BundleAnalyzerPlugin(),
     ],

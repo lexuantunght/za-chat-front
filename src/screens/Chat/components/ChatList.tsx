@@ -17,7 +17,7 @@ const ChatList: React.FC<ChatListProps> = ({ data = [], selectedItem, onSelected
                 <div
                     key={'chat-' + index}
                     className={`chat-item-container ${
-                        (selectedItem || data[0])._id === chatItem._id ? 'chat-item-focused' : ''
+                        selectedItem?._id === chatItem._id ? 'chat-item-focused' : ''
                     }`}
                     onClick={() => onSelectedItem?.(chatItem)}>
                     <div className="chat-item">

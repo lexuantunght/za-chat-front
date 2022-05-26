@@ -65,6 +65,7 @@
         "@typescript-eslint/eslint-plugin": "^5.26.0",
         "@typescript-eslint/parser": "^5.26.0",
         "babel-loader": "8.2.3",
+        "circular-dependency-plugin": "^5.2.2",
         "cross-env": "^7.0.3",
         "css-loader": "6.7.1",
         "css-minimizer-webpack-plugin": "^4.0.0",
