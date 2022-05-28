@@ -1,10 +1,7 @@
 /* eslint-disable */
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
+const { BrowserWindow, app, ipcMain, Menu, Tray } = require('electron');
 const path = require('path');
 const url = require('url');
-const ipcMain = electron.ipcMain;
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -20,6 +17,8 @@ function getWindowUrl(windowName = 'index') {
 }
 
 let appWindow;
+let isQuiting;
+let tray;
 
 function createAuthWindows() {
     appWindow = new BrowserWindow({
@@ -42,26 +41,57 @@ function createAuthWindows() {
 }
 
 function createMainWindow() {
+    appWindow.loadURL(getWindowUrl());
     appWindow.setMinimumSize(480, 480);
     appWindow.setSize(960, 640);
     appWindow.setMaximizable(true);
     appWindow.setResizable(true);
     appWindow.maximize();
-    appWindow.loadURL(getWindowUrl());
     appWindow.on('ready-to-show', () => appWindow.show());
+    appWindow.on('close', (event) => {
+        if (!isQuiting) {
+            event.preventDefault();
+            appWindow.hide();
+            event.returnValue = false;
+        }
+    });
 }
 
 app.disableHardwareAcceleration();
-app.on('ready', createAuthWindows);
-app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') {
-        app.quit();
+app.on('ready', () => {
+    if (process.platform === 'win32') {
+        app.setAppUserModelId('ZaChat');
     }
+    createAuthWindows();
+    tray = new Tray(__dirname + './favicon.ico');
+    tray.setContextMenu(
+        Menu.buildFromTemplate([
+            {
+                label: 'Mở ZaChat',
+                click: () => {
+                    appWindow.show();
+                },
+            },
+            {
+                label: 'Thoát',
+                click: () => {
+                    isQuiting = true;
+                    app.quit();
+                },
+            },
+        ])
+    );
+    tray.setToolTip('ZaChat');
 });
+
 app.on('activate', function () {
     if (appWindow === null) {
-        //createMainWindow();
+        createAuthWindows();
     }
+});
+
+app.on('before-quit', function () {
+    isQuiting = true;
 });
 
 ipcMain.on('navigation', (events, windowName) => {

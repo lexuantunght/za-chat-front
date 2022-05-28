@@ -6,7 +6,6 @@ import { ChatItem, Message } from '../models';
 import ChatTyping from './ChatTyping';
 import { useFetchMessages } from '../../../hooks/chat';
 import UserData from '../../../common/models/UserData';
-import { socket } from '../../../utils/helpers/SocketHelper';
 
 type ChatSectionProps = {
     chatItem: ChatItem;
@@ -21,10 +20,6 @@ const ChatSection: React.FC<ChatSectionProps> = ({ chatItem, user, onSend }) => 
         isSuccess,
     } = useFetchMessages({ conversationId: chatItem._id });
     const [messageList, setMessageList] = React.useState<Message[]>([]);
-
-    socket.on('receive-message', (msg: Message) => {
-        setMessageList([msg, ...messageList]);
-    });
 
     React.useEffect(() => {
         if (isSuccess) {

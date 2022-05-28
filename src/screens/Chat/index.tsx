@@ -41,8 +41,21 @@ const ChatScreen: React.FC = () => {
     };
 
     const onSelectChatItem = (item: ChatItem) => {
+        const sideTab = document.getElementById('chat-sidetab-container');
+        sideTab?.classList.remove('chat-sidetab-container-show');
+
         dispatch(createDispatch('chat.selectedChatItem', item));
     };
+
+    React.useEffect(() => {
+        socket.removeListener('receive-message');
+        return () => {
+            socket.on('receive-message', (msg: Message, user: UserData) => {
+                //setMessageList([msg, ...messageList]);
+                new Notification(user.name, { body: msg.content, icon: user.avatar });
+            });
+        };
+    }, []);
 
     React.useEffect(() => {
         if (chatData && isSuccess) {
@@ -56,12 +69,14 @@ const ChatScreen: React.FC = () => {
 
     return (
         <div className="chat-container">
-            <ChatList
-                data={chatList}
-                selectedItem={selectedChatItem}
-                userId={userData._id}
-                onSelectedItem={onSelectChatItem}
-            />
+            <div id="chat-sidetab-container">
+                <ChatList
+                    data={chatList}
+                    selectedItem={selectedChatItem}
+                    userId={userData._id}
+                    onSelectedItem={onSelectChatItem}
+                />
+            </div>
             {selectedChatItem ? (
                 <ChatSection chatItem={selectedChatItem} user={userData} onSend={onSendMessage} />
             ) : (

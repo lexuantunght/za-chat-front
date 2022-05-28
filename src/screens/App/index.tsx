@@ -7,7 +7,7 @@ import ChatScreen from '../Chat';
 import ContactScreen from '../Contact';
 import SideBar from './SideBar';
 
-const App: React.FC = () => {
+const App = () => {
     const userData: UserData = JSON.parse(window.localStorage.getItem('userData') || '');
 
     React.useEffect(() => {

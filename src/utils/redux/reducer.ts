@@ -1,7 +1,7 @@
 import { AnyAction, combineReducers } from 'redux';
-import DispatchType from '../../../common/constants/DispatchType';
-import UserData from '../../../common/models/UserData';
-import chatReducer from '../../../screens/Chat/reducer';
+import DispatchType from '../../common/constants/DispatchType';
+import UserData from '../../common/models/UserData';
+import chatReducer from '../../screens/Chat/reducer';
 
 type AppState = {
     isError: boolean;
