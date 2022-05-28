@@ -11,16 +11,22 @@ export const useFetchConversations = () => {
 };
 
 export const useFetchMessages = (query?: Record<string, number | string>) => {
-    return useQuery<Message[], Error>(['messages_list', query], async () => {
-        const queryParams: string[] = [];
-        if (query) {
-            Object.keys(query).forEach((queryKey) => {
-                queryParams.push(`${queryKey}=${query[queryKey]}`);
-            });
+    return useQuery<Message[], Error>(
+        ['messages_list', query],
+        async () => {
+            const queryParams: string[] = [];
+            if (query) {
+                Object.keys(query).forEach((queryKey) => {
+                    queryParams.push(`${queryKey}=${query[queryKey]}`);
+                });
+            }
+            const res = await AxiosHelper.getHelper(
+                `${appConfig.baseUrl}/chat/messages?${queryParams.join('&')}`
+            );
+            return res.data;
+        },
+        {
+            cacheTime: 0,
         }
-        const res = await AxiosHelper.getHelper(
-            `${appConfig.baseUrl}/chat/messages?${queryParams.join('&')}`
-        );
-        return res.data;
-    });
+    );
 };

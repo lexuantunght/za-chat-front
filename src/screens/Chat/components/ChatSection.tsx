@@ -13,7 +13,14 @@ type ChatSectionProps = {
     onSend: (message: Message) => void;
 };
 
-const ChatSection: React.FC<ChatSectionProps> = ({ chatItem, user, onSend }) => {
+export type ChatSectionRef = {
+    appendMessage: (msg: Message) => void;
+};
+
+const ChatSection = (
+    { chatItem, user, onSend }: ChatSectionProps,
+    ref: React.ForwardedRef<ChatSectionRef>
+) => {
     const {
         data: messages = [],
         isLoading,
@@ -27,11 +34,22 @@ const ChatSection: React.FC<ChatSectionProps> = ({ chatItem, user, onSend }) => 
         }
     }, [isSuccess, chatItem._id]);
 
+    React.useImperativeHandle(ref, () => ({
+        appendMessage: (msg: Message) => {
+            if (chatItem._id === msg.conversationId) {
+                setMessageList([msg, ...messageList]);
+            }
+        },
+    }));
+
     const onSendMessage = (content: string) => {
-        const msg = {
+        const msg: Message = {
             content,
             conversationId: chatItem._id,
             userId: user?._id || '',
+            seen: user?._id ? [user?._id] : [],
+            status: 'sending',
+            created_at: new Date(),
         };
         setMessageList([msg, ...messageList]);
         onSend(msg);
@@ -91,4 +109,4 @@ const ChatSection: React.FC<ChatSectionProps> = ({ chatItem, user, onSend }) => 
     );
 };
 
-export default ChatSection;
+export default React.forwardRef(ChatSection);

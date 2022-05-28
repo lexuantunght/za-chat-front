@@ -122,6 +122,17 @@
     align-items: center;
 }
 
+.chat-item-seen {
+    font-weight: normal;
+}
+
+.chat-item-notseen {
+    font-weight: 600;
+}
+.chat-item-notseen > div {
+    color: #000000;
+}
+
 .chat-name {
     font-size: 1rem;
     text-overflow: ellipsis;

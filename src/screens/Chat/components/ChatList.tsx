@@ -14,6 +14,13 @@ type ChatListProps = {
 };
 
 const ChatList: React.FC<ChatListProps> = ({ data = [], selectedItem, onSelectedItem, userId }) => {
+    const onClickItem = (item: ChatItem) => {
+        if (userId && !item.latestMessage?.seen?.includes(userId)) {
+            item.latestMessage?.seen?.push(userId);
+        }
+        onSelectedItem?.(item);
+    };
+
     return (
         <div className="chat-tab">
             <div className="chat-tab-header">
@@ -30,10 +37,15 @@ const ChatList: React.FC<ChatListProps> = ({ data = [], selectedItem, onSelected
                         className={`chat-item-container ${
                             selectedItem?._id === chatItem._id ? 'chat-item-focused' : ''
                         }`}
-                        onClick={() => onSelectedItem?.(chatItem)}>
+                        onClick={() => onClickItem(chatItem)}>
                         <div className="chat-item">
                             <img src={chatItem.avatar} className="chat-avatar" />
-                            <div>
+                            <div
+                                className={
+                                    userId && chatItem.latestMessage?.seen?.includes(userId)
+                                        ? 'chat-item-seen'
+                                        : 'chat-item-notseen'
+                                }>
                                 <div className="chat-name">{chatItem.name}</div>
                                 <div className="chat-message">{`${
                                     chatItem.latestMessage?.userId === userId ? 'Bạn: ' : ''

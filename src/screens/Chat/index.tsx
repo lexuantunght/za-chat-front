@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
+import { useQueryClient } from 'react-query';
 import _update from 'lodash-es/update';
 import _orderBy from 'lodash-es/orderBy';
 import { socket } from '../../utils/helpers/SocketHelper';
@@ -10,23 +11,24 @@ import LoadingMask from '../../common/components/LoadingMask';
 import UserData from '../../common/models/UserData';
 import { useFetchConversations } from '../../hooks/chat';
 import ChatList from './components/ChatList';
-import ChatSection from './components/ChatSection';
+import ChatSection, { ChatSectionRef } from './components/ChatSection';
 import { ChatItem, Message } from './models';
 
 const ChatScreen: React.FC = () => {
     const dispatch = useDispatch();
+    const client = useQueryClient();
     const { data: chatData, isLoading, isSuccess } = useFetchConversations();
     const selectedChatItem: ChatItem = useSelector(createSelector('chat.selectedChatItem'));
     const userData: UserData = JSON.parse(window.localStorage.getItem('userData') || '');
     const [chatList, setChatList] = React.useState<ChatItem[]>([]);
+    const chatSectionRef = React.useRef<ChatSectionRef>(null);
 
     const updateChatItem = (latestMessage: Message) => {
         let tempChatList = [...chatList];
-        const indexOfItem = tempChatList.findIndex((item) => item._id === selectedChatItem._id);
-        _update(tempChatList, `[${indexOfItem}].latestMessage`, () => ({
-            ...latestMessage,
-            created_at: new Date(),
-        }));
+        const indexOfItem = tempChatList.findIndex(
+            (item) => item._id === latestMessage.conversationId
+        );
+        _update(tempChatList, `[${indexOfItem}].latestMessage`, () => latestMessage);
         tempChatList = _orderBy(
             tempChatList,
             (item) => moment(item.latestMessage?.created_at).toDate(),
@@ -49,9 +51,13 @@ const ChatScreen: React.FC = () => {
 
     React.useEffect(() => {
         socket.removeListener('receive-message');
+        socket.on('receive-message', (msg: Message) => {
+            client.invalidateQueries('conversation_list');
+            chatSectionRef.current?.appendMessage(msg);
+        });
         return () => {
+            socket.removeListener('receive-message');
             socket.on('receive-message', (msg: Message, user: UserData) => {
-                //setMessageList([msg, ...messageList]);
                 new Notification(user.name, { body: msg.content, icon: user.avatar });
             });
         };
@@ -78,7 +84,12 @@ const ChatScreen: React.FC = () => {
                 />
             </div>
             {selectedChatItem ? (
-                <ChatSection chatItem={selectedChatItem} user={userData} onSend={onSendMessage} />
+                <ChatSection
+                    ref={chatSectionRef}
+                    chatItem={selectedChatItem}
+                    user={userData}
+                    onSend={onSendMessage}
+                />
             ) : (
                 <div>Welcome to ZaChat</div>
             )}
