@@ -27,6 +27,7 @@
 .chat-section-name + div {
     font-size: small;
     color: #555555;
+    min-height: 1rem;
 }
 .chat-section-name {
     font-weight: 600;
@@ -207,6 +208,12 @@
     margin-bottom: 0.5rem;
 }
 
-.chat-message-time {
+.chat-message-content + div {
+    display: flex;
+    justify-content: space-between;
     color: #555555;
+}
+
+.chat-message-time {
+    margin-right: 0.75rem;
 }

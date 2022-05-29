@@ -42,7 +42,8 @@ const ChatList: React.FC<ChatListProps> = ({ data = [], selectedItem, onSelected
                             <img src={chatItem.avatar} className="chat-avatar" />
                             <div
                                 className={
-                                    userId && chatItem.latestMessage?.seen?.includes(userId)
+                                    (userId && chatItem.latestMessage?.seen?.includes(userId)) ||
+                                    chatItem._id === selectedItem?._id
                                         ? 'chat-item-seen'
                                         : 'chat-item-notseen'
                                 }>

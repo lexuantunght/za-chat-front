@@ -1,11 +1,13 @@
 import React from 'react';
 import moment from 'moment';
+import _update from 'lodash-es/update';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import { ChatItem, Message } from '../models';
 import ChatTyping from './ChatTyping';
 import { useFetchMessages } from '../../../hooks/chat';
 import UserData from '../../../common/models/UserData';
+import { socket } from '../../../utils/helpers/SocketHelper';
 
 type ChatSectionProps = {
     chatItem: ChatItem;
@@ -15,6 +17,7 @@ type ChatSectionProps = {
 
 export type ChatSectionRef = {
     appendMessage: (msg: Message) => void;
+    updateStatusMessage: (msg: Message) => void;
 };
 
 const ChatSection = (
@@ -27,17 +30,39 @@ const ChatSection = (
         isSuccess,
     } = useFetchMessages({ conversationId: chatItem._id });
     const [messageList, setMessageList] = React.useState<Message[]>([]);
+    const [activeTime, setActiveTime] = React.useState('');
+
+    React.useEffect(() => {
+        socket.on('is-active', (active: string) => {
+            setActiveTime(active);
+        });
+        return () => {
+            socket.removeAllListeners('is-active');
+        };
+    }, []);
 
     React.useEffect(() => {
         if (isSuccess) {
             setMessageList(messages);
         }
+        socket.emit('get-active', chatItem.users.find((u) => u._id !== user?._id)?._id);
     }, [isSuccess, chatItem._id]);
+
+    const updateMessageStatus = (msg: Message) => {
+        const tempMessageList = [...messageList];
+        _update(tempMessageList, `[0].status`, () => msg.status);
+        setMessageList(tempMessageList);
+    };
 
     React.useImperativeHandle(ref, () => ({
         appendMessage: (msg: Message) => {
             if (chatItem._id === msg.conversationId) {
                 setMessageList([msg, ...messageList]);
+            }
+        },
+        updateStatusMessage: (msg: Message) => {
+            if (chatItem._id === msg.conversationId) {
+                updateMessageStatus(msg);
             }
         },
     }));
@@ -65,7 +90,7 @@ const ChatSection = (
                 <img className="chat-avatar" src={chatItem.avatar} />
                 <div className="chat-section-name-info">
                     <div className="chat-section-name">{chatItem.name}</div>
-                    <div>dang hoat dong</div>
+                    <div>{activeTime}</div>
                 </div>
                 <>
                     <Button className="chat-search" variant="text" title="Tìm kiếm tin nhắn">
@@ -96,9 +121,14 @@ const ChatSection = (
 
                         <div>
                             <div className="chat-message-content">{message.content}</div>
-                            <small className="chat-message-time">
-                                {moment(message.created_at).format('hh:mm')}
-                            </small>
+                            <div>
+                                <small className="chat-message-time">
+                                    {moment(message.created_at).format('hh:mm')}
+                                </small>
+                                {index === 0 && message.userId === user?._id && (
+                                    <small>{message.status}</small>
+                                )}
+                            </div>
                         </div>
                     </div>
                 ))}

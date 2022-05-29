@@ -47,6 +47,9 @@ const ChatScreen: React.FC = () => {
         sideTab?.classList.remove('chat-sidetab-container-show');
 
         dispatch(createDispatch('chat.selectedChatItem', item));
+        if (item.latestMessage?.userId !== userData._id) {
+            socket.emit('action-message', item.latestMessage, 'seen');
+        }
     };
 
     React.useEffect(() => {
@@ -54,17 +57,27 @@ const ChatScreen: React.FC = () => {
         socket.on('receive-message', (msg: Message) => {
             client.invalidateQueries('conversation_list');
             chatSectionRef.current?.appendMessage(msg);
+            socket.emit('action-message', msg, 'received');
+        });
+        socket.on('status-message', (msg: Message) => {
+            chatSectionRef.current?.updateStatusMessage(msg);
         });
         return () => {
-            socket.removeListener('receive-message');
+            socket.removeAllListeners('status-message');
+            socket.removeAllListeners('receive-message');
             socket.on('receive-message', (msg: Message, user: UserData) => {
                 new Notification(user.name, { body: msg.content, icon: user.avatar });
+                socket.emit('action-message', msg, 'received');
             });
         };
     }, []);
 
     React.useEffect(() => {
         if (chatData && isSuccess) {
+            const selectedItem = chatData.find((item) => item._id === selectedChatItem?._id);
+            if (selectedItem && !selectedItem.latestMessage?.seen?.includes(userData._id)) {
+                socket.emit('action-message', selectedChatItem.latestMessage, 'seen');
+            }
             setChatList(chatData);
         }
     }, [chatData]);
