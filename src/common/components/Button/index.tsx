@@ -24,7 +24,13 @@ const buildClassName = ({ variant, className }: ButtonProps) => {
     return defaultClass;
 };
 
-const Button: React.FC<ButtonProps> = ({ loading, children, className, variant = 'default', ...rest }) => {
+const Button: React.FC<ButtonProps> = ({
+    loading,
+    children,
+    className,
+    variant = 'default',
+    ...rest
+}) => {
     return (
         <button {...rest} className={buildClassName({ variant, className })}>
             {loading && <div className="za-spin"></div>}

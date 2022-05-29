@@ -10,16 +10,16 @@ type SideBarProps = {
 const menuItems = [
     {
         id: 0,
-        name: 'Tin nhắn',
+        name: 'chat',
         icon: 'message',
-        path: '/'
+        path: '/',
     },
     {
         id: 1,
-        name: 'Danh bạ',
+        name: 'contacts',
         icon: 'contact',
-        path: '/contacts'
-    }
+        path: '/contacts',
+    },
 ];
 
 const findRouteId = (pathname: string) => {
@@ -35,22 +35,35 @@ const SideBar: React.FC<SideBarProps> = ({ avatarUrl }) => {
     const location = useLocation();
     const [selectedItem, setSelectedItem] = React.useState(findRouteId(location.pathname));
 
-    const onClickItem = (path: string, id: number) => {
+    const onClickItem = (path: string, id: number, name: string) => {
         setSelectedItem(id);
         history.push(path);
+        const sideTab = document.getElementById(`${name}-sidetab-container`);
+        if (sideTab?.classList.contains(`${name}-sidetab-container-show`)) {
+            sideTab?.classList.remove(`${name}-sidetab-container-show`);
+        } else {
+            sideTab?.classList.add(`${name}-sidetab-container-show`);
+        }
     };
 
     return (
         <div className="app-sidebar">
             <img className="app-sidebar-avatar" src={avatarUrl || defaultAvatar} />
-            {menuItems.map((item, key) => (
-                <button
-                    key={'app-sidebar-item-' + key}
-                    className={`app-sidebar-item ${selectedItem === item.id ? 'app-sidebar-selected' : ''}`}
-                    onClick={() => onClickItem(item.path, item.id)}>
-                    <Icon name={item.icon} />
-                </button>
-            ))}
+            <div className="app-sidebar-buttons">
+                {menuItems.map((item, key) => (
+                    <button
+                        key={'app-sidebar-item-' + key}
+                        className={`app-sidebar-item ${
+                            selectedItem === item.id ? 'app-sidebar-selected' : ''
+                        }`}
+                        onClick={() => onClickItem(item.path, item.id, item.name)}>
+                        <Icon name={item.icon} />
+                    </button>
+                ))}
+            </div>
+            <button className="app-sidebar-item">
+                <Icon name="setting" />
+            </button>
         </div>
     );
 };

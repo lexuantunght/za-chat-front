@@ -18,7 +18,7 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
     id,
     name,
     src,
-    disabled
+    disabled,
 }) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const [imageUrl, setImageUrl] = React.useState(src || defaultSrc);

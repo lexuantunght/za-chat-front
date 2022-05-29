@@ -5,14 +5,17 @@ import defaultAvatar from '../../../common/resources/default-avatar.png';
 import InputText from '../../../common/components/InputText';
 import AvatarUploader from '../../../common/components/AvatarUploader';
 import Button from '../../../common/components/Button';
-import SignupRequest from '../../../common/models/SignupRequest';
+import SignupRequest from '../../../common/models/request/SignupRequest';
 
 export interface RegisterFormValues extends SignupRequest {
     confirmPassword: string;
 }
 
 const RegisterForm: React.FC<{
-    onSubmit: (values: RegisterFormValues, formikHelpers: FormikHelpers<RegisterFormValues>) => Promise<void> | void;
+    onSubmit: (
+        values: RegisterFormValues,
+        formikHelpers: FormikHelpers<RegisterFormValues>
+    ) => Promise<void> | void;
 }> = ({ onSubmit }) => {
     const formik = useFormik<RegisterFormValues>({
         initialValues: {
@@ -21,7 +24,7 @@ const RegisterForm: React.FC<{
             username: '',
             password: '',
             confirmPassword: '',
-            avatar: undefined
+            avatar: undefined,
         },
         validationSchema: Yup.object({
             name: Yup.string()
@@ -39,11 +42,15 @@ const RegisterForm: React.FC<{
                 .min(6, 'Mật khẩu tối thiểu 6 ký tự')
                 .max(50, 'Mật khẩu tối đa 50 ký tự')
                 .required('Vui lòng nhập mật khẩu'),
-            confirmPassword: Yup.string().test('passwords-match', 'Mật khẩu xác nhận không đúng', function (value) {
-                return this.parent.password === value;
-            })
+            confirmPassword: Yup.string().test(
+                'passwords-match',
+                'Mật khẩu xác nhận không đúng',
+                function (value) {
+                    return this.parent.password === value;
+                }
+            ),
         }),
-        onSubmit
+        onSubmit,
     });
 
     return (
@@ -116,7 +123,10 @@ const RegisterForm: React.FC<{
                 onChange={(file) => formik.setFieldValue('avatar', file)}
                 disabled={formik.isSubmitting}
             />
-            <Button type="submit" disabled={formik.isSubmitting || !formik.isValid} loading={formik.isSubmitting}>
+            <Button
+                type="submit"
+                disabled={formik.isSubmitting || !formik.isValid}
+                loading={formik.isSubmitting}>
                 Đăng ký
             </Button>
         </form>

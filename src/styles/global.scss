@@ -13,6 +13,12 @@ body {
     --scrollbar-color: #00000000;
 }
 
+.custom-scroll {
+    overflow: overlay;
+    --scrollbar-color: #00000000;
+}
+
+.custom-scroll.scrolling,
 body.scrolling {
     --scrollbar-color: #00000030 !important;
 }

@@ -34,7 +34,11 @@ const RegisterScreen: React.FC = () => {
             <RegisterForm onSubmit={onSubmitRegisterForm} />
             <div className="register-login-link">
                 <span>Đã có tài khoản?</span>
-                <Button className="login-link" variant="text" onClick={onNavigateLogin} disabled={isLoading}>
+                <Button
+                    className="login-link"
+                    variant="text"
+                    onClick={onNavigateLogin}
+                    disabled={isLoading}>
                     Đăng nhập
                 </Button>
             </div>

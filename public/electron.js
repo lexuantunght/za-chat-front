@@ -1,23 +1,27 @@
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
+/* eslint-disable */
+const { BrowserWindow, app, ipcMain, Menu, Tray } = require('electron');
 const path = require('path');
 const url = require('url');
-const ipcMain = electron.ipcMain;
+
+const isDev = process.env.NODE_ENV === 'development';
 
 function getWindowUrl(windowName = 'index') {
+    if (isDev) {
+        return `${process.env.ELECTRON_START_URL}/${windowName}.html`;
+    }
     return url.format({
         pathname: path.join(__dirname, `/../build/${windowName}.html`),
         protocol: 'file:',
-        slashes: true
+        slashes: true,
     });
 }
 
 let appWindow;
-let authWindow;
+let isQuiting;
+let tray;
 
 function createAuthWindows() {
-    authWindow = new BrowserWindow({
+    appWindow = new BrowserWindow({
         width: 360,
         height: 540,
         title: 'ZaChat',
@@ -25,55 +29,75 @@ function createAuthWindows() {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            devTools: false,
-            webSecurity: false
+            devTools: isDev,
+            webSecurity: false,
         },
         maximizable: false,
-        resizable: false
+        resizable: false,
+        show: false,
     });
-    authWindow.removeMenu();
-    authWindow.loadURL(getWindowUrl('authLoader'));
+    appWindow.loadURL(getWindowUrl('authLoader'));
+    appWindow.on('ready-to-show', () => appWindow.show());
 }
 
 function createMainWindow() {
-    appWindow = new BrowserWindow({
-        width: 960,
-        height: 640,
-        minWidth: 480,
-        minHeight: 480,
-        title: 'ZaChat',
-        icon: __dirname + './favicon.ico',
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            devTools: false,
-            webSecurity: false
-        },
-        show: true
-    });
-    appWindow.removeMenu();
-    appWindow.maximize();
     appWindow.loadURL(getWindowUrl());
+    appWindow.setMinimumSize(480, 480);
+    appWindow.setSize(960, 640);
+    appWindow.setMaximizable(true);
+    appWindow.setResizable(true);
+    appWindow.maximize();
+    appWindow.on('ready-to-show', () => appWindow.show());
+    appWindow.on('close', (event) => {
+        if (!isQuiting) {
+            event.preventDefault();
+            appWindow.hide();
+            event.returnValue = false;
+        }
+    });
 }
 
 app.disableHardwareAcceleration();
-app.on('ready', createAuthWindows);
-app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') {
-        app.quit();
+app.on('ready', () => {
+    if (process.platform === 'win32') {
+        app.setAppUserModelId('ZaChat');
     }
+    createAuthWindows();
+    tray = new Tray(__dirname + './favicon.ico');
+    tray.setContextMenu(
+        Menu.buildFromTemplate([
+            {
+                label: 'Mở ZaChat',
+                click: () => {
+                    appWindow.show();
+                },
+            },
+            {
+                label: 'Thoát',
+                click: () => {
+                    isQuiting = true;
+                    app.quit();
+                },
+            },
+        ])
+    );
+    tray.setToolTip('ZaChat');
 });
+
 app.on('activate', function () {
     if (appWindow === null) {
-        //createMainWindow();
+        createAuthWindows();
     }
+});
+
+app.on('before-quit', function () {
+    isQuiting = true;
 });
 
 ipcMain.on('navigation', (events, windowName) => {
-    authWindow.loadURL(getWindowUrl(windowName));
+    appWindow.loadURL(getWindowUrl(windowName));
 });
 
 ipcMain.on('openApp', () => {
-    authWindow.close();
     createMainWindow();
 });

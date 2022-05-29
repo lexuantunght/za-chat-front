@@ -1,18 +1,18 @@
 import { useMutation, useQuery } from 'react-query';
 import _get from 'lodash-es/get';
 import Cookies from 'js-cookie';
-import LoginRequest from '../common/models/LoginRequest';
+import LoginRequest from '../common/models/request/LoginRequest';
 import UserData from '../common/models/UserData';
 import * as appConfig from '../utils/config/appConfig';
 import * as AxiosHelper from '../utils/helpers/AxiosHelper';
-import SignupRequest from '../common/models/SignupRequest';
+import SignupRequest from '../common/models/request/SignupRequest';
 
 export const useSignup = () => {
     return useMutation(async (data: SignupRequest) => {
         const formData = new FormData();
         Object.keys(data).forEach((field) => formData.append(field, _get(data, field)));
         const res = await AxiosHelper.postHelper(`${appConfig.baseUrl}/users/signup`, formData, {
-            Accept: 'application/json'
+            Accept: 'application/json',
         });
         return res;
     });

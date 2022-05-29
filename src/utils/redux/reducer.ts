@@ -1,6 +1,7 @@
-import { combineReducers } from 'redux';
-import DispatchType from '../../../common/constants/DispatchType';
-import UserData from '../../../common/models/UserData';
+import { AnyAction, combineReducers } from 'redux';
+import DispatchType from '../../common/constants/DispatchType';
+import UserData from '../../common/models/UserData';
+import chatReducer from '../../screens/Chat/reducer';
 
 type AppState = {
     isError: boolean;
@@ -9,10 +10,10 @@ type AppState = {
 };
 
 const defaultAppStates: AppState = {
-    isError: false
+    isError: false,
 };
 
-const appReducer = (state = defaultAppStates, action: any) => {
+const appReducer = (state = defaultAppStates, action: AnyAction) => {
     switch (action.type) {
         case DispatchType.app.isError:
             return { ...state, isError: action.data };
@@ -26,7 +27,8 @@ const appReducer = (state = defaultAppStates, action: any) => {
 };
 
 const reducer = combineReducers({
-    app: appReducer
+    app: appReducer,
+    chat: chatReducer,
 });
 
 export default reducer;
