@@ -54,5 +54,6 @@
     "addContact": "Add contact",
     "online": "Online",
     "friend": "Friend",
-    "stranger": "Stranger"
+    "stranger": "Stranger",
+    "typing": "Typing..."
 }

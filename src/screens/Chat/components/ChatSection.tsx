@@ -140,7 +140,13 @@ const ChatSection = (
                 ))}
                 <br />
             </div>
-            <ChatTyping onSend={onSendMessage} />
+            <ChatTyping
+                onSend={onSendMessage}
+                conversationId={chatItem._id}
+                userId={
+                    chatItem.users.find((u) => u._id !== user?._id)?._id || chatItem.users[0]._id
+                }
+            />
         </div>
     );
 };
