@@ -9,9 +9,11 @@ import logoIcon from '../../common/resources/logo.png';
 import LoginRequest from '../../common/models/request/LoginRequest';
 import { useLogin } from '../../hooks/authentication';
 import withQueryClient from '../../common/context/withQueryClient';
+import { useLocalStorage } from '../../hooks/storage';
 
 const LoginScreen: React.FC = () => {
     const { t } = useTranslation();
+    const localStorage = useLocalStorage();
     const { mutateAsync: login } = useLogin();
 
     const onRegisterClick = () => {
@@ -22,8 +24,8 @@ const LoginScreen: React.FC = () => {
         const response = await login(value);
         setSubmitting(false);
         if (response.status === 'success') {
-            window.localStorage.setItem('accessToken', response.data?.accessToken);
-            window.localStorage.setItem('userData', JSON.stringify(response.data));
+            localStorage.setItem('accessToken', response.data?.accessToken);
+            localStorage.setItem('userData', JSON.stringify(response.data));
             ipcRenderer.send('navigation', 'authLoader');
         }
     };
