@@ -1,6 +1,7 @@
 import React from 'react';
 import { useFormik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 import defaultAvatar from '../../../common/resources/default-avatar.png';
 import InputText from '../../../common/components/InputText';
 import AvatarUploader from '../../../common/components/AvatarUploader';
@@ -17,6 +18,7 @@ const RegisterForm: React.FC<{
         formikHelpers: FormikHelpers<RegisterFormValues>
     ) => Promise<void> | void;
 }> = ({ onSubmit }) => {
+    const { t } = useTranslation();
     const formik = useFormik<RegisterFormValues>({
         initialValues: {
             name: '',
@@ -28,23 +30,23 @@ const RegisterForm: React.FC<{
         },
         validationSchema: Yup.object({
             name: Yup.string()
-                .min(2, 'Tên dài tối thiểu 2 ký tự')
-                .max(50, 'Tên dài tối đa 50 ký tự')
-                .required('Vui lòng nhập họ tên'),
+                .min(2, t('minName', { value: 2 }))
+                .max(50, t('maxName', { value: 50 }))
+                .required(t('requiredName')),
             phoneNumber: Yup.string()
-                .matches(/^[0-9]{10}$/, 'Số điện thoại không hợp lệ')
-                .required('Vui lòng nhập số điện thoại'),
+                .matches(/^[0-9]{10}$/, t('invalidPhoneNumber'))
+                .required(t('requiredPhoneNumber')),
             username: Yup.string()
-                .min(3, 'Tên tài khoản tối thiểu 3 ký tự')
-                .max(50, 'Tên tài khoản tối đa 50 ký tự')
-                .required('Vui lòng nhập tên tài khoản'),
+                .min(3, t('minUsername', { value: 3 }))
+                .max(50, t('maxUsername', { value: 50 }))
+                .required(t('requiredUsername')),
             password: Yup.string()
-                .min(6, 'Mật khẩu tối thiểu 6 ký tự')
-                .max(50, 'Mật khẩu tối đa 50 ký tự')
-                .required('Vui lòng nhập mật khẩu'),
+                .min(6, t('minPassword', { value: 6 }))
+                .max(50, t('maxPassword', { value: 50 }))
+                .required(t('requiredPassword')),
             confirmPassword: Yup.string().test(
                 'passwords-match',
-                'Mật khẩu xác nhận không đúng',
+                t('incorrectConfirmPassword'),
                 function (value) {
                     return this.parent.password === value;
                 }
@@ -59,7 +61,7 @@ const RegisterForm: React.FC<{
                 type="text"
                 id="name"
                 name="name"
-                placeholder="Họ tên"
+                placeholder={t('fullName')}
                 value={formik.values.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -70,7 +72,7 @@ const RegisterForm: React.FC<{
             <InputText
                 id="phoneNumber"
                 name="phoneNumber"
-                placeholder="Số điện thoại"
+                placeholder={t('phoneNumber')}
                 numberOnly
                 value={formik.values.phoneNumber}
                 onChange={formik.handleChange}
@@ -83,7 +85,7 @@ const RegisterForm: React.FC<{
                 type="text"
                 id="username"
                 name="username"
-                placeholder="Tên tài khoản"
+                placeholder={t('username')}
                 value={formik.values.username}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -95,7 +97,7 @@ const RegisterForm: React.FC<{
                 type="password"
                 id="password"
                 name="password"
-                placeholder="Mật khẩu"
+                placeholder={t('password')}
                 value={formik.values.password}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -107,7 +109,7 @@ const RegisterForm: React.FC<{
                 type="password"
                 id="confirmPassword"
                 name="confirmPassword"
-                placeholder="Xác nhận mật khẩu"
+                placeholder={t('confirmPassword')}
                 value={formik.values.confirmPassword}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -127,7 +129,7 @@ const RegisterForm: React.FC<{
                 type="submit"
                 disabled={formik.isSubmitting || !formik.isValid}
                 loading={formik.isSubmitting}>
-                Đăng ký
+                {t('register')}
             </Button>
         </form>
     );

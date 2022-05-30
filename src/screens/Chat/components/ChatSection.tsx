@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import _update from 'lodash-es/update';
+import { useTranslation } from 'react-i18next';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import { ChatItem, Message } from '../models';
@@ -24,17 +25,22 @@ const ChatSection = (
     { chatItem, user, onSend }: ChatSectionProps,
     ref: React.ForwardedRef<ChatSectionRef>
 ) => {
+    const { t, i18n } = useTranslation();
     const {
         data: messages = [],
         isLoading,
         isSuccess,
     } = useFetchMessages({ conversationId: chatItem._id });
     const [messageList, setMessageList] = React.useState<Message[]>([]);
-    const [activeTime, setActiveTime] = React.useState('');
+    const [activeTime, setActiveTime] = React.useState<string | Date>('');
 
     React.useEffect(() => {
-        socket.on('is-active', (active: string) => {
-            setActiveTime(active);
+        socket.on('is-active', (active: string, time?: Date) => {
+            if (active === 'offline') {
+                setActiveTime(moment(time).toDate());
+                return;
+            }
+            setActiveTime(t(active));
         });
         return () => {
             socket.removeAllListeners('is-active');
@@ -90,13 +96,19 @@ const ChatSection = (
                 <img className="chat-avatar" src={chatItem.avatar} />
                 <div className="chat-section-name-info">
                     <div className="chat-section-name">{chatItem.name}</div>
-                    <div>{activeTime}</div>
+                    <div>
+                        {typeof activeTime === 'string'
+                            ? activeTime
+                            : t('onlineFor', {
+                                  value: moment(activeTime).locale(i18n.language).fromNow(),
+                              })}
+                    </div>
                 </div>
                 <>
-                    <Button className="chat-search" variant="text" title="Tìm kiếm tin nhắn">
+                    <Button className="chat-search" variant="text" title={t('searchMessages')}>
                         <Icon name="search" />
                     </Button>
-                    <Button variant="text" className="chat-info" title="Thông tin hội thoại">
+                    <Button variant="text" className="chat-info" title={t('infoConversation')}>
                         <Icon name="info-circle" />
                     </Button>
                 </>
@@ -126,7 +138,7 @@ const ChatSection = (
                                     {moment(message.created_at).format('hh:mm')}
                                 </small>
                                 {index === 0 && message.userId === user?._id && (
-                                    <small>{message.status}</small>
+                                    <small>{t(message.status)}</small>
                                 )}
                             </div>
                         </div>
@@ -134,7 +146,13 @@ const ChatSection = (
                 ))}
                 <br />
             </div>
-            <ChatTyping onSend={onSendMessage} />
+            <ChatTyping
+                onSend={onSendMessage}
+                conversationId={chatItem._id}
+                userId={
+                    chatItem.users.find((u) => u._id !== user?._id)?._id || chatItem.users[0]._id
+                }
+            />
         </div>
     );
 };

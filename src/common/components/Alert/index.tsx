@@ -12,6 +12,7 @@ type AlertProps = {
     onAccept?: () => void;
     isShow?: boolean;
     className?: string;
+    severity?: 'error' | 'success';
 };
 
 const Alert: React.FC<AlertProps> = ({
@@ -24,6 +25,7 @@ const Alert: React.FC<AlertProps> = ({
     cancelText = 'Hủy',
     acceptText = 'Đồng ý',
     className,
+    severity,
 }) => {
     return (
         <Modal title={title} isOpen={isShow} onClose={onClose} className={className}>
@@ -34,7 +36,9 @@ const Alert: React.FC<AlertProps> = ({
                         {cancelText}
                     </Button>
                 )}
-                <Button className="za-alert-accept" onClick={onAccept}>
+                <Button
+                    className={`za-alert-accept ${severity ? `za-button-${severity}` : ''}`}
+                    onClick={onAccept}>
                     {acceptText}
                 </Button>
             </div>

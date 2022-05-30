@@ -1,7 +1,15 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import { ipcRenderer } from 'electron';
+import { useTranslation } from 'react-i18next';
+import Alert from '../../common/components/Alert';
+import Divider from '../../common/components/Divider';
 import Icon from '../../common/components/Icon';
+import PopupMenu from '../../common/components/PopupMenu';
 import defaultAvatar from '../../common/resources/default-avatar.png';
+import { useLogout } from '../../hooks/authentication';
+import Modal from '../../common/components/Modal';
+import AppSetting from './AppSetting';
 
 type SideBarProps = {
     avatarUrl?: string;
@@ -33,7 +41,13 @@ const findRouteId = (pathname: string) => {
 const SideBar: React.FC<SideBarProps> = ({ avatarUrl }) => {
     const history = useHistory();
     const location = useLocation();
+    const { t } = useTranslation();
+    const settingMenuRef = React.useRef<PopupMenu>(null);
+    const userMenuRef = React.useRef<PopupMenu>(null);
     const [selectedItem, setSelectedItem] = React.useState(findRouteId(location.pathname));
+    const [isShowWarning, setIsShowWarning] = React.useState(false);
+    const [isShowSetting, setIsShowSetting] = React.useState(false);
+    const logout = useLogout();
 
     const onClickItem = (path: string, id: number, name: string) => {
         setSelectedItem(id);
@@ -46,13 +60,44 @@ const SideBar: React.FC<SideBarProps> = ({ avatarUrl }) => {
         }
     };
 
+    const onLogout = () => {
+        logout(() => ipcRenderer.send('logout'));
+    };
+
+    const onQuitApp = () => {
+        ipcRenderer.send('quit');
+    };
+
+    const MenuContent = ({ isUserContext }: { isUserContext?: boolean }) => (
+        <div className="app-sidebar-setting-content">
+            <button>
+                <Icon name="user" height={22} width={22} />
+                <span>{t('account')}</span>
+            </button>
+            <button onClick={() => setIsShowSetting(true)}>
+                <Icon name="setting" height={22} width={22} />
+                <span>{t('setting')}</span>
+            </button>
+            <Divider />
+            <button className="app-sidebar-logout" onClick={() => setIsShowWarning(true)}>
+                {t('logout')}
+            </button>
+            {!isUserContext && <button onClick={onQuitApp}>{t('quit')}</button>}
+        </div>
+    );
+
     return (
         <div className="app-sidebar">
-            <img className="app-sidebar-avatar" src={avatarUrl || defaultAvatar} />
+            <button
+                className="app-sidebar-avatar-container"
+                onClick={(e) => userMenuRef.current?.toggle(e)}>
+                <img className="app-sidebar-avatar" src={avatarUrl || defaultAvatar} />
+            </button>
             <div className="app-sidebar-buttons">
-                {menuItems.map((item, key) => (
+                {menuItems.map((item, index) => (
                     <button
-                        key={'app-sidebar-item-' + key}
+                        title={t(item.name)}
+                        key={index}
                         className={`app-sidebar-item ${
                             selectedItem === item.id ? 'app-sidebar-selected' : ''
                         }`}
@@ -61,9 +106,35 @@ const SideBar: React.FC<SideBarProps> = ({ avatarUrl }) => {
                     </button>
                 ))}
             </div>
-            <button className="app-sidebar-item">
+            <button
+                title={t('setting')}
+                className="app-sidebar-item app-sidebar-setting"
+                onClick={(e) => settingMenuRef.current?.toggle(e)}>
                 <Icon name="setting" />
             </button>
+            <PopupMenu ref={settingMenuRef}>
+                <MenuContent />
+            </PopupMenu>
+            <PopupMenu ref={userMenuRef}>
+                <MenuContent isUserContext />
+            </PopupMenu>
+            <Alert
+                title={t('confirmation')}
+                content={t('logoutConfirm')}
+                isShow={isShowWarning}
+                severity="error"
+                onClose={() => setIsShowWarning(false)}
+                onCancel={() => setIsShowWarning(false)}
+                onAccept={onLogout}
+                cancelText={t('cancel')}
+                acceptText={t('accept')}
+            />
+            <Modal
+                title={t('setting')}
+                isOpen={isShowSetting}
+                onClose={() => setIsShowSetting(false)}>
+                <AppSetting />
+            </Modal>
         </div>
     );
 };

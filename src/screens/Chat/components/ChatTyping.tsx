@@ -1,10 +1,37 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
+import { socket } from '../../../utils/helpers/SocketHelper';
+import MessageInput from './MessageInput';
 
-const ChatTyping: React.FC<{ onSend: (content: string) => void }> = ({ onSend }) => {
+type ChatTypingProps = {
+    onSend: (content: string) => void;
+    conversationId: string;
+    userId: string;
+};
+
+const ChatTyping = ({ onSend, conversationId, userId }: ChatTypingProps) => {
+    const { t } = useTranslation();
+    const [isTyping, setIsTyping] = React.useState(false);
+
+    React.useEffect(() => {
+        socket.on('typing', (convId: string) => {
+            setIsTyping(conversationId === convId);
+        });
+        socket.on('stop-typing', (convId: string) => {
+            if (conversationId === convId) {
+                setIsTyping(false);
+            }
+        });
+        return () => {
+            socket.removeAllListeners('typing');
+            socket.removeAllListeners('stop-typing');
+        };
+    }, []);
+
     const formik = useFormik({
         initialValues: {
             content: '',
@@ -17,32 +44,44 @@ const ChatTyping: React.FC<{ onSend: (content: string) => void }> = ({ onSend })
             resetForm();
         },
     });
+
+    const onBeginEditing = () => {
+        socket.emit('typing', conversationId, userId);
+    };
+
+    const onEndEditing = () => {
+        socket.emit('stop-typing', conversationId, userId);
+    };
+
     return (
         <>
             <div className="chat-attachment">
-                <Button className="chat-image-attach" variant="text" title="Gửi ảnh">
+                {isTyping && <div className="chat-typing-signal">{t('typing')}</div>}
+                <Button className="chat-image-attach" variant="text" title={t('sendPhoto')}>
                     <Icon name="photo" />
                 </Button>
-                <Button variant="text" title="Gửi tập tin">
+                <Button variant="text" title={t('sendFile')}>
                     <Icon name="file-plus" />
                 </Button>
             </div>
             <form className="chat-typing-container" onSubmit={formik.handleSubmit}>
-                <input
+                <MessageInput
                     id="content"
                     name="content"
                     className="chat-input-text"
-                    placeholder="Nhập tin nhắn..."
+                    placeholder={t('typeMessage')}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.content}
+                    onBeginEditing={onBeginEditing}
+                    onEndEditing={onEndEditing}
                 />
                 <>
                     <Button
                         type="submit"
                         className="chat-send-button"
                         variant="text"
-                        title="Gửi tin nhắn">
+                        title={t('sendMessage')}>
                         <Icon name="send" />
                     </Button>
                 </>

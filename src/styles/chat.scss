@@ -178,6 +178,18 @@
     background-color: #ffffff;
     padding: 0.5rem 1rem;
     display: flex;
+    position: relative;
+}
+.chat-attachment .chat-typing-signal {
+    position: absolute;
+    height: 1.25rem;
+    top: -1.25rem;
+    left: 0;
+    font-size: small;
+    padding: 0 1.1rem;
+    user-select: none;
+    background-color: #ffffff;
+    color: #555555;
 }
 
 .chat-image-attach {

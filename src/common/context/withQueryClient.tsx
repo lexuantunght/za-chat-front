@@ -1,5 +1,6 @@
 import React from 'react';
 import { QueryClientProvider, QueryClient } from 'react-query';
+import '../../utils/i18n';
 
 const queryClient = new QueryClient({
     defaultOptions: {
