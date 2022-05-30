@@ -32,12 +32,12 @@ const ChatSection = (
         isSuccess,
     } = useFetchMessages({ conversationId: chatItem._id });
     const [messageList, setMessageList] = React.useState<Message[]>([]);
-    const [activeTime, setActiveTime] = React.useState('');
+    const [activeTime, setActiveTime] = React.useState<string | Date>('');
 
     React.useEffect(() => {
         socket.on('is-active', (active: string, time?: Date) => {
             if (active === 'offline') {
-                setActiveTime(t('online', { value: moment(time).locale(i18n.language).fromNow() }));
+                setActiveTime(moment(time).toDate());
                 return;
             }
             setActiveTime(t(active));
@@ -96,7 +96,13 @@ const ChatSection = (
                 <img className="chat-avatar" src={chatItem.avatar} />
                 <div className="chat-section-name-info">
                     <div className="chat-section-name">{chatItem.name}</div>
-                    <div>{activeTime}</div>
+                    <div>
+                        {typeof activeTime === 'string'
+                            ? activeTime
+                            : t('onlineFor', {
+                                  value: moment(activeTime).locale(i18n.language).fromNow(),
+                              })}
+                    </div>
                 </div>
                 <>
                     <Button className="chat-search" variant="text" title={t('searchMessages')}>

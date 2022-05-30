@@ -53,6 +53,7 @@
     "sendPhoto": "Gửi ảnh",
     "addContact": "Thêm liên hệ",
     "online": "Đang hoạt động",
+    "onlineFor": "Hoạt động {{value}}",
     "friend": "Bạn bè",
     "stranger": "Người lạ",
     "typing": "Đang nhập..."

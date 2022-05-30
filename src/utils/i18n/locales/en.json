@@ -53,6 +53,7 @@
     "sendPhoto": "Send photo",
     "addContact": "Add contact",
     "online": "Online",
+    "onlineFor": "Actived {{value}}",
     "friend": "Friend",
     "stranger": "Stranger",
     "typing": "Typing..."
