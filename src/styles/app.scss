@@ -7,13 +7,18 @@
     height: 100vh;
 }
 
+.app-sidebar-avatar-container {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+}
 .app-sidebar-avatar {
     width: 3rem;
     height: 3rem;
     object-fit: cover;
     border-radius: 50%;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
     cursor: pointer;
 }
 
@@ -29,6 +34,56 @@
 }
 .app-sidebar-item.app-sidebar-selected {
     background-color: #00000030;
+}
+
+.app-sidebar-setting:focus {
+    background-color: #00000030;
+}
+
+.app-setting-content {
+    min-height: 10rem;
+}
+.app-sidebar-setting-content {
+    display: flex;
+    flex-direction: column;
+}
+.app-sidebar-setting-content > .za-divider {
+    margin: 0.25rem 0.75rem;
+    width: auto;
+}
+.app-sidebar-setting-content > button {
+    outline: none;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    min-width: 10rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+.app-sidebar-setting-content > button:hover {
+    background-color: #eeeeee;
+}
+.app-sidebar-setting-content > button > span {
+    margin-left: 0.25rem;
+}
+.app-sidebar-setting-content > .app-sidebar-logout {
+    color: #f32424;
+    padding-left: 2.2rem;
+}
+.app-sidebar-setting-content > .app-sidebar-logout + button {
+    padding-left: 2.2rem;
+}
+.app-setting-language {
+    display: flex;
+    align-items: center;
+}
+.app-setting-language > span {
+    margin-right: 1rem;
+    font-weight: 600;
+    min-width: 5rem;
 }
 
 .app-sidebar-buttons {

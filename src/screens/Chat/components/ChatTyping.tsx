@@ -1,10 +1,12 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 
 const ChatTyping: React.FC<{ onSend: (content: string) => void }> = ({ onSend }) => {
+    const { t } = useTranslation();
     const formik = useFormik({
         initialValues: {
             content: '',
@@ -20,10 +22,10 @@ const ChatTyping: React.FC<{ onSend: (content: string) => void }> = ({ onSend })
     return (
         <>
             <div className="chat-attachment">
-                <Button className="chat-image-attach" variant="text" title="Gửi ảnh">
+                <Button className="chat-image-attach" variant="text" title={t('sendPhoto')}>
                     <Icon name="photo" />
                 </Button>
-                <Button variant="text" title="Gửi tập tin">
+                <Button variant="text" title={t('sendFile')}>
                     <Icon name="file-plus" />
                 </Button>
             </div>
@@ -32,7 +34,7 @@ const ChatTyping: React.FC<{ onSend: (content: string) => void }> = ({ onSend })
                     id="content"
                     name="content"
                     className="chat-input-text"
-                    placeholder="Nhập tin nhắn..."
+                    placeholder={t('typeMessage')}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.content}
@@ -42,7 +44,7 @@ const ChatTyping: React.FC<{ onSend: (content: string) => void }> = ({ onSend })
                         type="submit"
                         className="chat-send-button"
                         variant="text"
-                        title="Gửi tin nhắn">
+                        title={t('sendMessage')}>
                         <Icon name="send" />
                     </Button>
                 </>

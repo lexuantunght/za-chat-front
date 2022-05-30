@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from 'react-query';
 import _get from 'lodash-es/get';
-import Cookies from 'js-cookie';
 import LoginRequest from '../common/models/request/LoginRequest';
 import UserData from '../common/models/UserData';
 import * as appConfig from '../utils/config/appConfig';
@@ -34,7 +33,8 @@ export const useFetchCurrent = () => {
 
 export const useLogout = () => {
     return (callback?: CallableFunction) => {
-        Cookies.remove('x-access-token');
+        window.localStorage.removeItem('accessToken');
+        window.localStorage.removeItem('userData');
         callback?.();
     };
 };

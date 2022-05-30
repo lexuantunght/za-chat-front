@@ -1,6 +1,7 @@
 import React from 'react';
 import { ipcRenderer } from 'electron';
 import { FormikHelpers } from 'formik';
+import { useTranslation } from 'react-i18next';
 import logoIcon from '../../common/resources/logo.png';
 import withQueryClient from '../../common/context/withQueryClient';
 import Button from '../../common/components/Button';
@@ -9,6 +10,7 @@ import RegisterForm, { RegisterFormValues } from './components/RegisterForm';
 import Alert from '../../common/components/Alert';
 
 const RegisterScreen: React.FC = () => {
+    const { t } = useTranslation();
     const [showSuccessMsg, setShowSuccessMsg] = React.useState(false);
     const { mutateAsync: signup, isLoading } = useSignup();
 
@@ -30,21 +32,21 @@ const RegisterScreen: React.FC = () => {
     return (
         <div className="register-container">
             <img className="register-logo" src={logoIcon} alt="logo" />
-            <h3>Đăng ký tài khoản</h3>
+            <h3>{t('registerAccount')}</h3>
             <RegisterForm onSubmit={onSubmitRegisterForm} />
             <div className="register-login-link">
-                <span>Đã có tài khoản?</span>
+                <span>{t('hadAccount')}</span>
                 <Button
                     className="login-link"
                     variant="text"
                     onClick={onNavigateLogin}
                     disabled={isLoading}>
-                    Đăng nhập
+                    {t('login')}
                 </Button>
             </div>
             <Alert
-                title="Thông báo"
-                content="Đăng ký tài khoản thành công. Đăng nhập ngay?"
+                title={t('notification')}
+                content={t('registerSuccess')}
                 isShow={showSuccessMsg}
                 onAccept={onNavigateLogin}
                 onCancel={() => setShowSuccessMsg(false)}

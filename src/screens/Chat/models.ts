@@ -5,7 +5,7 @@ export interface Message {
     conversationId: string;
     userId: string;
     seen?: string[];
-    status?: 'sent' | 'received' | 'seen' | 'failed' | 'sending';
+    status: 'sent' | 'received' | 'seen' | 'failed' | 'sending';
 }
 
 export interface ChatItem {

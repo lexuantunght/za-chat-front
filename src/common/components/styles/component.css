@@ -43,6 +43,15 @@
     color: var(--hover-primary);
 }
 
+.za-button-error {
+    background-color: var(--error-color);
+    border-color: var(--error-color);
+}
+.za-button-error:hover:enabled {
+    border-color: var(--hover-error);
+    background-color: var(--hover-error);
+}
+
 .za-inputtext {
     border: 1px solid var(--secondary);
     border-radius: var(--border-radius);
@@ -191,7 +200,8 @@
 }
 
 .za-modal-title {
-    font-weight: 700;
+    font-weight: 600;
+    font-size: large;
 }
 
 .za-modal-body {
@@ -236,4 +246,71 @@
     background-color: transparent;
     flex: 1;
     margin-left: 0.25rem;
+}
+
+.za-popup {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: max-content;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    padding-top: var(--padding-y);
+    padding-bottom: var(--padding-y);
+    border-radius: var(--border-radius);
+}
+
+.za-popup-toggle {
+    cursor: pointer;
+}
+
+.za-divider {
+    width: 100%;
+    height: 0.5px;
+    background-color: #cccccc;
+}
+
+.za-dropdown {
+    position: relative;
+}
+.za-dropdown-button {
+    border: 1px solid #cccccc;
+    border-radius: var(--border-radius);
+    padding: var(--padding-y) var(--padding-x);
+    border-color: #cccccc;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 10rem;
+}
+.za-dropdown-button:enabled {
+    cursor: pointer;
+}
+.za-dropdown-content.za-dropdown-content-open {
+    display: block;
+}
+.za-dropdown-value {
+    margin-right: var(--padding-y);
+}
+.za-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    margin-top: 0.25rem;
+    min-width: 100%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    z-index: 5;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    cursor: pointer;
+    padding-top: var(--padding-y);
+    padding-bottom: var(--padding-y);
+    font-size: small;
+}
+.za-dropdown-content > * {
+    padding: var(--padding-y) var(--padding-x);
+}
+.za-dropdown-content > *:hover {
+    background-color: #eeeeee;
 }

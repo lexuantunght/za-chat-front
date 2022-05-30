@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormikHelpers, useFormik } from 'formik';
 import { ipcRenderer } from 'electron';
+import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import InputText from '../../common/components/InputText';
 import Button from '../../common/components/Button';
@@ -10,14 +11,11 @@ import { useLogin } from '../../hooks/authentication';
 import withQueryClient from '../../common/context/withQueryClient';
 
 const LoginScreen: React.FC = () => {
+    const { t } = useTranslation();
     const { mutateAsync: login } = useLogin();
 
     const onRegisterClick = () => {
         ipcRenderer.send('navigation', 'register');
-    };
-
-    const openMainApp = () => {
-        ipcRenderer.send('openApp');
     };
 
     const onLogin = async (value: LoginRequest, { setSubmitting }: FormikHelpers<LoginRequest>) => {
@@ -26,7 +24,7 @@ const LoginScreen: React.FC = () => {
         if (response.status === 'success') {
             window.localStorage.setItem('accessToken', response.data?.accessToken);
             window.localStorage.setItem('userData', JSON.stringify(response.data));
-            openMainApp();
+            ipcRenderer.send('navigation', 'authLoader');
         }
     };
 
@@ -37,13 +35,13 @@ const LoginScreen: React.FC = () => {
         },
         validationSchema: Yup.object({
             username: Yup.string()
-                .min(3, 'Tên tài khoản tối thiểu 3 ký tự')
-                .max(50, 'Tên tài khoản tối đa 50 ký tự')
-                .required('Vui lòng nhập tên tài khoản'),
+                .min(3, t('minUsername', { value: 3 }))
+                .max(50, t('maxUsername', { value: 50 }))
+                .required(t('requiredUsername')),
             password: Yup.string()
-                .min(6, 'Mật khẩu tối thiểu 6 ký tự')
-                .max(50, 'Mật khẩu tối đa 50 ký tự')
-                .required('Vui lòng nhập mật khẩu'),
+                .min(6, t('minPassword', { value: 6 }))
+                .max(50, t('maxPassword', { value: 50 }))
+                .required(t('requiredPassword')),
         }),
         onSubmit: onLogin,
     });
@@ -51,13 +49,13 @@ const LoginScreen: React.FC = () => {
     return (
         <div className="login-container">
             <img className="login-logo" src={logoIcon} alt="logo" />
-            <h3>Đăng nhập</h3>
+            <h3>{t('login')}</h3>
             <form className="login-form" onSubmit={formik.handleSubmit}>
                 <InputText
                     type="text"
                     id="username"
                     name="username"
-                    placeholder="Tên tài khoản"
+                    placeholder={t('username')}
                     value={formik.values.username}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -69,7 +67,7 @@ const LoginScreen: React.FC = () => {
                     type="password"
                     id="password"
                     name="password"
-                    placeholder="Mật khẩu"
+                    placeholder={t('password')}
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -81,17 +79,17 @@ const LoginScreen: React.FC = () => {
                     type="submit"
                     disabled={formik.isSubmitting || !formik.isValid}
                     loading={formik.isSubmitting}>
-                    Đăng nhập
+                    {t('login')}
                 </Button>
             </form>
             <div className="login-signup-link">
-                <span>Chưa có tài khoản?</span>
+                <span>{t('noAccount')}</span>
                 <Button
                     className="signup-link"
                     variant="text"
                     onClick={onRegisterClick}
                     disabled={formik.isSubmitting}>
-                    Đăng ký
+                    {t('register')}
                 </Button>
             </div>
         </div>
