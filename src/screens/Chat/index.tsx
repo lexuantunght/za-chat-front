@@ -4,7 +4,7 @@ import moment from 'moment';
 import { useQueryClient } from 'react-query';
 import _update from 'lodash-es/update';
 import _orderBy from 'lodash-es/orderBy';
-import { socket } from '../../utils/helpers/SocketHelper';
+import SocketHelper from '../../utils/helpers/SocketHelper';
 import createDispatch from '../../common/actions/createDispatch';
 import createSelector from '../../common/actions/createSelector';
 import LoadingMask from '../../common/components/LoadingMask';
@@ -17,6 +17,7 @@ import { ChatItem, Message } from './models';
 const ChatScreen: React.FC = () => {
     const dispatch = useDispatch();
     const client = useQueryClient();
+    const socket = SocketHelper.getInstance().getSocket();
     const { data: chatData, isLoading, isSuccess } = useFetchConversations();
     const selectedChatItem: ChatItem = useSelector(createSelector('chat.selectedChatItem'));
     const userData: UserData = JSON.parse(window.localStorage.getItem('userData') || '');

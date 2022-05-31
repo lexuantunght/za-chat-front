@@ -8,7 +8,7 @@ import { ChatItem, Message } from '../models';
 import ChatTyping from './ChatTyping';
 import { useFetchMessages } from '../../../hooks/chat';
 import UserData from '../../../common/models/UserData';
-import { socket } from '../../../utils/helpers/SocketHelper';
+import SocketHelper from '../../../utils/helpers/SocketHelper';
 
 type ChatSectionProps = {
     chatItem: ChatItem;
@@ -25,6 +25,7 @@ const ChatSection = (
     { chatItem, user, onSend }: ChatSectionProps,
     ref: React.ForwardedRef<ChatSectionRef>
 ) => {
+    const socket = SocketHelper.getInstance().getSocket();
     const { t, i18n } = useTranslation();
     const {
         data: messages = [],

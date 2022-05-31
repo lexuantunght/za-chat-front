@@ -7,7 +7,7 @@ import { useFetchCurrent } from '../../hooks/authentication';
 
 const AuthLoader: React.FC = () => {
     const { t } = useTranslation();
-    const { data: userData, isLoading } = useFetchCurrent();
+    const { isLoading, isSuccess } = useFetchCurrent();
 
     const navigateLogin = () => {
         ipcRenderer.send('navigation', 'login');
@@ -18,20 +18,14 @@ const AuthLoader: React.FC = () => {
     };
 
     React.useEffect(() => {
-        if (!window.localStorage.getItem('accessToken')) {
-            navigateLogin();
+        if (!isLoading) {
+            if (!isSuccess) {
+                navigateLogin();
+            } else {
+                openMainApp();
+            }
         }
-    }, []);
-
-    React.useEffect(() => {
-        if (!isLoading && !userData) {
-            navigateLogin();
-        }
-        if (userData) {
-            window.localStorage.setItem('userData', JSON.stringify(userData));
-            openMainApp();
-        }
-    }, [isLoading, userData]);
+    }, [isLoading]);
 
     return <LoadingMask className="auth-loading" title={t('authenticating')} />;
 };

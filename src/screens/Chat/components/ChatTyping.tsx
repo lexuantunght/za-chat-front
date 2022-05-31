@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
-import { socket } from '../../../utils/helpers/SocketHelper';
+import SocketHelper from '../../../utils/helpers/SocketHelper';
 import MessageInput from './MessageInput';
 
 type ChatTypingProps = {
@@ -15,6 +15,7 @@ type ChatTypingProps = {
 
 const ChatTyping = ({ onSend, conversationId, userId }: ChatTypingProps) => {
     const { t } = useTranslation();
+    const socket = SocketHelper.getInstance().getSocket();
     const [isTyping, setIsTyping] = React.useState(false);
 
     React.useEffect(() => {
