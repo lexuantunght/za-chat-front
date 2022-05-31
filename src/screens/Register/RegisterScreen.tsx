@@ -1,16 +1,16 @@
 import React from 'react';
 import { ipcRenderer } from 'electron';
 import { FormikHelpers } from 'formik';
-import { useTranslation } from 'react-i18next';
 import logoIcon from '../../common/resources/logo.png';
 import withQueryClient from '../../common/context/withQueryClient';
 import Button from '../../common/components/Button';
 import { useSignup } from '../../hooks/authentication';
 import RegisterForm, { RegisterFormValues } from './components/RegisterForm';
 import Alert from '../../common/components/Alert';
+import { useMultilingual } from '../../hooks/translation';
 
-const RegisterScreen: React.FC = () => {
-    const { t } = useTranslation();
+const RegisterScreen = () => {
+    const { t } = useMultilingual();
     const [showSuccessMsg, setShowSuccessMsg] = React.useState(false);
     const { mutateAsync: signup, isLoading } = useSignup();
 

@@ -1,47 +1,86 @@
 import React from 'react';
+import _debounce from 'lodash-es/debounce';
 import Button from '../Button';
 import Icon from '../Icon';
 
 type SearchBarProps = {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onCancel?: () => void;
-    onSearch?: () => void;
+    onReset?: () => void;
+    onSearch?: (value: string) => void;
     name?: string;
     id?: string;
     value?: string;
     placeholder?: string;
+    onFocus?: () => void;
+    onBlur?: () => void;
+    onEndEditing?: (value: string) => void;
 };
 
-const SearchBar = ({
-    onCancel,
-    onChange,
-    onSearch,
-    value = '',
-    name,
-    id,
-    placeholder,
-}: SearchBarProps) => {
-    return (
-        <div className="za-searchbar-container">
-            <Button variant="text" type="button" onClick={onSearch}>
-                <Icon width="20" height="20" name="search" />
-            </Button>
-            <input
-                className="za-searchbar-text"
-                type="text"
-                value={value}
-                name={name}
-                id={id}
-                onChange={onChange}
-                placeholder={placeholder}
-            />
-            {value !== '' && (
-                <Button variant="text" type="button" onClick={onCancel}>
-                    <Icon name="cancel" />
-                </Button>
-            )}
-        </div>
-    );
+type SearchBarStates = {
+    isTyping: boolean;
+    value: string;
 };
+
+class SearchBar extends React.Component<SearchBarProps, SearchBarStates> {
+    constructor(props: SearchBarProps) {
+        super(props);
+        this.state = {
+            isTyping: false,
+            value: '',
+        };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleTyping = this.handleTyping.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
+    }
+
+    handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.props.onChange?.(e);
+        this.setState({ isTyping: true, value: e.target.value }, () => {
+            this.handleTyping();
+        });
+    };
+
+    handleTyping = _debounce(() => {
+        if (this.state.isTyping) {
+            this.props.onEndEditing?.(this.state.value);
+        }
+        this.setState({ isTyping: false });
+    }, 1000);
+
+    handleCancel = () => {
+        this.setState({
+            isTyping: false,
+            value: '',
+        });
+        this.props.onReset?.();
+    };
+
+    render() {
+        const { onSearch, name, id, placeholder, onBlur, onFocus } = this.props;
+        return (
+            <div className="za-searchbar-container">
+                <Button variant="text" type="button" onClick={() => onSearch?.(this.state.value)}>
+                    <Icon width="20" height="20" name="search" />
+                </Button>
+                <input
+                    className="za-searchbar-text"
+                    type="text"
+                    name={name}
+                    value={this.state.value}
+                    id={id}
+                    onChange={this.handleChange}
+                    placeholder={placeholder}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                />
+                {this.state.value !== '' && (
+                    <Button variant="text" type="button" onClick={this.handleCancel}>
+                        <Icon name="reset" />
+                    </Button>
+                )}
+            </div>
+        );
+    }
+}
 
 export default SearchBar;

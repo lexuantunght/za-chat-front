@@ -2,14 +2,13 @@ import React from 'react';
 import { HashRouter, Switch, Route } from 'react-router-dom';
 import SocketHelper from '../../utils/helpers/SocketHelper';
 import withQueryClient from '../../common/context/withQueryClient';
-import UserData from '../../common/models/UserData';
 import ChatScreen from '../Chat';
 import ContactScreen from '../Contact';
 import SideBar from './SideBar';
-import { useLocalStorage } from '../../hooks/storage';
+import { useProfile } from '../../hooks/authentication';
 
 const App = () => {
-    const userData: UserData = JSON.parse(useLocalStorage().getItem('userData') || '');
+    const userData = useProfile();
 
     React.useEffect(() => {
         document.title = `ZaChat - ${userData.name}`;

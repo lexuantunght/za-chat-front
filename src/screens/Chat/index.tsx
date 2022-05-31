@@ -13,14 +13,18 @@ import { useFetchConversations } from '../../hooks/chat';
 import ChatList from './components/ChatList';
 import ChatSection, { ChatSectionRef } from './components/ChatSection';
 import { ChatItem, Message } from './models';
+import { useProfile } from '../../hooks/authentication';
+import { useMultilingual } from '../../hooks/translation';
+import welcomeLogo from '../../common/resources/welcome.png';
 
 const ChatScreen: React.FC = () => {
     const dispatch = useDispatch();
     const client = useQueryClient();
+    const { t } = useMultilingual();
     const socket = SocketHelper.getInstance().getSocket();
     const { data: chatData, isLoading, isSuccess } = useFetchConversations();
     const selectedChatItem: ChatItem = useSelector(createSelector('chat.selectedChatItem'));
-    const userData: UserData = JSON.parse(window.localStorage.getItem('userData') || '');
+    const userData = useProfile();
     const [chatList, setChatList] = React.useState<ChatItem[]>([]);
     const chatSectionRef = React.useRef<ChatSectionRef>(null);
 
@@ -105,7 +109,11 @@ const ChatScreen: React.FC = () => {
                     onSend={onSendMessage}
                 />
             ) : (
-                <div>Welcome to ZaChat</div>
+                <div className="chat-welcome">
+                    <div>{t('welcomeZaChat')}</div>
+                    <span>{t('welcomeDescription')}</span>
+                    <img src={welcomeLogo} />
+                </div>
             )}
         </div>
     );

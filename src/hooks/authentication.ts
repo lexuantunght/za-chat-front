@@ -76,3 +76,8 @@ export const useUpdateProfile = () => {
         return res;
     });
 };
+
+export const useProfile = () => {
+    const userData: UserData = JSON.parse(useLocalStorage().getItem('userData') || '');
+    return userData;
+};

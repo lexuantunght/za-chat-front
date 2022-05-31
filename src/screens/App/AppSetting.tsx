@@ -1,9 +1,9 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import Dropdown from '../../common/components/Dropdown';
+import { useMultilingual } from '../../hooks/translation';
 
 const AppSetting = () => {
-    const { i18n, t } = useTranslation();
+    const { changeLanguage, t, language } = useMultilingual();
     const languages = [
         {
             label: 'en',
@@ -21,8 +21,8 @@ const AppSetting = () => {
                 <span>{t('language')}</span>
                 <Dropdown
                     options={languages}
-                    value={languages.find((lang) => lang.label === i18n.language) || languages[0]}
-                    onChange={(lang) => i18n.changeLanguage(lang.label)}
+                    value={languages.find((lang) => lang.label === language) || languages[0]}
+                    onChange={(lang) => changeLanguage(lang.label)}
                 />
             </div>
         </div>

@@ -1,7 +1,6 @@
 import React from 'react';
 import moment from 'moment';
 import _update from 'lodash-es/update';
-import { useTranslation } from 'react-i18next';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import { ChatItem, Message } from '../models';
@@ -9,6 +8,7 @@ import ChatTyping from './ChatTyping';
 import { useFetchMessages } from '../../../hooks/chat';
 import UserData from '../../../common/models/UserData';
 import SocketHelper from '../../../utils/helpers/SocketHelper';
+import { useMultilingual } from '../../../hooks/translation';
 
 type ChatSectionProps = {
     chatItem: ChatItem;
@@ -26,12 +26,15 @@ const ChatSection = (
     ref: React.ForwardedRef<ChatSectionRef>
 ) => {
     const socket = SocketHelper.getInstance().getSocket();
-    const { t, i18n } = useTranslation();
+    const { t, language } = useMultilingual();
+    const partnerId = chatItem.users.find((u) => u._id !== user?._id)?._id;
     const {
         data: messages = [],
         isLoading,
         isSuccess,
-    } = useFetchMessages({ conversationId: chatItem._id });
+    } = useFetchMessages({
+        conversationId: chatItem._id,
+    });
     const [messageList, setMessageList] = React.useState<Message[]>([]);
     const [activeTime, setActiveTime] = React.useState<string | Date>('');
 
@@ -52,7 +55,7 @@ const ChatSection = (
         if (isSuccess) {
             setMessageList(messages);
         }
-        socket.emit('get-active', chatItem.users.find((u) => u._id !== user?._id)?._id);
+        socket.emit('get-active', partnerId);
     }, [isSuccess, chatItem._id]);
 
     const updateMessageStatus = (msg: Message) => {
@@ -101,7 +104,7 @@ const ChatSection = (
                         {typeof activeTime === 'string'
                             ? activeTime
                             : t('onlineFor', {
-                                  value: moment(activeTime).locale(i18n.language).fromNow(),
+                                  value: moment(activeTime).locale(language).fromNow(),
                               })}
                     </div>
                 </div>
@@ -150,9 +153,7 @@ const ChatSection = (
             <ChatTyping
                 onSend={onSendMessage}
                 conversationId={chatItem._id}
-                userId={
-                    chatItem.users.find((u) => u._id !== user?._id)?._id || chatItem.users[0]._id
-                }
+                userId={partnerId || chatItem.users[0]._id}
             />
         </div>
     );

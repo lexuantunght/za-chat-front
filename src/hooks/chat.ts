@@ -12,7 +12,7 @@ export const useFetchConversations = () => {
     });
 };
 
-export const useFetchMessages = (query?: Record<string, number | string>) => {
+export const useFetchMessages = (query?: Record<string, number | string | undefined>) => {
     return useQuery<Message[], Error>(
         ['messages_list', query],
         async () => {

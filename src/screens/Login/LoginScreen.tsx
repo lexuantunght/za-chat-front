@@ -1,7 +1,6 @@
 import React from 'react';
 import { FormikHelpers, useFormik } from 'formik';
 import { ipcRenderer } from 'electron';
-import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import InputText from '../../common/components/InputText';
 import Button from '../../common/components/Button';
@@ -9,9 +8,10 @@ import logoIcon from '../../common/resources/logo.png';
 import LoginRequest from '../../common/models/request/LoginRequest';
 import { useLogin } from '../../hooks/authentication';
 import withQueryClient from '../../common/context/withQueryClient';
+import { useMultilingual } from '../../hooks/translation';
 
-const LoginScreen: React.FC = () => {
-    const { t } = useTranslation();
+const LoginScreen = () => {
+    const { t } = useMultilingual();
     const { mutateAsync: login } = useLogin();
 
     const onRegisterClick = () => {

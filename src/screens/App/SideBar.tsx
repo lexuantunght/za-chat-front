@@ -1,7 +1,6 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ipcRenderer } from 'electron';
-import { useTranslation } from 'react-i18next';
 import Alert from '../../common/components/Alert';
 import Divider from '../../common/components/Divider';
 import Icon from '../../common/components/Icon';
@@ -10,6 +9,7 @@ import defaultAvatar from '../../common/resources/default-avatar.png';
 import { useLogout } from '../../hooks/authentication';
 import Modal from '../../common/components/Modal';
 import AppSetting from './AppSetting';
+import { useMultilingual } from '../../hooks/translation';
 
 type SideBarProps = {
     avatarUrl?: string;
@@ -41,7 +41,7 @@ const findRouteId = (pathname: string) => {
 const SideBar: React.FC<SideBarProps> = ({ avatarUrl }) => {
     const history = useHistory();
     const location = useLocation();
-    const { t } = useTranslation();
+    const { t } = useMultilingual();
     const settingMenuRef = React.useRef<PopupMenu>(null);
     const userMenuRef = React.useRef<PopupMenu>(null);
     const [selectedItem, setSelectedItem] = React.useState(findRouteId(location.pathname));

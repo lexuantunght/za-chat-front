@@ -1,12 +1,12 @@
 import React from 'react';
 import { useFormik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-import { useTranslation } from 'react-i18next';
 import defaultAvatar from '../../../common/resources/default-avatar.png';
 import InputText from '../../../common/components/InputText';
 import AvatarUploader from '../../../common/components/AvatarUploader';
 import Button from '../../../common/components/Button';
 import SignupRequest from '../../../common/models/request/SignupRequest';
+import { useMultilingual } from '../../../hooks/translation';
 
 export interface RegisterFormValues extends SignupRequest {
     confirmPassword: string;
@@ -18,7 +18,7 @@ const RegisterForm: React.FC<{
         formikHelpers: FormikHelpers<RegisterFormValues>
     ) => Promise<void> | void;
 }> = ({ onSubmit }) => {
-    const { t } = useTranslation();
+    const { t } = useMultilingual();
     const formik = useFormik<RegisterFormValues>({
         initialValues: {
             name: '',

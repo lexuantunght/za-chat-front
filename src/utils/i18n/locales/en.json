@@ -56,5 +56,10 @@
     "onlineFor": "Actived {{value}}",
     "friend": "Friend",
     "stranger": "Stranger",
-    "typing": "Typing..."
+    "typing": "Typing...",
+    "searchResult": "Search result",
+    "close": "Close",
+    "notFoundResult": "Not found any results",
+    "welcomeZaChat": "Welcome to ZaChat",
+    "welcomeDescription": "Discover all features support for working and chatting with friends that has been optimized for you computer."
 }
