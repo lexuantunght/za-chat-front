@@ -30,3 +30,27 @@ export const useFindContacts = (query: { keyword: string }) => {
         return res.data;
     });
 };
+
+export const useRequestFriend = () => {
+    return useMutation(async (userId: string) => {
+        const res = await Network.getInstance().postHelper(
+            `${appConfig.baseUrl}/contacts/request`,
+            {
+                userId,
+            }
+        );
+        return res;
+    });
+};
+
+export const useCancelRequestFriend = () => {
+    return useMutation(async (userId: string) => {
+        const res = await Network.getInstance().postHelper(
+            `${appConfig.baseUrl}/contacts/cancel-request`,
+            {
+                userId,
+            }
+        );
+        return res;
+    });
+};

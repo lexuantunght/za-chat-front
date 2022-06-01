@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import createDispatch from '../../common/actions/createDispatch';
 import Button from '../../common/components/Button';
 import Icon from '../../common/components/Icon';
@@ -9,24 +9,39 @@ import { useFindContacts } from '../../hooks/contact';
 import { useMultilingual } from '../../hooks/translation';
 import { Contact } from '../Contact/models';
 import noResultLogo from '../../common/resources/no-result.png';
+import createSelector from '../../common/actions/createSelector';
+import { ChatItem } from '../Chat/models';
 
 const SearchView = () => {
     const dispatch = useDispatch();
     const { t } = useMultilingual();
     const [isFocused, setIsFocused] = React.useState(false);
     const [keyword, setKeyword] = React.useState('');
-    const { data: contacts = [], isLoading } = useFindContacts({ keyword });
+    const {
+        data: contacts = [],
+        isLoading,
+        remove: removeSearchData,
+    } = useFindContacts({ keyword });
+    const selectedChatItem: ChatItem = useSelector(createSelector('chat.selectedChatItem'));
     const userData = useProfile();
 
     const onClickResult = (contact: Contact) => {
-        dispatch(
-            createDispatch('chat.selectedChatItem', {
-                _id: contact.conversationId || '',
-                avatar: contact.avatar,
-                name: contact.name,
-                users: [userData, contact],
-            })
-        );
+        if (!selectedChatItem || !selectedChatItem.users.some((user) => user._id === contact._id)) {
+            dispatch(
+                createDispatch('chat.selectedChatItem', {
+                    _id: contact.conversationId || '',
+                    avatar: contact.avatar,
+                    friendStatus: contact.friendStatus,
+                    name: contact.name,
+                    users: [userData, contact],
+                })
+            );
+        }
+    };
+
+    const onCloseSearch = () => {
+        setIsFocused(false);
+        removeSearchData();
     };
 
     return (
@@ -39,10 +54,7 @@ const SearchView = () => {
                 onEndEditing={(value) => setKeyword(value)}
             />
             {isFocused ? (
-                <Button
-                    className="app-search-close"
-                    variant="text"
-                    onClick={() => setIsFocused(false)}>
+                <Button className="app-search-close" variant="text" onClick={onCloseSearch}>
                     {t('close')}
                 </Button>
             ) : (

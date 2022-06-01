@@ -61,5 +61,8 @@
     "close": "Close",
     "notFoundResult": "Not found any results",
     "welcomeZaChat": "Welcome to ZaChat",
-    "welcomeDescription": "Discover all features support for working and chatting with friends that has been optimized for you computer."
+    "welcomeDescription": "Discover all features support for working and chatting with friends that has been optimized for you computer.",
+    "addFriend": "Add friend",
+    "requestedFriend": "Sent friend request.",
+    "cancelRequest": "Cancel request"
 }

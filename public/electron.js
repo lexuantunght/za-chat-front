@@ -36,6 +36,9 @@ function createBaseWindow() {
         resizable: false,
         show: false,
     });
+    if (!isDev) {
+        appWindow.removeMenu();
+    }
 }
 
 function createAuthWindows() {

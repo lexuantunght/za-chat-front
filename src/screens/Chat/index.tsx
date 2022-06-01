@@ -16,11 +16,14 @@ import { ChatItem, Message } from './models';
 import { useProfile } from '../../hooks/authentication';
 import { useMultilingual } from '../../hooks/translation';
 import welcomeLogo from '../../common/resources/welcome.png';
+import { useCancelRequestFriend, useRequestFriend } from '../../hooks/contact';
 
 const ChatScreen: React.FC = () => {
     const dispatch = useDispatch();
     const client = useQueryClient();
     const { t } = useMultilingual();
+    const { mutate: cancelRequestFriend } = useCancelRequestFriend();
+    const { mutate: requestFriend } = useRequestFriend();
     const socket = Socket.getInstance().getSocket();
     const { data: chatData, isLoading, isSuccess } = useFetchConversations();
     const selectedChatItem: ChatItem = useSelector(createSelector('chat.selectedChatItem'));
@@ -55,6 +58,26 @@ const ChatScreen: React.FC = () => {
         if (item.latestMessage?.userId !== userData._id) {
             socket.emit('action-message', item.latestMessage, 'seen');
         }
+    };
+
+    const onCancelRequestFriend = (userId: string) => {
+        cancelRequestFriend(userId);
+        dispatch(
+            createDispatch('chat.selectedChatItem', {
+                ...selectedChatItem,
+                friendStatus: undefined,
+            })
+        );
+    };
+
+    const onRequestFriend = (userId: string) => {
+        requestFriend(userId);
+        dispatch(
+            createDispatch('chat.selectedChatItem', {
+                ...selectedChatItem,
+                friendStatus: 'requested',
+            })
+        );
     };
 
     React.useEffect(() => {
@@ -107,6 +130,8 @@ const ChatScreen: React.FC = () => {
                     chatItem={selectedChatItem}
                     user={userData}
                     onSend={onSendMessage}
+                    onCancelRequestFriend={onCancelRequestFriend}
+                    onRequestFriend={onRequestFriend}
                 />
             ) : (
                 <div className="chat-welcome">

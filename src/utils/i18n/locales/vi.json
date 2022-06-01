@@ -61,5 +61,8 @@
     "close": "Đóng",
     "notFoundResult": "Không tìm thấy kết quả",
     "welcomeZaChat": "Chào mừng đến với ZaChat",
-    "welcomeDescription": "Khám phá những tiện ích hỗ trợ làm việc và trò chuyện cùng người thân, bạn bè được tối ưu hóa cho máy tính của bạn."
+    "welcomeDescription": "Khám phá những tiện ích hỗ trợ làm việc và trò chuyện cùng người thân, bạn bè được tối ưu hóa cho máy tính của bạn.",
+    "addFriend": "Kết bạn",
+    "requestedFriend": "Đã gửi yêu cầu kết bạn.",
+    "cancelRequest": "Hủy yêu cầu"
 }

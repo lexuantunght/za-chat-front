@@ -14,6 +14,8 @@ type ChatSectionProps = {
     chatItem: ChatItem;
     user?: UserData;
     onSend: (message: Message) => void;
+    onCancelRequestFriend: (userId: string) => void;
+    onRequestFriend: (userId: string) => void;
 };
 
 export type ChatSectionRef = {
@@ -22,12 +24,15 @@ export type ChatSectionRef = {
 };
 
 const ChatSection = (
-    { chatItem, user, onSend }: ChatSectionProps,
+    { chatItem, user, onSend, onCancelRequestFriend, onRequestFriend }: ChatSectionProps,
     ref: React.ForwardedRef<ChatSectionRef>
 ) => {
     const socket = Socket.getInstance().getSocket();
     const { t, language } = useMultilingual();
-    const partnerId = chatItem.users.find((u) => u._id !== user?._id)?._id;
+    const partnerId = React.useMemo(
+        () => chatItem.users.find((u) => u._id !== user?._id)?._id || '',
+        [chatItem._id]
+    );
     const {
         data: messages = [],
         isLoading,
@@ -116,6 +121,27 @@ const ChatSection = (
                         <Icon name="info-circle" />
                     </Button>
                 </>
+                {chatItem.friendStatus !== 'friend' && (
+                    <div className="chat-title-addfriend">
+                        {!chatItem.friendStatus && (
+                            <Button variant="text" onClick={() => onRequestFriend(partnerId)}>
+                                <Icon name="user-plus" strokeWidth={1.25} />
+                                <span className="add-friend">{t('addFriend')}</span>
+                            </Button>
+                        )}
+                        {chatItem.friendStatus === 'requested' && (
+                            <>
+                                <div className="requested-friend">{t('requestedFriend')}</div>
+                                <Button
+                                    className="cancel-request"
+                                    variant="text"
+                                    onClick={() => onCancelRequestFriend(partnerId)}>
+                                    {t('cancelRequest')}
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                )}
             </div>
             <div className="chat-section-body custom-scroll scrolling">
                 <br />

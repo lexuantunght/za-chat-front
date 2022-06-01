@@ -16,6 +16,7 @@
     align-items: center;
     background-color: #ffffff;
     padding: 0.75rem 1rem;
+    position: relative;
 }
 .chat-section-name-info {
     display: flex;
@@ -33,6 +34,28 @@
     font-weight: 600;
     font-size: large;
     margin-bottom: 0.25rem;
+}
+.chat-title-addfriend {
+    background-color: #ffffff;
+    position: absolute;
+    top: 4.5rem;
+    left: 0;
+    width: 100%;
+    border-top: 1px solid #dddddd;
+    height: 2.4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.chat-title-addfriend .add-friend {
+    margin-left: 0.25rem;
+}
+.chat-title-addfriend .requested-friend {
+    color: var(--primary);
+}
+.chat-title-addfriend .cancel-request {
+    font-weight: 700;
+    margin-left: 0.5rem;
 }
 
 .chat-search {

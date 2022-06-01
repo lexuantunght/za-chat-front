@@ -20,6 +20,7 @@ export interface ChatItem {
         }
     ];
     latestMessage?: Message;
+    friendStatus?: 'requested' | 'friend';
     created_at?: Date;
     updated_at?: Date;
 }

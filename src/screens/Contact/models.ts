@@ -3,6 +3,6 @@ export type Contact = {
     name: string;
     avatar?: string;
     phoneNumber: string;
-    isFriend?: boolean;
     conversationId?: string;
+    friendStatus?: 'requested' | 'friend';
 };
