@@ -4,7 +4,7 @@ import { ipcRenderer } from 'electron';
 import LoginRequest from '../common/models/request/LoginRequest';
 import UserData from '../common/models/UserData';
 import * as appConfig from '../utils/config/appConfig';
-import NetworkHelper from '../utils/helpers/NetworkHelper';
+import Network from '../utils/networking/Network';
 import SignupRequest from '../common/models/request/SignupRequest';
 import { useLocalStorage } from './storage';
 
@@ -12,7 +12,7 @@ export const useSignup = () => {
     return useMutation(async (data: SignupRequest) => {
         const formData = new FormData();
         Object.keys(data).forEach((field) => formData.append(field, _get(data, field)));
-        const res = await NetworkHelper.getInstance().postHelper(
+        const res = await Network.getInstance().postHelper(
             `${appConfig.baseUrl}/users/signup`,
             formData,
             {
@@ -25,7 +25,7 @@ export const useSignup = () => {
 
 export const useLogin = () => {
     return useMutation(async (loginData: LoginRequest) => {
-        const res = await NetworkHelper.getInstance().postHelper(
+        const res = await Network.getInstance().postHelper(
             `${appConfig.baseUrl}/users/signin`,
             loginData
         );
@@ -45,9 +45,7 @@ export const useFetchCurrent = () => {
             if (!useLocalStorage().getItem('accessToken')) {
                 throw new Error('Unauthorization');
             }
-            const res = await NetworkHelper.getInstance().getHelper(
-                `${appConfig.baseUrl}/users/current`
-            );
+            const res = await Network.getInstance().getHelper(`${appConfig.baseUrl}/users/current`);
             if (res.data) {
                 useLocalStorage().setItem('userData', JSON.stringify(res.data));
             }
@@ -69,7 +67,7 @@ export const useLogout = () => {
 
 export const useUpdateProfile = () => {
     return useMutation(async (userData: UserData) => {
-        const res = await NetworkHelper.getInstance().putHelper(
+        const res = await Network.getInstance().putHelper(
             `${appConfig.baseUrl}/users/updateInfo`,
             userData
         );

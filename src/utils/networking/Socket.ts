@@ -2,10 +2,10 @@ import { Manager } from 'socket.io-client';
 import { useLocalStorage } from '../../hooks/storage';
 import * as appConfig from '../config/appConfig';
 
-class SocketHelper {
+class Socket {
     private manager;
     private socket;
-    private static instance: SocketHelper | null = null;
+    private static instance: Socket | null = null;
     private constructor() {
         this.manager = new Manager(appConfig.baseUrl, {
             reconnectionDelayMax: 10000,
@@ -20,7 +20,7 @@ class SocketHelper {
 
     public static getInstance = () => {
         if (this.instance === null) {
-            this.instance = new SocketHelper();
+            this.instance = new Socket();
         }
         return this.instance;
     };
@@ -39,4 +39,4 @@ class SocketHelper {
     };
 }
 
-export default SocketHelper;
+export default Socket;

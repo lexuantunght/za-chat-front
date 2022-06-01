@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
-import SocketHelper from '../../../utils/helpers/SocketHelper';
+import Socket from '../../../utils/networking/Socket';
 import MessageInput from './MessageInput';
 import { useMultilingual } from '../../../hooks/translation';
 
@@ -15,7 +15,7 @@ type ChatTypingProps = {
 
 const ChatTyping = ({ onSend, conversationId, userId }: ChatTypingProps) => {
     const { t } = useMultilingual();
-    const socket = SocketHelper.getInstance().getSocket();
+    const socket = Socket.getInstance().getSocket();
     const [isTyping, setIsTyping] = React.useState(false);
 
     React.useEffect(() => {

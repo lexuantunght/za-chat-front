@@ -23,9 +23,9 @@ interface NetworkProvider {
     delete: (url: string, config?: NetworkConfigs) => Promise<DataResponse>;
 }
 
-class NetworkHelper {
+class Network {
     private defaultHeader: Record<string, string>;
-    private static instance: NetworkHelper | null = null;
+    private static instance: Network | null = null;
     private token: string;
     private networkProvider;
 
@@ -41,7 +41,7 @@ class NetworkHelper {
 
     public static getInstance = () => {
         if (this.instance === null) {
-            this.instance = new NetworkHelper();
+            this.instance = new Network();
         }
         return this.instance;
     };
@@ -108,4 +108,4 @@ class NetworkHelper {
     };
 }
 
-export default NetworkHelper;
+export default Network;

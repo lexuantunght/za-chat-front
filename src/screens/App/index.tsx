@@ -1,6 +1,6 @@
 import React from 'react';
 import { HashRouter, Switch, Route } from 'react-router-dom';
-import SocketHelper from '../../utils/helpers/SocketHelper';
+import Socket from '../../utils/networking/Socket';
 import withQueryClient from '../../common/context/withQueryClient';
 import ChatScreen from '../Chat';
 import ContactScreen from '../Contact';
@@ -12,7 +12,7 @@ const App = () => {
 
     React.useEffect(() => {
         document.title = `ZaChat - ${userData.name}`;
-        SocketHelper.getInstance().connect();
+        Socket.getInstance().connect();
     }, []);
 
     return (
