@@ -1,5 +1,4 @@
 import React from 'react';
-import { ipcRenderer } from 'electron';
 import logoIcon from '../../common/resources/logo.png';
 import Button from '../../common/components/Button';
 import RegisterForm from './components/RegisterForm';
@@ -7,10 +6,10 @@ import useRegisterViewModel from './RegisterViewModel';
 import Alert from '../../common/components/Alert';
 
 const RegisterScreen = () => {
-    const { register, isShowSuccessMsg, hideSuccessMsg, t } = useRegisterViewModel();
+    const { register, isShowSuccessMsg, hideSuccessMsg, t, navigate } = useRegisterViewModel();
 
     const onNavigateLogin = () => {
-        ipcRenderer.send('navigation', 'login');
+        navigate('login');
     };
 
     return (

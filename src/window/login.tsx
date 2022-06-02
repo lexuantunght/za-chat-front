@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import LoginScreen from '../presentation/Login';
-import '../utils/i18n';
+import '../utils/multilingual/i18n';
 
 ReactDOM.render(
     <React.StrictMode>

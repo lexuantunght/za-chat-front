@@ -1,4 +1,4 @@
-import appConfig from '../../../utils/config/appConfig';
+import appConfig from '../../../utils/app/appConfig';
 import Network from '../../../utils/networking/Network';
 import ContactDataSource from '../ContactDataSource';
 import { ContactAPIEntity } from './entity/ContactAPIEntity';

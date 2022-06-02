@@ -1,5 +1,4 @@
 import React from 'react';
-import { ipcRenderer } from 'electron';
 import InputText from '../../common/components/InputText';
 import Button from '../../common/components/Button';
 import logoIcon from '../../common/resources/logo.png';
@@ -9,11 +8,11 @@ import { LoginData } from '../../domain/model/LoginData';
 import { useValidation } from '../../utils/form/validation';
 
 const LoginScreen = () => {
-    const { login, t } = useLoginViewModel();
+    const { login, t, navigate } = useLoginViewModel();
     const validator = useValidation();
 
     const onRegisterClick = () => {
-        ipcRenderer.send('navigation', 'register');
+        navigate('register');
     };
 
     const form = useForm<LoginData>({

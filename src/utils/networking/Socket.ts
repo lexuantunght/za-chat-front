@@ -1,6 +1,5 @@
 import { Manager } from 'socket.io-client';
-import { useLocalStorage } from '../../hooks/storage';
-import * as appConfig from '../config/appConfig';
+import appConfig from '../app/appConfig';
 
 class Socket {
     private manager;
@@ -13,7 +12,7 @@ class Socket {
         });
         this.socket = this.manager.socket('/', {
             auth: {
-                'x-access-token': useLocalStorage().getItem('accessToken'),
+                'x-access-token': window.localStorage.getItem('accessToken'),
             },
         });
     }

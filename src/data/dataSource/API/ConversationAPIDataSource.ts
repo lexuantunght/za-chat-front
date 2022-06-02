@@ -1,4 +1,4 @@
-import appConfig from '../../../utils/config/appConfig';
+import appConfig from '../../../utils/app/appConfig';
 import Network from '../../../utils/networking/Network';
 import ConversationDataSource from '../ConversationDataSource';
 import { ConversationAPIEntity } from './entity/ConversationAPIEntity';

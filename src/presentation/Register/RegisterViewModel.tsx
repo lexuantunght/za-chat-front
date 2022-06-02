@@ -1,7 +1,8 @@
 import React from 'react';
 import { RegisterData } from '../../domain/model/RegisterData';
 import { Register } from '../../domain/usecase/authentication/Register';
-import { useMultilingual } from '../../hooks/translation';
+import useMultilingual from '../../utils/multilingual';
+import { navigate } from '../../utils/app/navigation';
 
 const RegisterViewModel = () => {
     const [isShowSuccessMsg, setIsShowSuccessMsg] = React.useState(false);
@@ -22,6 +23,7 @@ const RegisterViewModel = () => {
         isShowSuccessMsg,
         hideSuccessMsg,
         t,
+        navigate,
     };
 };
 

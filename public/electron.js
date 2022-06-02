@@ -76,7 +76,7 @@ app.on('ready', () => {
         app.setAppUserModelId('ZaChat');
     }
     createBaseWindow();
-    createAuthWindows();
+    createLoginWindow();
     tray = new Tray(__dirname + './favicon.ico');
     tray.setContextMenu(
         Menu.buildFromTemplate([

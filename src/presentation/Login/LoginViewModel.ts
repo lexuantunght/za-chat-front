@@ -1,6 +1,7 @@
 import { LoginData } from '../../domain/model/LoginData';
 import { Login } from '../../domain/usecase/authentication/Login';
-import { useMultilingual } from '../../hooks/translation';
+import useMultilingual from '../../utils/multilingual';
+import { navigate } from '../../utils/app/navigation';
 
 const LoginViewModel = () => {
     const { t } = useMultilingual();
@@ -14,6 +15,7 @@ const LoginViewModel = () => {
     return {
         login,
         t,
+        navigate,
     };
 };
 

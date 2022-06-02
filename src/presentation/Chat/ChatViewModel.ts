@@ -10,7 +10,7 @@ import { RejectFriend } from '../../domain/usecase/contact/RejectFriend';
 import { AcceptFriend } from '../../domain/usecase/contact/AcceptFriend';
 import { CancelRequest } from '../../domain/usecase/contact/CancelRequest';
 import { GetInvitations } from '../../domain/usecase/contact/GetInvitations';
-import { useMultilingual } from '../../hooks/translation';
+import useMultilingual from '../../utils/multilingual';
 
 const ChatViewModel = () => {
     const { conversations, setConversations } = useConversations();
