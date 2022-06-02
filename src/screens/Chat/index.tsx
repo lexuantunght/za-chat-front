@@ -16,7 +16,12 @@ import { ChatItem, Message } from './models';
 import { useProfile } from '../../hooks/authentication';
 import { useMultilingual } from '../../hooks/translation';
 import welcomeLogo from '../../common/resources/welcome.png';
-import { useCancelRequestFriend, useRequestFriend } from '../../hooks/contact';
+import {
+    useAcceptFriend,
+    useCancelRequestFriend,
+    useRejectFriend,
+    useRequestFriend,
+} from '../../hooks/contact';
 
 const ChatScreen: React.FC = () => {
     const dispatch = useDispatch();
@@ -24,6 +29,8 @@ const ChatScreen: React.FC = () => {
     const { t } = useMultilingual();
     const { mutate: cancelRequestFriend } = useCancelRequestFriend();
     const { mutate: requestFriend } = useRequestFriend();
+    const { mutate: acceptFriend } = useAcceptFriend();
+    const { mutate: rejectFriend } = useRejectFriend();
     const socket = Socket.getInstance().getSocket();
     const { data: chatData, isLoading, isSuccess } = useFetchConversations();
     const selectedChatItem: ChatItem = useSelector(createSelector('chat.selectedChatItem'));
@@ -80,6 +87,26 @@ const ChatScreen: React.FC = () => {
         );
     };
 
+    const onAcceptFriend = (userId: string) => {
+        acceptFriend(userId);
+        dispatch(
+            createDispatch('chat.selectedChatItem', {
+                ...selectedChatItem,
+                friendStatus: 'friend',
+            })
+        );
+    };
+
+    const onRejectFriend = (userId: string) => {
+        rejectFriend(userId);
+        dispatch(
+            createDispatch('chat.selectedChatItem', {
+                ...selectedChatItem,
+                friendStatus: undefined,
+            })
+        );
+    };
+
     React.useEffect(() => {
         socket.removeListener('receive-message');
         socket.on('receive-message', (msg: Message) => {
@@ -103,6 +130,9 @@ const ChatScreen: React.FC = () => {
     React.useEffect(() => {
         if (chatData && isSuccess) {
             const selectedItem = chatData.find((item) => item._id === selectedChatItem?._id);
+            if (!selectedItem && selectedChatItem) {
+                dispatch(createDispatch('chat.selectedChatItem', undefined));
+            }
             if (selectedItem && !selectedItem.latestMessage?.seen?.includes(userData._id)) {
                 socket.emit('action-message', selectedChatItem.latestMessage, 'seen');
             }
@@ -132,6 +162,8 @@ const ChatScreen: React.FC = () => {
                     onSend={onSendMessage}
                     onCancelRequestFriend={onCancelRequestFriend}
                     onRequestFriend={onRequestFriend}
+                    onAcceptFriend={onAcceptFriend}
+                    onRejectFriend={onRejectFriend}
                 />
             ) : (
                 <div className="chat-welcome">

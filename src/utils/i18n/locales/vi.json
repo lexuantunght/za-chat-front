@@ -64,5 +64,7 @@
     "welcomeDescription": "Khám phá những tiện ích hỗ trợ làm việc và trò chuyện cùng người thân, bạn bè được tối ưu hóa cho máy tính của bạn.",
     "addFriend": "Kết bạn",
     "requestedFriend": "Đã gửi yêu cầu kết bạn.",
-    "cancelRequest": "Hủy yêu cầu"
+    "cancelRequest": "Hủy yêu cầu",
+    "acceptRequest": "Đồng ý kết bạn",
+    "rejectRequest": "Từ chối"
 }

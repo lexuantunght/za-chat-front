@@ -64,5 +64,7 @@
     "welcomeDescription": "Discover all features support for working and chatting with friends that has been optimized for you computer.",
     "addFriend": "Add friend",
     "requestedFriend": "Sent friend request.",
-    "cancelRequest": "Cancel request"
+    "cancelRequest": "Cancel request",
+    "acceptRequest": "Accept request",
+    "rejectRequest": "Reject request"
 }

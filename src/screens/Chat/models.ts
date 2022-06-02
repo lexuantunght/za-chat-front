@@ -1,9 +1,12 @@
+import { FriendStatus } from '../Contact/models';
+
 export interface Message {
     _id?: string;
     content?: string;
     created_at?: Date;
     conversationId: string;
     userId: string;
+    toUserId?: string;
     seen?: string[];
     status: 'sent' | 'received' | 'seen' | 'failed' | 'sending';
 }
@@ -20,7 +23,7 @@ export interface ChatItem {
         }
     ];
     latestMessage?: Message;
-    friendStatus?: 'requested' | 'friend';
+    friendStatus?: FriendStatus;
     created_at?: Date;
     updated_at?: Date;
 }

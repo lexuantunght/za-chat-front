@@ -2,6 +2,7 @@ import { AnyAction, combineReducers } from 'redux';
 import DispatchType from '../../common/constants/DispatchType';
 import UserData from '../../common/models/UserData';
 import chatReducer from '../../screens/Chat/reducer';
+import contactReducer from '../../screens/Contact/reducer';
 
 type AppState = {
     isError: boolean;
@@ -29,6 +30,7 @@ const appReducer = (state = defaultAppStates, action: AnyAction) => {
 const reducer = combineReducers({
     app: appReducer,
     chat: chatReducer,
+    contact: contactReducer,
 });
 
 export default reducer;

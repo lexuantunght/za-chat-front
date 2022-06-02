@@ -16,6 +16,8 @@ type ChatSectionProps = {
     onSend: (message: Message) => void;
     onCancelRequestFriend: (userId: string) => void;
     onRequestFriend: (userId: string) => void;
+    onAcceptFriend: (userId: string) => void;
+    onRejectFriend: (userId: string) => void;
 };
 
 export type ChatSectionRef = {
@@ -24,7 +26,15 @@ export type ChatSectionRef = {
 };
 
 const ChatSection = (
-    { chatItem, user, onSend, onCancelRequestFriend, onRequestFriend }: ChatSectionProps,
+    {
+        chatItem,
+        user,
+        onSend,
+        onCancelRequestFriend,
+        onRequestFriend,
+        onAcceptFriend,
+        onRejectFriend,
+    }: ChatSectionProps,
     ref: React.ForwardedRef<ChatSectionRef>
 ) => {
     const socket = Socket.getInstance().getSocket();
@@ -61,7 +71,7 @@ const ChatSection = (
             setMessageList(messages);
         }
         socket.emit('get-active', partnerId);
-    }, [isSuccess, chatItem._id]);
+    }, [isSuccess, chatItem._id, chatItem.friendStatus]);
 
     const updateMessageStatus = (msg: Message) => {
         const tempMessageList = [...messageList];
@@ -76,7 +86,7 @@ const ChatSection = (
             }
         },
         updateStatusMessage: (msg: Message) => {
-            if (chatItem._id === msg.conversationId) {
+            if (chatItem._id === msg.conversationId || msg.userId === user?._id) {
                 updateMessageStatus(msg);
             }
         },
@@ -86,6 +96,7 @@ const ChatSection = (
         const msg: Message = {
             content,
             conversationId: chatItem._id,
+            toUserId: partnerId,
             userId: user?._id || '',
             seen: user?._id ? [user?._id] : [],
             status: 'sending',
@@ -137,6 +148,23 @@ const ChatSection = (
                                     variant="text"
                                     onClick={() => onCancelRequestFriend(partnerId)}>
                                     {t('cancelRequest')}
+                                </Button>
+                            </>
+                        )}
+                        {chatItem.friendStatus === 'waiting' && (
+                            <>
+                                <Button
+                                    className="accept-request"
+                                    variant="text"
+                                    onClick={() => onAcceptFriend(partnerId)}>
+                                    {t('acceptRequest')}
+                                </Button>
+                                <div className="separator" />
+                                <Button
+                                    className="reject-request"
+                                    variant="text"
+                                    onClick={() => onRejectFriend(partnerId)}>
+                                    {t('rejectRequest')}
                                 </Button>
                             </>
                         )}

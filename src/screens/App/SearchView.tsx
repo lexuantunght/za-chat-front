@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useQueryClient } from 'react-query';
 import createDispatch from '../../common/actions/createDispatch';
 import Button from '../../common/components/Button';
 import Icon from '../../common/components/Icon';
@@ -15,6 +16,7 @@ import { ChatItem } from '../Chat/models';
 const SearchView = () => {
     const dispatch = useDispatch();
     const { t } = useMultilingual();
+    const queryClient = useQueryClient();
     const [isFocused, setIsFocused] = React.useState(false);
     const [keyword, setKeyword] = React.useState('');
     const {
@@ -40,6 +42,7 @@ const SearchView = () => {
     };
 
     const onCloseSearch = () => {
+        queryClient.invalidateQueries('conversation_list');
         setIsFocused(false);
         removeSearchData();
     };

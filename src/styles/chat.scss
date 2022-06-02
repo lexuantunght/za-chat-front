@@ -57,6 +57,15 @@
     font-weight: 700;
     margin-left: 0.5rem;
 }
+.chat-title-addfriend .accept-request {
+    font-weight: 700;
+}
+.chat-title-addfriend .separator {
+    margin: 0 0.5rem;
+    background-color: var(--primary);
+    width: 1px;
+    height: 60%;
+}
 
 .chat-search {
     margin-right: 1rem;

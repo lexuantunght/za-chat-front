@@ -54,3 +54,30 @@ export const useCancelRequestFriend = () => {
         return res;
     });
 };
+
+export const useFetchRequestFriends = () => {
+    return useQuery<Contact[], Error>(['friend_invitations'], async () => {
+        const res = await Network.getInstance().getHelper(
+            `${appConfig.baseUrl}/contacts/invitations`
+        );
+        return res.data;
+    });
+};
+
+export const useAcceptFriend = () => {
+    return useMutation(async (userId: string) => {
+        const res = await Network.getInstance().postHelper(`${appConfig.baseUrl}/contacts/add`, {
+            userId,
+        });
+        return res;
+    });
+};
+
+export const useRejectFriend = () => {
+    return useMutation(async (userId: string) => {
+        const res = await Network.getInstance().postHelper(`${appConfig.baseUrl}/contacts/reject`, {
+            userId,
+        });
+        return res;
+    });
+};
