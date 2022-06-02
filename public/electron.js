@@ -36,6 +36,9 @@ function createBaseWindow() {
         resizable: false,
         show: false,
     });
+    if (!isDev) {
+        appWindow.removeMenu();
+    }
 }
 
 function createAuthWindows() {
@@ -45,19 +48,19 @@ function createAuthWindows() {
 }
 
 function createLoginWindow() {
-    appWindow.loadURL(getWindowUrl('login'));
     appWindow.setSize(360, 540);
+    appWindow.loadURL(getWindowUrl('login'));
     appWindow.setMaximizable(false);
     appWindow.setResizable(false);
 }
 
 function createMainWindow() {
     appWindow.loadURL(getWindowUrl());
-    appWindow.setMinimumSize(480, 480);
     appWindow.setSize(960, 640);
     appWindow.setMaximizable(true);
     appWindow.setResizable(true);
     appWindow.maximize();
+    appWindow.setMinimumSize(360, 480);
     appWindow.on('close', (event) => {
         if (!isQuiting) {
             event.preventDefault();

@@ -1,19 +1,23 @@
 import React from 'react';
 import moment from 'moment';
 import _update from 'lodash-es/update';
-import { useTranslation } from 'react-i18next';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import { ChatItem, Message } from '../models';
 import ChatTyping from './ChatTyping';
 import { useFetchMessages } from '../../../hooks/chat';
 import UserData from '../../../common/models/UserData';
-import { socket } from '../../../utils/helpers/SocketHelper';
+import Socket from '../../../utils/networking/Socket';
+import { useMultilingual } from '../../../hooks/translation';
 
 type ChatSectionProps = {
     chatItem: ChatItem;
     user?: UserData;
     onSend: (message: Message) => void;
+    onCancelRequestFriend: (userId: string) => void;
+    onRequestFriend: (userId: string) => void;
+    onAcceptFriend: (userId: string) => void;
+    onRejectFriend: (userId: string) => void;
 };
 
 export type ChatSectionRef = {
@@ -22,15 +26,30 @@ export type ChatSectionRef = {
 };
 
 const ChatSection = (
-    { chatItem, user, onSend }: ChatSectionProps,
+    {
+        chatItem,
+        user,
+        onSend,
+        onCancelRequestFriend,
+        onRequestFriend,
+        onAcceptFriend,
+        onRejectFriend,
+    }: ChatSectionProps,
     ref: React.ForwardedRef<ChatSectionRef>
 ) => {
-    const { t, i18n } = useTranslation();
+    const socket = Socket.getInstance().getSocket();
+    const { t, language } = useMultilingual();
+    const partnerId = React.useMemo(
+        () => chatItem.users.find((u) => u._id !== user?._id)?._id || '',
+        [chatItem._id, chatItem.friendStatus]
+    );
     const {
         data: messages = [],
         isLoading,
         isSuccess,
-    } = useFetchMessages({ conversationId: chatItem._id });
+    } = useFetchMessages({
+        conversationId: chatItem._id,
+    });
     const [messageList, setMessageList] = React.useState<Message[]>([]);
     const [activeTime, setActiveTime] = React.useState<string | Date>('');
 
@@ -51,8 +70,8 @@ const ChatSection = (
         if (isSuccess) {
             setMessageList(messages);
         }
-        socket.emit('get-active', chatItem.users.find((u) => u._id !== user?._id)?._id);
-    }, [isSuccess, chatItem._id]);
+        socket.emit('get-active', partnerId);
+    }, [isSuccess, chatItem._id, chatItem.friendStatus]);
 
     const updateMessageStatus = (msg: Message) => {
         const tempMessageList = [...messageList];
@@ -67,7 +86,7 @@ const ChatSection = (
             }
         },
         updateStatusMessage: (msg: Message) => {
-            if (chatItem._id === msg.conversationId) {
+            if (chatItem._id === msg.conversationId || msg.userId === user?._id) {
                 updateMessageStatus(msg);
             }
         },
@@ -77,6 +96,7 @@ const ChatSection = (
         const msg: Message = {
             content,
             conversationId: chatItem._id,
+            toUserId: partnerId,
             userId: user?._id || '',
             seen: user?._id ? [user?._id] : [],
             status: 'sending',
@@ -100,7 +120,7 @@ const ChatSection = (
                         {typeof activeTime === 'string'
                             ? activeTime
                             : t('onlineFor', {
-                                  value: moment(activeTime).locale(i18n.language).fromNow(),
+                                  value: moment(activeTime).locale(language).fromNow(),
                               })}
                     </div>
                 </div>
@@ -112,6 +132,44 @@ const ChatSection = (
                         <Icon name="info-circle" />
                     </Button>
                 </>
+                {chatItem.friendStatus !== 'friend' && (
+                    <div className="chat-title-addfriend">
+                        {!chatItem.friendStatus && (
+                            <Button variant="text" onClick={() => onRequestFriend(partnerId)}>
+                                <Icon name="user-plus" strokeWidth={1.25} />
+                                <span className="add-friend">{t('addFriend')}</span>
+                            </Button>
+                        )}
+                        {chatItem.friendStatus === 'requested' && (
+                            <>
+                                <div className="requested-friend">{t('requestedFriend')}</div>
+                                <Button
+                                    className="cancel-request"
+                                    variant="text"
+                                    onClick={() => onCancelRequestFriend(partnerId)}>
+                                    {t('cancelRequest')}
+                                </Button>
+                            </>
+                        )}
+                        {chatItem.friendStatus === 'waiting' && (
+                            <>
+                                <Button
+                                    className="accept-request"
+                                    variant="text"
+                                    onClick={() => onAcceptFriend(partnerId)}>
+                                    {t('acceptRequest')}
+                                </Button>
+                                <div className="separator" />
+                                <Button
+                                    className="reject-request"
+                                    variant="text"
+                                    onClick={() => onRejectFriend(partnerId)}>
+                                    {t('rejectRequest')}
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                )}
             </div>
             <div className="chat-section-body custom-scroll scrolling">
                 <br />
@@ -149,9 +207,7 @@ const ChatSection = (
             <ChatTyping
                 onSend={onSendMessage}
                 conversationId={chatItem._id}
-                userId={
-                    chatItem.users.find((u) => u._id !== user?._id)?._id || chatItem.users[0]._id
-                }
+                userId={partnerId || chatItem.users[0]._id}
             />
         </div>
     );

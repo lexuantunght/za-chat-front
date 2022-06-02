@@ -16,6 +16,7 @@
     align-items: center;
     background-color: #ffffff;
     padding: 0.75rem 1rem;
+    position: relative;
 }
 .chat-section-name-info {
     display: flex;
@@ -34,9 +35,63 @@
     font-size: large;
     margin-bottom: 0.25rem;
 }
+.chat-title-addfriend {
+    background-color: #ffffff;
+    position: absolute;
+    top: 4.5rem;
+    left: 0;
+    width: 100%;
+    border-top: 1px solid #dddddd;
+    height: 2.4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.chat-title-addfriend .add-friend {
+    margin-left: 0.25rem;
+}
+.chat-title-addfriend .requested-friend {
+    color: var(--primary);
+}
+.chat-title-addfriend .cancel-request {
+    font-weight: 700;
+    margin-left: 0.5rem;
+}
+.chat-title-addfriend .accept-request {
+    font-weight: 700;
+}
+.chat-title-addfriend .separator {
+    margin: 0 0.5rem;
+    background-color: var(--primary);
+    width: 1px;
+    height: 60%;
+}
 
 .chat-search {
     margin-right: 1rem;
+}
+
+.chat-welcome {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+.chat-welcome > img {
+    max-height: 60%;
+    max-width: 70%;
+    object-fit: contain;
+}
+.chat-welcome > div {
+    font-size: 1.25rem;
+}
+.chat-welcome > span {
+    width: 70%;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
 }
 
 .chat-section-body {
@@ -75,17 +130,6 @@
     margin: 0 1rem 0.25rem 1rem;
     font-weight: 500;
     color: #555555;
-}
-
-.chat-tab-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1rem 1.25rem 1rem;
-}
-
-.chat-tab-addcontact {
-    margin-left: 0.75rem;
 }
 
 .chat-tab-messages {

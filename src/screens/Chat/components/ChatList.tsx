@@ -1,9 +1,7 @@
 import moment from 'moment';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import Button from '../../../common/components/Button';
-import Icon from '../../../common/components/Icon';
-import SearchBar from '../../../common/components/SearchBar';
+import { useMultilingual } from '../../../hooks/translation';
+import SearchView from '../../App/SearchView';
 import { ChatItem } from '../models';
 
 type ChatListProps = {
@@ -15,7 +13,7 @@ type ChatListProps = {
 };
 
 const ChatList: React.FC<ChatListProps> = ({ data = [], selectedItem, onSelectedItem, userId }) => {
-    const { t, i18n } = useTranslation();
+    const { t, language } = useMultilingual();
     const onClickItem = (item: ChatItem) => {
         if (userId && !item.latestMessage?.seen?.includes(userId)) {
             item.latestMessage?.seen?.push(userId);
@@ -25,12 +23,7 @@ const ChatList: React.FC<ChatListProps> = ({ data = [], selectedItem, onSelected
 
     return (
         <div className="chat-tab">
-            <div className="chat-tab-header">
-                <SearchBar placeholder={t('search')} />
-                <Button variant="text" className="chat-tab-addcontact" title={t('addContact')}>
-                    <Icon name="user-plus" />
-                </Button>
-            </div>
+            <SearchView />
             <div className="chat-list-title">{t('conversations')}</div>
             <div className="chat-tab-messages">
                 {data.map((chatItem, index) => (
@@ -57,7 +50,7 @@ const ChatList: React.FC<ChatListProps> = ({ data = [], selectedItem, onSelected
                         </div>
                         <div className="chat-latest-time">
                             {moment(chatItem.latestMessage?.created_at)
-                                .locale(i18n.language)
+                                .locale(language)
                                 .fromNow(true)}
                         </div>
                     </div>

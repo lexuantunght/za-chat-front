@@ -1,18 +1,18 @@
 import React from 'react';
 import { HashRouter, Switch, Route } from 'react-router-dom';
-import { connect } from '../../utils/helpers/SocketHelper';
+import Socket from '../../utils/networking/Socket';
 import withQueryClient from '../../common/context/withQueryClient';
-import UserData from '../../common/models/UserData';
 import ChatScreen from '../Chat';
 import ContactScreen from '../Contact';
 import SideBar from './SideBar';
+import { useProfile } from '../../hooks/authentication';
 
 const App = () => {
-    const userData: UserData = JSON.parse(window.localStorage.getItem('userData') || '');
+    const userData = useProfile();
 
     React.useEffect(() => {
         document.title = `ZaChat - ${userData.name}`;
-        connect();
+        Socket.getInstance().connect();
     }, []);
 
     return (

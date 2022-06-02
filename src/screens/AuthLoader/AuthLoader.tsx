@@ -1,13 +1,13 @@
 import React from 'react';
 import { ipcRenderer } from 'electron';
-import { useTranslation } from 'react-i18next';
 import LoadingMask from '../../common/components/LoadingMask';
 import withQueryClient from '../../common/context/withQueryClient';
 import { useFetchCurrent } from '../../hooks/authentication';
+import { useMultilingual } from '../../hooks/translation';
 
 const AuthLoader: React.FC = () => {
-    const { t } = useTranslation();
-    const { data: userData, isLoading } = useFetchCurrent();
+    const { t } = useMultilingual();
+    const { isLoading, isSuccess } = useFetchCurrent();
 
     const navigateLogin = () => {
         ipcRenderer.send('navigation', 'login');
@@ -18,20 +18,14 @@ const AuthLoader: React.FC = () => {
     };
 
     React.useEffect(() => {
-        if (!window.localStorage.getItem('accessToken')) {
-            navigateLogin();
+        if (!isLoading) {
+            if (!isSuccess) {
+                navigateLogin();
+            } else {
+                openMainApp();
+            }
         }
-    }, []);
-
-    React.useEffect(() => {
-        if (!isLoading && !userData) {
-            navigateLogin();
-        }
-        if (userData) {
-            window.localStorage.setItem('userData', JSON.stringify(userData));
-            openMainApp();
-        }
-    }, [isLoading, userData]);
+    }, [isLoading]);
 
     return <LoadingMask className="auth-loading" title={t('authenticating')} />;
 };

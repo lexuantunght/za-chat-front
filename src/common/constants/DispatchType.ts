@@ -8,9 +8,15 @@ enum ChatDispatch {
     'selectedChatItem' = 'SET_CHAT_SELECTED_ITEM',
 }
 
+enum ContactDispatch {
+    'friendInvitations' = 'SET_CONTACT_INVITATIONS',
+    'contacts' = 'SET_CONTACT_LIST_CONTACTS',
+}
+
 const DispatchType = {
     app: AppDispatch,
     chat: ChatDispatch,
+    contact: ContactDispatch,
 };
 
 export default DispatchType;

@@ -4,7 +4,7 @@ import moment from 'moment';
 import { useQueryClient } from 'react-query';
 import _update from 'lodash-es/update';
 import _orderBy from 'lodash-es/orderBy';
-import { socket } from '../../utils/helpers/SocketHelper';
+import Socket from '../../utils/networking/Socket';
 import createDispatch from '../../common/actions/createDispatch';
 import createSelector from '../../common/actions/createSelector';
 import LoadingMask from '../../common/components/LoadingMask';
@@ -13,13 +13,28 @@ import { useFetchConversations } from '../../hooks/chat';
 import ChatList from './components/ChatList';
 import ChatSection, { ChatSectionRef } from './components/ChatSection';
 import { ChatItem, Message } from './models';
+import { useProfile } from '../../hooks/authentication';
+import { useMultilingual } from '../../hooks/translation';
+import welcomeLogo from '../../common/resources/welcome.png';
+import {
+    useAcceptFriend,
+    useCancelRequestFriend,
+    useRejectFriend,
+    useRequestFriend,
+} from '../../hooks/contact';
 
 const ChatScreen: React.FC = () => {
     const dispatch = useDispatch();
     const client = useQueryClient();
+    const { t } = useMultilingual();
+    const { mutate: cancelRequestFriend } = useCancelRequestFriend();
+    const { mutate: requestFriend } = useRequestFriend();
+    const { mutate: acceptFriend } = useAcceptFriend();
+    const { mutate: rejectFriend } = useRejectFriend();
+    const socket = Socket.getInstance().getSocket();
     const { data: chatData, isLoading, isSuccess } = useFetchConversations();
     const selectedChatItem: ChatItem = useSelector(createSelector('chat.selectedChatItem'));
-    const userData: UserData = JSON.parse(window.localStorage.getItem('userData') || '');
+    const userData = useProfile();
     const [chatList, setChatList] = React.useState<ChatItem[]>([]);
     const chatSectionRef = React.useRef<ChatSectionRef>(null);
 
@@ -52,6 +67,46 @@ const ChatScreen: React.FC = () => {
         }
     };
 
+    const onCancelRequestFriend = (userId: string) => {
+        cancelRequestFriend(userId);
+        dispatch(
+            createDispatch('chat.selectedChatItem', {
+                ...selectedChatItem,
+                friendStatus: undefined,
+            })
+        );
+    };
+
+    const onRequestFriend = (userId: string) => {
+        requestFriend(userId);
+        dispatch(
+            createDispatch('chat.selectedChatItem', {
+                ...selectedChatItem,
+                friendStatus: 'requested',
+            })
+        );
+    };
+
+    const onAcceptFriend = (userId: string) => {
+        acceptFriend(userId);
+        dispatch(
+            createDispatch('chat.selectedChatItem', {
+                ...selectedChatItem,
+                friendStatus: 'friend',
+            })
+        );
+    };
+
+    const onRejectFriend = (userId: string) => {
+        rejectFriend(userId);
+        dispatch(
+            createDispatch('chat.selectedChatItem', {
+                ...selectedChatItem,
+                friendStatus: undefined,
+            })
+        );
+    };
+
     React.useEffect(() => {
         socket.removeListener('receive-message');
         socket.on('receive-message', (msg: Message) => {
@@ -75,6 +130,9 @@ const ChatScreen: React.FC = () => {
     React.useEffect(() => {
         if (chatData && isSuccess) {
             const selectedItem = chatData.find((item) => item._id === selectedChatItem?._id);
+            if (!selectedItem && selectedChatItem) {
+                dispatch(createDispatch('chat.selectedChatItem', undefined));
+            }
             if (selectedItem && !selectedItem.latestMessage?.seen?.includes(userData._id)) {
                 socket.emit('action-message', selectedChatItem.latestMessage, 'seen');
             }
@@ -102,9 +160,17 @@ const ChatScreen: React.FC = () => {
                     chatItem={selectedChatItem}
                     user={userData}
                     onSend={onSendMessage}
+                    onCancelRequestFriend={onCancelRequestFriend}
+                    onRequestFriend={onRequestFriend}
+                    onAcceptFriend={onAcceptFriend}
+                    onRejectFriend={onRejectFriend}
                 />
             ) : (
-                <div>Welcome to ZaChat</div>
+                <div className="chat-welcome">
+                    <div>{t('welcomeZaChat')}</div>
+                    <span>{t('welcomeDescription')}</span>
+                    <img src={welcomeLogo} />
+                </div>
             )}
         </div>
     );
