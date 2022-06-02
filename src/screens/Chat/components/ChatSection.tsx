@@ -41,7 +41,7 @@ const ChatSection = (
     const { t, language } = useMultilingual();
     const partnerId = React.useMemo(
         () => chatItem.users.find((u) => u._id !== user?._id)?._id || '',
-        [chatItem._id]
+        [chatItem._id, chatItem.friendStatus]
     );
     const {
         data: messages = [],
