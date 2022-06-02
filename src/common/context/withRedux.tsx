@@ -1,16 +1,15 @@
 import React from 'react';
-import { Provider, useSelector } from 'react-redux';
-import store from '../../utils/redux/store';
-import createDispatch from '../actions/createDispatch';
-import createSelector from '../actions/createSelector';
+import { Provider } from 'react-redux';
+import { getState, dispatch } from '../../utils/state';
+import store from '../../utils/state/redux/store';
 import Alert from '../components/Alert';
 
 const ErrorHandler: React.FC = () => {
-    const isError = useSelector(createSelector('app.isError'));
-    const errorMsg = useSelector(createSelector('app.errorMsg'));
+    const isError = getState((state) => state.app.isError);
+    const errorMsg = getState((state) => state.app.errorMsg);
 
     const onClose = () => {
-        store.dispatch(createDispatch('app.isError', false));
+        dispatch({ type: 'APP_IS_ERROR', data: false });
     };
 
     return (

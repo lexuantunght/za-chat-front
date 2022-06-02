@@ -1,7 +1,10 @@
 import axios from 'axios';
-import createDispatch from '../../common/actions/createDispatch';
-import DataResponse from '../../common/models/DataResponse';
-import store from '../redux/store';
+
+interface DataResponse<T> {
+    status: 'success' | 'fail';
+    data: T;
+    message?: string;
+}
 
 interface NetworkConfigs {
     headers: Record<string, string>;
@@ -9,18 +12,18 @@ interface NetworkConfigs {
 }
 
 interface NetworkProvider {
-    post: (
+    post<T>(
         url: string,
         data?: Record<string, string> | FormData,
         config?: NetworkConfigs
-    ) => Promise<DataResponse>;
-    get: (url: string, config?: NetworkConfigs) => Promise<DataResponse>;
-    put: (
+    ): Promise<DataResponse<T>>;
+    get<T>(url: string, config?: NetworkConfigs): Promise<DataResponse<T>>;
+    put<T>(
         url: string,
         data?: Record<string, string> | FormData,
         config?: NetworkConfigs
-    ) => Promise<DataResponse>;
-    delete: (url: string, config?: NetworkConfigs) => Promise<DataResponse>;
+    ): Promise<DataResponse<T>>;
+    delete<T>(url: string, config?: NetworkConfigs): Promise<DataResponse<T>>;
 }
 
 class Network {
@@ -54,58 +57,55 @@ class Network {
         } else {
             errMsg = 'Đã xảy ra lỗi, vui lòng thử lại sau';
         }
-        store.dispatch(createDispatch('app.errorMsg', errMsg));
-        store.dispatch(createDispatch('app.isError', true));
+        //store.dispatch(createDispatch('app.errorMsg', errMsg));
+        //store.dispatch(createDispatch('app.isError', true));
         return {
             status: 'fail',
             message: errMsg,
         };
     };
 
-    public getHelper = async (
-        api: string,
-        headers: Record<string, string> = this.defaultHeader
-    ) => {
+    public async getHelper<T>(api: string, headers: Record<string, string> = this.defaultHeader) {
         const data = await this.networkProvider
             .get(api, { headers, withCredentials: true })
             .then((response) => response.data);
-        return data as DataResponse;
-    };
+        return data as DataResponse<T>;
+    }
 
-    public postHelper = async (
+    public async postHelper<T>(
         api: string,
         body: Record<string, string> | FormData,
         headers: Record<string, string> = this.defaultHeader
-    ) => {
+    ) {
         const data = await this.networkProvider
             .post(api, body, { headers, withCredentials: true })
             .then((response) => response.data)
             .catch(this.handleError);
-        return data as DataResponse;
-    };
+        return data as DataResponse<T>;
+    }
 
-    public putHelper = async (
+    public async putHelper<T>(
         api: string,
         body: Record<string, string> | FormData,
         headers: Record<string, string> = this.defaultHeader
-    ) => {
+    ) {
         const data = await this.networkProvider
             .put(api, body, { headers, withCredentials: true })
             .then((response) => response.data)
             .catch(this.handleError);
-        return data as DataResponse;
-    };
+        return data as DataResponse<T>;
+    }
 
-    public deleteHelper = async (
+    public async deleteHelper<T>(
         api: string,
         headers: Record<string, string> = this.defaultHeader
-    ) => {
+    ) {
         const data = await this.networkProvider
             .delete(api, { headers, withCredentials: true })
             .then((response) => response.data)
             .catch(this.handleError);
-        return data as DataResponse;
-    };
+        return data as DataResponse<T>;
+    }
 }
 
 export default Network;
