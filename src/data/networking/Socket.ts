@@ -10,11 +10,7 @@ class Socket {
             reconnectionDelayMax: 10000,
             withCredentials: true,
         });
-        this.socket = this.manager.socket('/', {
-            auth: {
-                'x-access-token': window.localStorage.getItem('accessToken'),
-            },
-        });
+        this.socket = this.manager.socket('/');
     }
 
     public static getInstance = () => {

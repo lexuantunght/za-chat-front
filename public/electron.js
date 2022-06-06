@@ -1,5 +1,5 @@
 /* eslint-disable */
-const { BrowserWindow, app, ipcMain, Menu, Tray } = require('electron');
+const { BrowserWindow, app, ipcMain, Menu, Tray, session } = require('electron');
 const path = require('path');
 const url = require('url');
 
@@ -31,6 +31,7 @@ function createBaseWindow() {
             contextIsolation: false,
             devTools: isDev,
             webSecurity: false,
+            partition: 'persist:app',
         },
         maximizable: false,
         resizable: false,
@@ -108,10 +109,15 @@ ipcMain.on('navigation', (events, windowName) => {
 });
 
 ipcMain.on('logout', () => {
-    if (appWindow.isMaximized()) {
-        appWindow.unmaximize();
-    }
-    createLoginWindow();
+    session
+        .fromPartition('persist:app')
+        .clearStorageData({ storages: ['cookies'] })
+        .then(() => {
+            if (appWindow.isMaximized()) {
+                appWindow.unmaximize();
+            }
+            createLoginWindow();
+        });
 });
 
 ipcMain.on('openApp', () => {

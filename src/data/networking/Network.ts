@@ -29,16 +29,13 @@ interface NetworkProvider {
 class Network {
     private defaultHeader: Record<string, string>;
     private static instance: Network | null = null;
-    private token: string;
     private networkProvider;
 
     private constructor(networkProvider: NetworkProvider = axios) {
         this.networkProvider = networkProvider;
-        this.token = window.localStorage.getItem('accessToken') || '';
         this.defaultHeader = {
             'Content-Type': 'application/json',
             Accept: 'application/json',
-            'x-access-token': this.token,
         };
     }
 

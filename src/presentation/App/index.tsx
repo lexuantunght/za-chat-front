@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { HashRouter, Route, Switch } from 'react-router-dom';
+import AppController from '../../controller/AppController';
 import ConversationController from '../../controller/chat/ConversationController';
 import useController from '../../controller/hooks';
 import { logout, quitApp } from '../../utils/app/eventHandler';
@@ -12,7 +13,12 @@ import SideBar from './components/SideBar';
 const AppScreen = () => {
     const { t, language, languages, changeLanguage } = useMultilingual();
     const { userDataSelector } = useController(ConversationController);
+    const { authorize } = useController(AppController);
     const userData = useSelector(userDataSelector);
+
+    React.useEffect(() => {
+        authorize();
+    }, []);
 
     return (
         <HashRouter>

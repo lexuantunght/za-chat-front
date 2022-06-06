@@ -11,10 +11,13 @@ import useMultilingual from '../../utils/multilingual';
 import { navigate, openMainApp } from '../../utils/app/eventHandler';
 import useController from '../../controller/hooks';
 import LoginController from '../../controller/authentication/LoginController';
+import LoadingMask from '../../common/components/LoadingMask';
 
 const LoginScreen = () => {
-    const { login, clearError, errorSelector } = useController(LoginController);
+    const { login, clearError, errorSelector, isLoadingSelector, authorize } =
+        useController(LoginController);
     const error = useSelector(errorSelector);
+    const isLoading = useSelector(isLoadingSelector);
     const { t } = useMultilingual();
     const validator = useValidation();
 
@@ -43,6 +46,14 @@ const LoginScreen = () => {
             login(values, openMainApp, () => setSubmitting(false));
         },
     });
+
+    React.useEffect(() => {
+        authorize(openMainApp);
+    }, []);
+
+    if (isLoading) {
+        return <LoadingMask className="login-auth-loading" title={t('authenticating')} />;
+    }
 
     return (
         <div className="login-container">

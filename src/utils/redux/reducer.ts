@@ -2,6 +2,7 @@ import { createSlice, combineReducers, PayloadAction } from '@reduxjs/toolkit';
 import AppError from '../../common/types/AppError';
 import { UserData } from '../../domain/model/UserData';
 import chatReducer from '../../presentation/Chat/reducer';
+import loginReducer from '../../presentation/Login/reducer';
 
 type AppState = {
     error?: string;
@@ -31,6 +32,7 @@ export const { setError, setUserData } = appSlice.actions;
 const reducer = combineReducers({
     app: appSlice.reducer,
     chat: chatReducer,
+    login: loginReducer,
 });
 
 export default reducer;

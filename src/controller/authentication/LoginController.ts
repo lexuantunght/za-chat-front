@@ -2,7 +2,7 @@ import BaseController from '../BaseController';
 import { Login } from '../../domain/usecase/authentication/Login';
 import { LoginData } from '../../domain/model/LoginData';
 import { Authorize } from '../../domain/usecase/authentication/Authorize';
-import { setUserData } from '../../utils/redux/reducer';
+import { setLoading } from '../../presentation/Login/reducer';
 
 class LoginController extends BaseController {
     private loginUseCase;
@@ -14,18 +14,28 @@ class LoginController extends BaseController {
     }
 
     public login = (data: LoginData, successCallback?: () => void, finishCallback?: () => void) => {
+        this.dispatch(setLoading(true));
         this.loginUseCase
             .invoke(data)
-            .then((userData) => {
-                this.dispatch(setUserData(userData));
-                successCallback?.();
+            .then(successCallback)
+            .catch((err) => {
+                this.clearLoading();
+                this.handleError(err);
             })
-            .catch(this.handleError)
             .finally(finishCallback);
     };
 
-    public authorize = () => {
-        this.authorizeUseCase.invoke().then((userData) => this.dispatch(setUserData(userData)));
+    public authorize = (successCallback?: CallableFunction) => {
+        this.dispatch(setLoading(true));
+        this.authorizeUseCase
+            .invoke()
+            .then(() => successCallback?.())
+            .catch(this.clearLoading);
+    };
+
+    public isLoadingSelector = this.createSelector((state) => state.login.isLoading);
+    public clearLoading = () => {
+        this.dispatch(setLoading(false));
     };
 }
 

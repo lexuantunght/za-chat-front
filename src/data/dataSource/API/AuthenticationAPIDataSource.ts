@@ -1,6 +1,5 @@
 import { LoginData } from '../../../domain/model/LoginData';
 import { RegisterData } from '../../../domain/model/RegisterData';
-import { UserData } from '../../../domain/model/UserData';
 import appConfig from '../../../utils/app/appConfig';
 import objectToFormData from '../../../utils/helpers/objectToFormData';
 import Network from '../../networking/Network';
