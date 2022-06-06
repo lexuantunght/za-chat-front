@@ -5,4 +5,5 @@ import { UserData } from '../../domain/model/UserData';
 export default interface AuthenticationDataSource {
     login(data: LoginData): Promise<UserData>;
     register(data: RegisterData): Promise<UserData>;
+    authorize(): Promise<UserData>;
 }

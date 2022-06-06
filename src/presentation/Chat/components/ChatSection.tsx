@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import ChatTyping from './ChatTyping';
-import Socket from '../../../utils/networking/Socket';
+import Socket from '../../../data/networking/Socket';
 import { Conversation } from '../../../domain/model/Conversation';
 import { Message } from '../../../domain/model/Message';
 import { UserData } from '../../../domain/model/UserData';

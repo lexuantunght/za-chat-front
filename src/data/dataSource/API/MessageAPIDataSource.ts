@@ -1,6 +1,6 @@
 import { Message } from '../../../domain/model/Message';
 import appConfig from '../../../utils/app/appConfig';
-import Network from '../../../utils/networking/Network';
+import Network from '../../networking/Network';
 import MessageDataSource from '../MessageDataSource';
 import { MessageAPIEntity } from './entity/MessageAPIEntity';
 

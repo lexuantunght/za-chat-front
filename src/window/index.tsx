@@ -1,14 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import withRedux from '../common/context/withRedux';
+import { Provider } from 'react-redux';
 import AppScreen from '../presentation/App';
 import '../utils/multilingual/i18n';
-
-const App = withRedux(AppScreen);
+import store from '../utils/redux/store';
 
 ReactDOM.render(
     <React.StrictMode>
-        <App />
+        <Provider store={store}>
+            <AppScreen />
+        </Provider>
     </React.StrictMode>,
     document.getElementById('root')
 );

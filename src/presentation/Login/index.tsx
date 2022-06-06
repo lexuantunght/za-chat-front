@@ -1,14 +1,21 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import InputText from '../../common/components/InputText';
+import Alert from '../../common/components/Alert';
 import Button from '../../common/components/Button';
 import logoIcon from '../../common/resources/logo.png';
-import useLoginViewModel from './LoginViewModel';
 import { useForm } from '../../utils/form/formContent';
 import { LoginData } from '../../domain/model/LoginData';
 import { useValidation } from '../../utils/form/validation';
+import useMultilingual from '../../utils/multilingual';
+import { navigate, openMainApp } from '../../utils/app/eventHandler';
+import useController from '../../controller/hooks';
+import LoginController from '../../controller/authentication/LoginController';
 
 const LoginScreen = () => {
-    const { login, t, navigate } = useLoginViewModel();
+    const { login, clearError, errorSelector } = useController(LoginController);
+    const error = useSelector(errorSelector);
+    const { t } = useMultilingual();
     const validator = useValidation();
 
     const onRegisterClick = () => {
@@ -32,8 +39,8 @@ const LoginScreen = () => {
                 .max(50, t('maxPassword', { value: 50 }))
                 .required(t('requiredPassword')),
         }),
-        onSubmit: (values) => {
-            login(values);
+        onSubmit: (values, { setSubmitting }) => {
+            login(values, openMainApp, () => setSubmitting(false));
         },
     });
 
@@ -50,7 +57,6 @@ const LoginScreen = () => {
                     value={form.values.username}
                     onChange={form.handleChange}
                     onBlur={form.handleBlur}
-                    disabled={form.isSubmitting}
                     isError={Boolean(form.touched.username && form.errors.username)}
                     errorText={form.errors.username}
                 />
@@ -62,7 +68,6 @@ const LoginScreen = () => {
                     value={form.values.password}
                     onChange={form.handleChange}
                     onBlur={form.handleBlur}
-                    disabled={form.isSubmitting}
                     isError={Boolean(form.touched.password && form.errors.password)}
                     errorText={form.errors.password}
                 />
@@ -83,6 +88,13 @@ const LoginScreen = () => {
                     {t('register')}
                 </Button>
             </div>
+            <Alert
+                title={t('notification')}
+                content={error}
+                isShow={Boolean(error)}
+                onAccept={clearError}
+                onClose={clearError}
+            />
         </div>
     );
 };

@@ -41,17 +41,12 @@ function createBaseWindow() {
     }
 }
 
-function createAuthWindows() {
-    appWindow.loadURL(getWindowUrl('authLoader'));
-    appWindow.setSize(360, 540);
-    appWindow.on('ready-to-show', () => appWindow.show());
-}
-
 function createLoginWindow() {
     appWindow.setSize(360, 540);
     appWindow.loadURL(getWindowUrl('login'));
     appWindow.setMaximizable(false);
     appWindow.setResizable(false);
+    appWindow.on('ready-to-show', () => appWindow.show());
 }
 
 function createMainWindow() {
@@ -100,7 +95,7 @@ app.on('ready', () => {
 
 app.on('activate', function () {
     if (appWindow === null) {
-        createAuthWindows();
+        createLoginWindow();
     }
 });
 

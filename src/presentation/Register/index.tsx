@@ -1,12 +1,18 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import logoIcon from '../../common/resources/logo.png';
 import Button from '../../common/components/Button';
 import RegisterForm from './components/RegisterForm';
-import useRegisterViewModel from './RegisterViewModel';
 import Alert from '../../common/components/Alert';
+import RegisterController from '../../controller/authentication/RegisterController';
+import { navigate } from '../../utils/app/eventHandler';
+import useMultilingual from '../../utils/multilingual';
+import useController from '../../controller/hooks';
 
 const RegisterScreen = () => {
-    const { register, isShowSuccessMsg, hideSuccessMsg, t, navigate } = useRegisterViewModel();
+    const { register, errorSelector, clearError } = useController(RegisterController);
+    const error = useSelector(errorSelector);
+    const { t } = useMultilingual();
 
     const onNavigateLogin = () => {
         navigate('login');
@@ -26,9 +32,9 @@ const RegisterScreen = () => {
             <Alert
                 title={t('notification')}
                 content={t('registerSuccess')}
-                isShow={isShowSuccessMsg}
+                isShow={Boolean(error)}
                 onAccept={onNavigateLogin}
-                onCancel={hideSuccessMsg}
+                onCancel={clearError}
             />
         </div>
     );

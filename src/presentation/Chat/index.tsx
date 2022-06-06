@@ -1,34 +1,32 @@
 import React from 'react';
-import useChatViewModel from './ChatViewModel';
-import LoadingMask from '../../common/components/LoadingMask';
+import { useSelector } from 'react-redux';
 import ConversationList from './components/ConversationList';
 import welcomeLogo from '../../common/resources/welcome.png';
 import ChatSection from './components/ChatSection';
+import ConversationController from '../../controller/chat/ConversationController';
+import useMultilingual from '../../utils/multilingual';
+import MessageController from '../../controller/chat/MessageController';
+import ContactController from '../../controller/contact/ContactController';
+import useController from '../../controller/hooks';
 
 const ChatScreen = () => {
     const {
-        conversations,
         getConversations,
-        userData,
-        isLoading,
-        selectedConversation,
+        conversationsSelector,
+        selectedConversationSelector,
         selectConversation,
-        sendMessage,
-        rejectFriend,
-        requestFriend,
-        acceptFriend,
-        cancelRequest,
-        t,
-        language,
-    } = useChatViewModel();
+        userDataSelector,
+    } = useController(ConversationController);
+    const userData = useSelector(userDataSelector);
+    const conversations = useSelector(conversationsSelector);
+    const selectedConversation = useSelector(selectedConversationSelector);
+    const { sendMessage } = new MessageController();
+    const { requestFriend, cancelRequest, acceptFriend, rejectFriend } = new ContactController();
+    const { t, language } = useMultilingual();
 
     React.useEffect(() => {
         getConversations();
     }, []);
-
-    if (isLoading) {
-        return <LoadingMask title="Đang tải dữ liệu..." />;
-    }
 
     return (
         <div className="chat-container">
@@ -36,13 +34,13 @@ const ChatScreen = () => {
                 <ConversationList
                     data={conversations}
                     selectedItem={selectedConversation}
-                    userId={'123'}
+                    userId={userData?._id || ''}
                     onSelectedItem={selectConversation}
                     t={t}
                     language={language}
                 />
             </div>
-            {selectedConversation ? (
+            {selectedConversation && userData ? (
                 <ChatSection
                     conversation={selectedConversation}
                     user={userData}

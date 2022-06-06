@@ -1,5 +1,5 @@
 import { Manager } from 'socket.io-client';
-import appConfig from '../app/appConfig';
+import appConfig from '../../utils/app/appConfig';
 
 class Socket {
     private manager;

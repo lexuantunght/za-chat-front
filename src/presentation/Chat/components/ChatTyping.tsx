@@ -2,7 +2,7 @@ import React from 'react';
 import { useValidation } from '../../../utils/form/validation';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
-import Socket from '../../../utils/networking/Socket';
+import Socket from '../../../data/networking/Socket';
 import MessageInput from './MessageInput';
 import { useForm } from '../../../utils/form/formContent';
 

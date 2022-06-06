@@ -49,22 +49,6 @@ class Network {
         return this.instance;
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private handleError = (err: any) => {
-        let errMsg;
-        if (err.response) {
-            errMsg = err.response.data.message;
-        } else {
-            errMsg = 'Đã xảy ra lỗi, vui lòng thử lại sau';
-        }
-        //store.dispatch(createDispatch('app.errorMsg', errMsg));
-        //store.dispatch(createDispatch('app.isError', true));
-        return {
-            status: 'fail',
-            message: errMsg,
-        };
-    };
-
     public async getHelper<T>(api: string, headers: Record<string, string> = this.defaultHeader) {
         const data = await this.networkProvider
             .get(api, { headers, withCredentials: true })
@@ -79,8 +63,7 @@ class Network {
     ) {
         const data = await this.networkProvider
             .post(api, body, { headers, withCredentials: true })
-            .then((response) => response.data)
-            .catch(this.handleError);
+            .then((response) => response.data);
         return data as DataResponse<T>;
     }
 
@@ -91,8 +74,7 @@ class Network {
     ) {
         const data = await this.networkProvider
             .put(api, body, { headers, withCredentials: true })
-            .then((response) => response.data)
-            .catch(this.handleError);
+            .then((response) => response.data);
         return data as DataResponse<T>;
     }
 
@@ -102,8 +84,7 @@ class Network {
     ) {
         const data = await this.networkProvider
             .delete(api, { headers, withCredentials: true })
-            .then((response) => response.data)
-            .catch(this.handleError);
+            .then((response) => response.data);
         return data as DataResponse<T>;
     }
 }

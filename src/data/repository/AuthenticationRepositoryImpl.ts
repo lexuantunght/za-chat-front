@@ -22,4 +22,8 @@ export class AuthenticationRepositoryImpl implements AuthenticationRepository {
     async register(data: RegisterData) {
         return this.dataSource.register(data);
     }
+
+    async authorize() {
+        return this.dataSource.authorize();
+    }
 }
