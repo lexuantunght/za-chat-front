@@ -9,10 +9,9 @@ const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 module.exports = {
     entry: {
-        index: ['./src/index.tsx', './src/styles/index.scss'],
-        login: ['./src/screens/Login', './src/styles/login.scss'],
-        register: ['./src/screens/Register', './src/styles/register.scss'],
-        authLoader: ['./src/screens/AuthLoader', './src/styles/authLoader.scss'],
+        index: ['./src/window/index.tsx', './src/styles/index.scss'],
+        login: ['./src/window/login.tsx', './src/styles/login.scss'],
+        register: ['./src/window/register.tsx', './src/styles/register.scss'],
     },
     output: { path: path.join(__dirname, 'build'), filename: '[name].bundle.js' },
     mode: process.env.NODE_ENV || 'development',
@@ -66,12 +65,6 @@ module.exports = {
             template: path.join(__dirname, 'public', 'index.html'),
             filename: 'register.html',
             chunks: ['register'],
-            inject: true,
-        }),
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, 'public', 'index.html'),
-            filename: 'authLoader.html',
-            chunks: ['authLoader'],
             inject: true,
         }),
         new MiniCssExtractPlugin({

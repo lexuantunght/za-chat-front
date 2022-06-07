@@ -1,36 +1,38 @@
-import { AnyAction, combineReducers } from 'redux';
-import DispatchType from '../../common/constants/DispatchType';
-import UserData from '../../common/models/UserData';
-import chatReducer from '../../screens/Chat/reducer';
-import contactReducer from '../../screens/Contact/reducer';
+import { createSlice, combineReducers, PayloadAction } from '@reduxjs/toolkit';
+import AppError from '../../common/types/AppError';
+import { UserData } from '../../domain/model/UserData';
+import chatReducer from '../../presentation/Chat/reducer';
+import loginReducer from '../../presentation/Login/reducer';
 
 type AppState = {
-    isError: boolean;
+    error?: string;
     userData?: UserData;
-    errorMsg?: string;
 };
 
-const defaultAppStates: AppState = {
-    isError: false,
+const defaultAppState: AppState = {
+    error: undefined,
+    userData: undefined,
 };
 
-const appReducer = (state = defaultAppStates, action: AnyAction) => {
-    switch (action.type) {
-        case DispatchType.app.isError:
-            return { ...state, isError: action.data };
-        case DispatchType.app.errorMsg:
-            return { ...state, errorMsg: action.data };
-        case DispatchType.app.userData:
-            return { ...state, userData: action.data };
-        default:
-            return state;
-    }
-};
+const appSlice = createSlice({
+    name: 'chat',
+    initialState: defaultAppState,
+    reducers: {
+        setError: (state: AppState, action: PayloadAction<AppError | undefined>) => {
+            state.error = action.payload?.response?.data?.message || action.payload?.message;
+        },
+        setUserData: (state: AppState, action: PayloadAction<UserData | undefined>) => {
+            state.userData = action.payload;
+        },
+    },
+});
+
+export const { setError, setUserData } = appSlice.actions;
 
 const reducer = combineReducers({
-    app: appReducer,
+    app: appSlice.reducer,
     chat: chatReducer,
-    contact: contactReducer,
+    login: loginReducer,
 });
 
 export default reducer;

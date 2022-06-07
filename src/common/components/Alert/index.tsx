@@ -27,9 +27,17 @@ const Alert: React.FC<AlertProps> = ({
     className,
     severity,
 }) => {
+    const [alertContent, setAlertContent] = React.useState(content);
+
+    React.useEffect(() => {
+        if (content) {
+            setAlertContent(content);
+        }
+    }, [content]);
+
     return (
         <Modal title={title} isOpen={isShow} onClose={onClose} className={className}>
-            <div>{content}</div>
+            <div>{alertContent}</div>
             <div className="za-alert-footer">
                 {onCancel && (
                     <Button variant="outlined" onClick={onCancel}>
