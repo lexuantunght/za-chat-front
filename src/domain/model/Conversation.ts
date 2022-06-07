@@ -1,3 +1,4 @@
+import { FriendStatus } from '../../common/types/FriendStatus';
 import { Message } from './Message';
 import { UserData } from './UserData';
 
@@ -6,6 +7,6 @@ export interface Conversation {
     users: Array<UserData>;
     latestMessage?: Message;
     name: string;
-    avatar: string;
-    friendStatus?: 'requested' | 'friend' | 'waiting';
+    avatar?: string;
+    friendStatus: FriendStatus;
 }

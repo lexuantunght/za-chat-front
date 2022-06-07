@@ -17,6 +17,10 @@ export class ContactRepositoryImpl implements ContactRepository {
         return this.dataSource.getContacts();
     }
 
+    async findContacts(keyword: string) {
+        return this.dataSource.findContacts(keyword);
+    }
+
     async acceptFriend(userId: string) {
         return this.dataSource.acceptFriend(userId);
     }
