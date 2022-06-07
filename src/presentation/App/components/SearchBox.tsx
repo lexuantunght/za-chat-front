@@ -1,25 +1,35 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import SearchBar from '../../../common/components/SearchBar';
 import noResultLogo from '../../../common/resources/no-result.png';
+import AppController from '../../../controller/AppController';
+import ContactController from '../../../controller/contact/ContactController';
+import useController from '../../../controller/hooks';
 import { Contact } from '../../../domain/model/Contact';
 
 interface SearchBoxProps {
     onClickResult?: (contact: Contact) => void;
     onClose?: () => void;
     t: CallableFunction;
-    contacts?: Contact[];
 }
 
-const SearchBox = ({ onClickResult, onClose, t, contacts = [] }: SearchBoxProps) => {
+const SearchBox = ({ onClickResult, onClose, t }: SearchBoxProps) => {
     const [isFocused, setIsFocused] = React.useState(false);
     const [keyword, setKeyword] = React.useState('');
+    const { findContacts } = useController(ContactController);
+    const { searchResultSelector, clearSearchResult } = useController(AppController);
+    const searchResult = useSelector(searchResultSelector);
 
     const onCloseSearch = () => {
         setIsFocused(false);
         onClose?.();
     };
+
+    React.useEffect(() => {
+        findContacts(keyword);
+    }, [keyword]);
 
     return (
         <div className="app-search-view">
@@ -27,7 +37,11 @@ const SearchBox = ({ onClickResult, onClose, t, contacts = [] }: SearchBoxProps)
                 id="app-search-input"
                 placeholder={t('search')}
                 onFocus={() => setIsFocused(true)}
-                onReset={() => setKeyword('')}
+                onSearch={findContacts}
+                onReset={() => {
+                    setKeyword('');
+                    clearSearchResult();
+                }}
                 onEndEditing={(value: string) => setKeyword(value)}
             />
             {isFocused ? (
@@ -46,7 +60,7 @@ const SearchBox = ({ onClickResult, onClose, t, contacts = [] }: SearchBoxProps)
                 <div className="app-search-result">
                     <div className="app-search-result-title">{t('searchResult')}</div>
                     <div className="app-search-result-list">
-                        {contacts.map((contact, index) => (
+                        {searchResult.contacts.map((contact, index) => (
                             <div
                                 className="chat-item"
                                 key={index}
@@ -56,7 +70,7 @@ const SearchBox = ({ onClickResult, onClose, t, contacts = [] }: SearchBoxProps)
                             </div>
                         ))}
                     </div>
-                    {contacts.length === 0 && keyword.length > 0 && (
+                    {searchResult.contacts.length === 0 && keyword.length > 0 && (
                         <div className="app-search-no-result">
                             <img src={noResultLogo} />
                             <div>{t('notFoundResult')}</div>

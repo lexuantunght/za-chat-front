@@ -1,5 +1,5 @@
-import { Conversation } from '../../domain/model/Conversation';
+import { ConversationAPIEntity } from './API/entity/ConversationAPIEntity';
 
 export default interface ConversationDataSource {
-    getConversations(): Promise<Conversation[]>;
+    getConversations(): Promise<ConversationAPIEntity[]>;
 }

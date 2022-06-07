@@ -1,5 +1,7 @@
 import React from 'react';
+import { Contact } from '../../../domain/model/Contact';
 import { Conversation } from '../../../domain/model/Conversation';
+import { UserData } from '../../../domain/model/UserData';
 import { fromNow } from '../../../utils/helpers/momentHelper';
 import SearchBox from '../../App/components/SearchBox';
 
@@ -8,7 +10,7 @@ interface ConversationListProps {
     focusedIndex?: number;
     onSelectedItem?: (item: Conversation) => void;
     selectedItem?: Conversation;
-    userId: string;
+    userData: UserData;
     t: CallableFunction;
     language: string;
 }
@@ -17,10 +19,12 @@ const ConversationList = ({
     data = [],
     selectedItem,
     onSelectedItem,
-    userId,
+    userData,
     t,
     language,
 }: ConversationListProps) => {
+    const userId = userData._id;
+
     const onClickItem = (item: Conversation) => {
         if (!item.latestMessage?.seen?.includes(userId)) {
             item.latestMessage?.seen?.push(userId);
@@ -28,9 +32,24 @@ const ConversationList = ({
         onSelectedItem?.(item);
     };
 
+    const onClickSearchResult = (contact: Contact) => {
+        if (
+            userData &&
+            (!selectedItem || !selectedItem.users.some((user) => user._id === contact._id))
+        ) {
+            onSelectedItem?.({
+                _id: contact.conversationId || '',
+                avatar: contact.avatar,
+                friendStatus: contact.friendStatus,
+                name: contact.name,
+                users: [userData, contact],
+            });
+        }
+    };
+
     return (
         <div className="chat-tab">
-            <SearchBox t={t} />
+            <SearchBox t={t} onClickResult={onClickSearchResult} />
             <div className="chat-list-title">{t('conversations')}</div>
             <div className="chat-tab-messages">
                 {data.map((chatItem, index) => (

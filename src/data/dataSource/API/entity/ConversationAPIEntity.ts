@@ -1,3 +1,4 @@
+import { FriendStatus } from '../../../../common/types/FriendStatus';
 import { MessageAPIEntity } from './MessageAPIEntity';
 import { UserDataAPIEntity } from './UserDataAPIEntity';
 
@@ -7,5 +8,5 @@ export interface ConversationAPIEntity {
     latestMessage?: MessageAPIEntity;
     name: string;
     avatar: string;
-    friendStatus?: 'requested' | 'friend' | 'waiting';
+    friendStatus: FriendStatus;
 }

@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Conversation } from '../../domain/model/Conversation';
 import { Message } from '../../domain/model/Message';
 import _update from 'lodash-es/update';
+import { FriendStatus } from '../../common/types/FriendStatus';
 
 interface ChatState {
     selectedConversation?: Conversation;
@@ -41,6 +42,11 @@ const chatSlice = createSlice({
             );
             _update(state.conversations, `[${indexOfItem}].latestMessage`, () => action.payload);
         },
+        updateFriendStatus: (state: ChatState, action: PayloadAction<FriendStatus>) => {
+            if (state.selectedConversation) {
+                state.selectedConversation.friendStatus = action.payload;
+            }
+        },
     },
 });
 
@@ -53,6 +59,7 @@ export const {
     setMessages,
     updateStatusMessage,
     updateNewMessageToConversation,
+    updateFriendStatus,
 } = chatSlice.actions;
 
 export default chatReducer;

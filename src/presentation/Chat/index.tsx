@@ -77,19 +77,23 @@ const ChatScreen = () => {
         }
     }, [conversations]);
 
+    if (!userData) {
+        return null;
+    }
+
     return (
         <div className="chat-container">
             <div id="chat-sidetab-container">
                 <ConversationList
                     data={conversations}
                     selectedItem={selectedConversation}
-                    userId={userData?._id || ''}
+                    userData={userData}
                     onSelectedItem={selectConversation}
                     t={t}
                     language={language}
                 />
             </div>
-            {selectedConversation && userData ? (
+            {selectedConversation ? (
                 <ChatSection
                     conversation={selectedConversation}
                     user={userData}

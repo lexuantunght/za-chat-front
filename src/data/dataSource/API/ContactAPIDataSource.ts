@@ -6,9 +6,15 @@ import { ContactAPIEntity } from './entity/ContactAPIEntity';
 export default class ContactAPIDataSourceImpl implements ContactDataSource {
     async getContacts() {
         const response = await Network.getInstance().getHelper<ContactAPIEntity[]>(
-            `${appConfig.baseUrl}/conversations`
+            `${appConfig.baseUrl}/contacts`
         );
-        return response.data || [];
+        return response.data;
+    }
+    async findContacts(keyword: string) {
+        const response = await Network.getInstance().getHelper<ContactAPIEntity[]>(
+            `${appConfig.baseUrl}/contacts/find?keyword=${keyword}`
+        );
+        return response.data;
     }
     async requestFriend(userId: string) {
         await Network.getInstance().postHelper(`${appConfig.baseUrl}/contacts/request`, {
@@ -34,6 +40,6 @@ export default class ContactAPIDataSourceImpl implements ContactDataSource {
         const response = await Network.getInstance().getHelper<ContactAPIEntity[]>(
             `${appConfig.baseUrl}/contacts/invitations`
         );
-        return response.data || [];
+        return response.data;
     }
 }
