@@ -6,4 +6,6 @@ export default interface AuthenticationDataSource {
     login(data: LoginData): Promise<UserData>;
     register(data: RegisterData): Promise<UserData>;
     authorize(): Promise<UserData>;
+    connectSocket(): void;
+    disconnectSocket(): void;
 }

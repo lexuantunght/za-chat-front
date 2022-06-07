@@ -10,6 +10,10 @@ class BaseController {
         this.dispatch = store.dispatch;
     }
 
+    protected getState = () => {
+        return store.getState();
+    };
+
     protected handleError = (err?: AppError) => {
         store.dispatch(setError(err));
     };

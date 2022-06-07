@@ -14,8 +14,8 @@ export class MessageRepositoryImpl implements MessageRepository {
         }
     }
 
-    async getMessages() {
-        return this.dataSource.getMessages();
+    async getMessages(conversationId: string) {
+        return this.dataSource.getMessages(conversationId);
     }
 
     async sendMessage(message: Message) {

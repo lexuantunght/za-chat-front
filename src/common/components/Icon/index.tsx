@@ -1,4 +1,5 @@
 import React from 'react';
+import makeCancelable from '../../../utils/helpers/makeCancelableAsync';
 
 interface IconProps extends React.SVGProps<SVGSVGElement> {
     name: string;
@@ -7,10 +8,8 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
 const Icon: React.FC<IconProps> = ({ name, ...rest }): JSX.Element | null => {
     const ImportedIconRef = React.useRef<React.FC<React.SVGProps<SVGSVGElement>>>();
     const [loading, setLoading] = React.useState(false);
-    const mounted = React.useRef(false);
 
     React.useEffect(() => {
-        mounted.current = true;
         setLoading(true);
         const importIcon = async (): Promise<void> => {
             try {
@@ -21,11 +20,10 @@ const Icon: React.FC<IconProps> = ({ name, ...rest }): JSX.Element | null => {
                 setLoading(false);
             }
         };
-        if (mounted.current === true) {
-            importIcon();
-        }
+        const cancelableIconImport = makeCancelable(new Promise(importIcon));
+        cancelableIconImport.promise;
         return () => {
-            mounted.current = false;
+            cancelableIconImport.cancel();
         };
     }, [name]);
 

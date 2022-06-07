@@ -1,7 +1,12 @@
-const objectToFormData = (data: Record<string, string | File>) => {
+import { DataObject } from '../../domain/model/DataObject';
+
+const objectToFormData = (data: DataObject) => {
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
-        formData.append(key, data[key]);
+        const value = data[key];
+        if (value) {
+            formData.append(key, value);
+        }
     });
     return formData;
 };

@@ -1,6 +1,6 @@
 import { Message } from '../model/Message';
 
 export interface MessageRepository {
-    getMessages(): Promise<Message[]>;
+    getMessages(conversationId: string): Promise<Message[]>;
     sendMessage(message: Message): Promise<void>;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { debounce } from '../../../utils/helpers/lodashHelper';
+import _debounce from 'lodash-es/debounce';
 
 interface MessageInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     onBeginEditing?: () => void;
@@ -30,7 +30,7 @@ class MessageInput extends React.Component<MessageInputProps, MessageInputStates
         });
     };
 
-    handleTyping = debounce(() => {
+    handleTyping = _debounce(() => {
         if (this.state.isTyping) {
             this.props.onEndEditing?.();
         }

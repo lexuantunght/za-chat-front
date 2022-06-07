@@ -18,7 +18,7 @@ class ConversationController extends BaseController {
             .catch(this.handleError);
     };
 
-    public selectConversation = (conversation: Conversation) => {
+    public selectConversation = (conversation?: Conversation) => {
         this.dispatch(selectConversation(conversation));
     };
 

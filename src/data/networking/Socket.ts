@@ -29,6 +29,10 @@ class Socket {
         });
     };
 
+    public disconnect = () => {
+        this.manager._close();
+    };
+
     public getSocket = () => {
         return this.socket;
     };
