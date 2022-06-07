@@ -2,9 +2,10 @@ import React from 'react';
 import { useValidation } from '../../../utils/form/validation';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
-import Socket from '../../../data/networking/Socket';
 import MessageInput from './MessageInput';
 import { useForm } from '../../../utils/form/formContent';
+import useController from '../../../controller/hooks';
+import AppController from '../../../controller/AppController';
 
 type ChatTypingProps = {
     onSend: (content: string) => void;
@@ -15,21 +16,22 @@ type ChatTypingProps = {
 
 const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
     const validator = useValidation();
-    const socket = Socket.getInstance().getSocket();
+    const { emitSocket, addSocketListener, removeAllSocketListeners } =
+        useController(AppController);
     const [isTyping, setIsTyping] = React.useState(false);
 
     React.useEffect(() => {
-        socket.on('typing', (convId: string) => {
+        addSocketListener('typing', (convId) => {
             setIsTyping(conversationId === convId);
         });
-        socket.on('stop-typing', (convId: string) => {
+        addSocketListener('stop-typing', (convId) => {
             if (conversationId === convId) {
                 setIsTyping(false);
             }
         });
         return () => {
-            socket.removeAllListeners('typing');
-            socket.removeAllListeners('stop-typing');
+            removeAllSocketListeners('typing');
+            removeAllSocketListeners('stop-typing');
         };
     }, []);
 
@@ -47,11 +49,11 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
     });
 
     const onBeginEditing = () => {
-        socket.emit('typing', conversationId, userId);
+        emitSocket('typing', conversationId, userId);
     };
 
     const onEndEditing = () => {
-        socket.emit('stop-typing', conversationId, userId);
+        emitSocket('stop-typing', conversationId, userId);
     };
 
     return (

@@ -4,6 +4,8 @@ import { HashRouter, Route, Switch } from 'react-router-dom';
 import AppController from '../../controller/AppController';
 import ConversationController from '../../controller/chat/ConversationController';
 import useController from '../../controller/hooks';
+import { Message } from '../../domain/model/Message';
+import { UserData } from '../../domain/model/UserData';
 import { logout, quitApp } from '../../utils/app/eventHandler';
 import useMultilingual from '../../utils/multilingual';
 import ChatScreen from '../Chat';
@@ -13,11 +15,15 @@ import SideBar from './components/SideBar';
 const AppScreen = () => {
     const { t, language, languages, changeLanguage } = useMultilingual();
     const { userDataSelector } = useController(ConversationController);
-    const { authorize } = useController(AppController);
+    const { authorize, addSocketListener, emitSocket } = useController(AppController);
     const userData = useSelector(userDataSelector);
 
     React.useEffect(() => {
         authorize();
+        addSocketListener('receive-message', (msg: Message, user: UserData) => {
+            new Notification(user.name, { body: msg.content, icon: user.avatar });
+            emitSocket('action-message', msg, 'received');
+        });
     }, []);
 
     return (

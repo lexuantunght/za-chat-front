@@ -2,11 +2,12 @@ import React from 'react';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import ChatTyping from './ChatTyping';
-import Socket from '../../../data/networking/Socket';
 import { Conversation } from '../../../domain/model/Conversation';
 import { Message } from '../../../domain/model/Message';
 import { UserData } from '../../../domain/model/UserData';
 import { format, fromNow, toDate } from '../../../utils/helpers/momentHelper';
+import useController from '../../../controller/hooks';
+import AppController from '../../../controller/AppController';
 
 type ChatSectionProps = {
     conversation: Conversation;
@@ -38,7 +39,8 @@ const ChatSection = ({
     language,
     messages = [],
 }: ChatSectionProps) => {
-    const socket = Socket.getInstance().getSocket();
+    const { emitSocket, addSocketListener, removeAllSocketListeners } =
+        useController(AppController);
     const partnerId = React.useMemo(
         () => conversation.users.find((u) => u._id !== user?._id)?._id || '',
         [conversation._id, conversation.friendStatus]
@@ -46,7 +48,7 @@ const ChatSection = ({
     const [activeTime, setActiveTime] = React.useState<string | Date>('');
 
     React.useEffect(() => {
-        socket.on('is-active', (active: string, time?: Date) => {
+        addSocketListener('is-active', (active: string, time?: Date) => {
             if (active === 'offline') {
                 setActiveTime(toDate(time));
                 return;
@@ -54,12 +56,12 @@ const ChatSection = ({
             setActiveTime(t(active));
         });
         return () => {
-            socket.removeAllListeners('is-active');
+            removeAllSocketListeners('is-active');
         };
     }, []);
 
     React.useEffect(() => {
-        socket.emit('get-active', partnerId);
+        emitSocket('get-active', partnerId);
     }, [conversation._id, conversation.friendStatus]);
 
     const onSendMessage = (content: string) => {
