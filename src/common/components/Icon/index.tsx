@@ -7,8 +7,10 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
 const Icon: React.FC<IconProps> = ({ name, ...rest }): JSX.Element | null => {
     const ImportedIconRef = React.useRef<React.FC<React.SVGProps<SVGSVGElement>>>();
     const [loading, setLoading] = React.useState(false);
+    const mounted = React.useRef(false);
 
-    React.useEffect((): void => {
+    React.useEffect(() => {
+        mounted.current = true;
         setLoading(true);
         const importIcon = async (): Promise<void> => {
             try {
@@ -19,7 +21,12 @@ const Icon: React.FC<IconProps> = ({ name, ...rest }): JSX.Element | null => {
                 setLoading(false);
             }
         };
-        importIcon();
+        if (mounted.current === true) {
+            importIcon();
+        }
+        return () => {
+            mounted.current = false;
+        };
     }, [name]);
 
     if (!loading && ImportedIconRef.current) {

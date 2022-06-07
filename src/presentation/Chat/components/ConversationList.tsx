@@ -1,6 +1,7 @@
 import React from 'react';
 import { Conversation } from '../../../domain/model/Conversation';
 import { fromNow } from '../../../utils/helpers/momentHelper';
+import SearchBox from '../../App/components/SearchBox';
 
 interface ConversationListProps {
     data?: Conversation[];
@@ -29,6 +30,7 @@ const ConversationList = ({
 
     return (
         <div className="chat-tab">
+            <SearchBox t={t} />
             <div className="chat-list-title">{t('conversations')}</div>
             <div className="chat-tab-messages">
                 {data.map((chatItem, index) => (

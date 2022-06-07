@@ -20,8 +20,9 @@ const ChatScreen = () => {
     const userData = useSelector(userDataSelector);
     const conversations = useSelector(conversationsSelector);
     const selectedConversation = useSelector(selectedConversationSelector);
-    const { sendMessage } = new MessageController();
-    const { requestFriend, cancelRequest, acceptFriend, rejectFriend } = new ContactController();
+    const { sendMessage } = useController(MessageController);
+    const { requestFriend, cancelRequest, acceptFriend, rejectFriend } =
+        useController(ContactController);
     const { t, language } = useMultilingual();
 
     React.useEffect(() => {

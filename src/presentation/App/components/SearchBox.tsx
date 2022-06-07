@@ -2,11 +2,11 @@ import React from 'react';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import SearchBar from '../../../common/components/SearchBar';
-import noResultLogo from '../../common/resources/no-result.png';
+import noResultLogo from '../../../common/resources/no-result.png';
 import { Contact } from '../../../domain/model/Contact';
 
 interface SearchBoxProps {
-    onClickResult: (contact: Contact) => void;
+    onClickResult?: (contact: Contact) => void;
     onClose?: () => void;
     t: CallableFunction;
     contacts?: Contact[];
@@ -50,7 +50,7 @@ const SearchBox = ({ onClickResult, onClose, t, contacts = [] }: SearchBoxProps)
                             <div
                                 className="chat-item"
                                 key={index}
-                                onClick={() => onClickResult(contact)}>
+                                onClick={() => onClickResult?.(contact)}>
                                 <img src={contact.avatar} className="chat-avatar" />
                                 <div className="chat-name">{contact.name}</div>
                             </div>
