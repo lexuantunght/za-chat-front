@@ -100,7 +100,7 @@ const ChatSection = ({
                     </Button>
                 </>
                 {conversation.friendStatus !== 'friend' && (
-                    <div className="chat-title-addfriend">
+                    <div className="chat-title-add-friend">
                         {!conversation.friendStatus && (
                             <Button variant="text" onClick={() => onRequestFriend(partnerId)}>
                                 <Icon name="user-plus" strokeWidth={1.25} />

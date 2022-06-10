@@ -61,11 +61,11 @@ const SideBar = ({
     const onClickItem = (path: string, id: number, name: string) => {
         setSelectedItem(id);
         history.push(path);
-        const sideTab = document.getElementById(`${name}-sidetab-container`);
-        if (sideTab?.classList.contains(`${name}-sidetab-container-show`)) {
-            sideTab?.classList.remove(`${name}-sidetab-container-show`);
+        const sideTab = document.getElementById(`${name}-side-tab-container`);
+        if (sideTab?.classList.contains(`${name}-side-tab-container-show`)) {
+            sideTab?.classList.remove(`${name}-side-tab-container-show`);
         } else {
-            sideTab?.classList.add(`${name}-sidetab-container-show`);
+            sideTab?.classList.add(`${name}-side-tab-container-show`);
         }
     };
 

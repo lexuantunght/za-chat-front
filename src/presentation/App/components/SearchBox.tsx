@@ -50,7 +50,7 @@ const SearchBox = ({ onClickResult, onClose, t }: SearchBoxProps) => {
             ) : (
                 <Button
                     variant="text"
-                    className="app-search-view-addcontact"
+                    className="app-search-view-add-contact"
                     title={t('addContact')}>
                     <Icon name="user-plus" />
                 </Button>

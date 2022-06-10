@@ -76,7 +76,7 @@ const ChatScreen = () => {
 
     return (
         <div className="chat-container">
-            <div id="chat-sidetab-container">
+            <div id="chat-side-tab-container">
                 <ConversationList
                     data={conversations}
                     selectedItem={selectedConversation}

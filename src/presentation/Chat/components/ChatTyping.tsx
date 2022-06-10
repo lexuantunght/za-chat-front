@@ -21,11 +21,11 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
     const [isTyping, setIsTyping] = React.useState(false);
 
     React.useEffect(() => {
-        addSocketListener('typing', (convId) => {
-            setIsTyping(conversationId === convId);
+        addSocketListener('typing', (cId) => {
+            setIsTyping(conversationId === cId);
         });
-        addSocketListener('stop-typing', (convId) => {
-            if (conversationId === convId) {
+        addSocketListener('stop-typing', (cId) => {
+            if (conversationId === cId) {
                 setIsTyping(false);
             }
         });

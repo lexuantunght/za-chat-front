@@ -7,11 +7,11 @@ import AuthenticationDataSource from '../dataSource/AuthenticationDataSource';
 export class AuthenticationRepositoryImpl implements AuthenticationRepository {
     dataSource: AuthenticationDataSource;
 
-    constructor(_datasource?: AuthenticationDataSource) {
-        if (!_datasource) {
+    constructor(_dataSource?: AuthenticationDataSource) {
+        if (!_dataSource) {
             this.dataSource = new AuthenticationAPIDataSourceImpl();
         } else {
-            this.dataSource = _datasource;
+            this.dataSource = _dataSource;
         }
     }
 

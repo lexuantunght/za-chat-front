@@ -7,7 +7,7 @@ import { UserData } from '../../domain/model/UserData';
 import { logout, quitApp } from '../../utils/app/eventHandler';
 import useMultilingual from '../../utils/multilingual';
 import ChatScreen from '../Chat';
-import ContactSreen from '../Contact';
+import ContactScreen from '../Contact';
 import SideBar from './components/SideBar';
 
 const AppScreen = () => {
@@ -36,7 +36,7 @@ const AppScreen = () => {
                     avatarUrl={userData?.avatar}
                 />
                 <Switch>
-                    <Route path="/contacts" component={ContactSreen} />
+                    <Route path="/contacts" component={ContactScreen} />
                     <Route path="/" component={ChatScreen} />
                 </Switch>
             </div>

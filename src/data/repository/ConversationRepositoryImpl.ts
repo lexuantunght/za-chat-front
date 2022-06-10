@@ -5,11 +5,11 @@ import ConversationDataSource from '../dataSource/ConversationDataSource';
 export class ConversationRepositoryImpl implements ConversationRepository {
     dataSource: ConversationDataSource;
 
-    constructor(_datasource?: ConversationDataSource) {
-        if (!_datasource) {
+    constructor(_dataSource?: ConversationDataSource) {
+        if (!_dataSource) {
             this.dataSource = new ConversationAPIDataSourceImpl();
         } else {
-            this.dataSource = _datasource;
+            this.dataSource = _dataSource;
         }
     }
 

@@ -35,7 +35,7 @@
     font-size: large;
     margin-bottom: 0.25rem;
 }
-.chat-title-addfriend {
+.chat-title-add-friend {
     background-color: #ffffff;
     position: absolute;
     top: 4.5rem;
@@ -47,20 +47,20 @@
     justify-content: center;
     align-items: center;
 }
-.chat-title-addfriend .add-friend {
+.chat-title-add-friend .add-friend {
     margin-left: 0.25rem;
 }
-.chat-title-addfriend .requested-friend {
+.chat-title-add-friend .requested-friend {
     color: var(--primary);
 }
-.chat-title-addfriend .cancel-request {
+.chat-title-add-friend .cancel-request {
     font-weight: 700;
     margin-left: 0.5rem;
 }
-.chat-title-addfriend .accept-request {
+.chat-title-add-friend .accept-request {
     font-weight: 700;
 }
-.chat-title-addfriend .separator {
+.chat-title-add-friend .separator {
     margin: 0 0.5rem;
     background-color: var(--primary);
     width: 1px;
@@ -102,7 +102,7 @@
     overflow: overlay;
 }
 
-#chat-sidetab-container {
+#chat-side-tab-container {
     width: 20rem;
     border-right: 1px solid #dddddd;
     background-color: #ffffff;
@@ -111,11 +111,11 @@
 }
 
 @media (max-width: 768px) {
-    #chat-sidetab-container {
+    #chat-side-tab-container {
         width: 0;
         border: none;
     }
-    #chat-sidetab-container.chat-sidetab-container-show {
+    #chat-side-tab-container.chat-side-tab-container-show {
         width: calc(100vw - 4rem);
         position: absolute;
         z-index: 10;
@@ -171,10 +171,10 @@
     font-weight: normal;
 }
 
-.chat-item-notseen {
+.chat-item-not-seen {
     font-weight: 600;
 }
-.chat-item-notseen > div {
+.chat-item-not-seen > div {
     color: #000000;
 }
 

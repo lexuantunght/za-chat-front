@@ -87,10 +87,10 @@ const LoginScreen = () => {
                     {t('login')}
                 </Button>
             </form>
-            <div className="login-signup-link">
+            <div className="login-register-link">
                 <span>{t('noAccount')}</span>
                 <Button
-                    className="signup-link"
+                    className="register-link"
                     variant="text"
                     onClick={onRegisterClick}
                     disabled={form.isSubmitting}>

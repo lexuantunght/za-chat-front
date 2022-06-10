@@ -5,11 +5,11 @@ import ContactDataSource from '../dataSource/ContactDataSource';
 export class ContactRepositoryImpl implements ContactRepository {
     dataSource: ContactDataSource;
 
-    constructor(_datasource?: ContactDataSource) {
-        if (!_datasource) {
+    constructor(_dataSource?: ContactDataSource) {
+        if (!_dataSource) {
             this.dataSource = new ContactAPIDataSourceImpl();
         } else {
-            this.dataSource = _datasource;
+            this.dataSource = _dataSource;
         }
     }
 

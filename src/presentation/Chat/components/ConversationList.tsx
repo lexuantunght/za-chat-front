@@ -66,7 +66,7 @@ const ConversationList = ({
                                     (userId && chatItem.latestMessage?.seen?.includes(userId)) ||
                                     chatItem._id === selectedItem?._id
                                         ? 'chat-item-seen'
-                                        : 'chat-item-notseen'
+                                        : 'chat-item-not-seen'
                                 }>
                                 <div className="chat-name">{chatItem.name}</div>
                                 <div className="chat-message">{`${
