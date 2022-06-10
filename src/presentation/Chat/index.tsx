@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import ConversationList from './components/ConversationList';
 import welcomeLogo from '../../common/resources/welcome.png';
 import ChatSection from './components/ChatSection';
@@ -13,23 +12,17 @@ import { UserData } from '../../domain/model/UserData';
 import AppController from '../../controller/AppController';
 
 const ChatScreen = () => {
-    const {
-        getConversations,
-        conversationsSelector,
-        selectedConversationSelector,
-        selectConversation,
-        userDataSelector,
-    } = useController(ConversationController);
-    const { sendMessage, getMessages, messagesSelector, updateStatusMessage, appendMessage } =
+    const { getConversations, selectConversation } = useController(ConversationController);
+    const { sendMessage, getMessages, updateStatusMessage, appendMessage } =
         useController(MessageController);
     const { requestFriend, cancelRequest, acceptFriend, rejectFriend } =
         useController(ContactController);
-    const { addSocketListener, emitSocket, removeAllSocketListeners } =
+    const { useGetState, addSocketListener, emitSocket, removeAllSocketListeners } =
         useController(AppController);
-    const userData = useSelector(userDataSelector);
-    const conversations = useSelector(conversationsSelector);
-    const selectedConversation = useSelector(selectedConversationSelector);
-    const messages = useSelector(messagesSelector);
+    const userData = useGetState((state) => state.app.userData);
+    const conversations = useGetState((state) => state.chat.conversations);
+    const selectedConversation = useGetState((state) => state.chat.selectedConversation);
+    const messages = useGetState((state) => state.chat.messages);
     const { t, language } = useMultilingual();
 
     React.useEffect(() => {

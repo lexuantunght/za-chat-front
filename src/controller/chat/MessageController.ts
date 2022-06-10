@@ -41,8 +41,6 @@ class MessageController extends BaseController {
             this.dispatch(updateStatusMessage(message));
         }
     };
-
-    public messagesSelector = this.createSelector((state) => state.chat.messages);
 }
 
 export default MessageController;

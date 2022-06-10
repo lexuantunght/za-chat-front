@@ -4,8 +4,8 @@ import { CancelRequest } from '../../domain/usecase/contact/CancelRequest';
 import { AcceptFriend } from '../../domain/usecase/contact/AcceptFriend';
 import { RejectFriend } from '../../domain/usecase/contact/RejectFriend';
 import { FindContacts } from '../../domain/usecase/contact/FindContacts';
-import { setSearchContactsResult } from '../../utils/redux/reducer';
 import { updateFriendStatus } from '../../presentation/Chat/reducer';
+import { setSearchContactsResult } from '../../presentation/App/reducer';
 
 class ContactController extends BaseController {
     private requestFriendUseCase;

@@ -21,11 +21,6 @@ class ConversationController extends BaseController {
     public selectConversation = (conversation?: Conversation) => {
         this.dispatch(selectConversation(conversation));
     };
-
-    public conversationsSelector = this.createSelector((state) => state.chat.conversations);
-    public selectedConversationSelector = this.createSelector(
-        (state) => state.chat.selectedConversation
-    );
 }
 
 export default ConversationController;

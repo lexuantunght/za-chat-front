@@ -33,7 +33,6 @@ class LoginController extends BaseController {
             .catch(this.clearLoading);
     };
 
-    public isLoadingSelector = this.createSelector((state) => state.login.isLoading);
     public clearLoading = () => {
         this.dispatch(setLoading(false));
     };

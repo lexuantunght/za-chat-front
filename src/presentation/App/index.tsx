@@ -1,8 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import AppController from '../../controller/AppController';
-import ConversationController from '../../controller/chat/ConversationController';
 import useController from '../../controller/hooks';
 import { Message } from '../../domain/model/Message';
 import { UserData } from '../../domain/model/UserData';
@@ -14,9 +12,8 @@ import SideBar from './components/SideBar';
 
 const AppScreen = () => {
     const { t, language, languages, changeLanguage } = useMultilingual();
-    const { userDataSelector } = useController(ConversationController);
-    const { authorize, addSocketListener, emitSocket } = useController(AppController);
-    const userData = useSelector(userDataSelector);
+    const { useGetState, authorize, addSocketListener, emitSocket } = useController(AppController);
+    const userData = useGetState((state) => state.app.userData);
 
     React.useEffect(() => {
         authorize();

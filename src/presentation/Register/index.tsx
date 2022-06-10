@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import logoIcon from '../../common/resources/logo.png';
 import Button from '../../common/components/Button';
 import RegisterForm from './components/RegisterForm';
@@ -10,8 +9,8 @@ import useMultilingual from '../../utils/multilingual';
 import useController from '../../controller/hooks';
 
 const RegisterScreen = () => {
-    const { register, errorSelector, clearError } = useController(RegisterController);
-    const error = useSelector(errorSelector);
+    const { useGetState, register, clearError } = useController(RegisterController);
+    const error = useGetState((state) => state.app.error);
     const { t } = useMultilingual();
 
     const onNavigateLogin = () => {
