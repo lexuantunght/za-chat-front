@@ -25,7 +25,7 @@ function createBaseWindow() {
         width: 360,
         height: 540,
         title: 'ZaChat',
-        icon: __dirname + './favicon.ico',
+        icon: path.join(__dirname, '/../public/favicon.ico'),
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -73,7 +73,7 @@ app.on('ready', () => {
     }
     createBaseWindow();
     createLoginWindow();
-    tray = new Tray(__dirname + './favicon.ico');
+    tray = new Tray(path.join(__dirname, '/../public/favicon.ico'));
     tray.setContextMenu(
         Menu.buildFromTemplate([
             {
