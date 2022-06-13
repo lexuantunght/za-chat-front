@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import InputText from '../../common/components/InputText';
 import Alert from '../../common/components/Alert';
 import Button from '../../common/components/Button';
@@ -14,10 +13,9 @@ import LoginController from '../../controller/authentication/LoginController';
 import LoadingMask from '../../common/components/LoadingMask';
 
 const LoginScreen = () => {
-    const { login, clearError, errorSelector, isLoadingSelector, authorize } =
-        useController(LoginController);
-    const error = useSelector(errorSelector);
-    const isLoading = useSelector(isLoadingSelector);
+    const { useGetState, login, authorize, clearError } = useController(LoginController);
+    const isLoading = useGetState((state) => state.login.isLoading);
+    const error = useGetState((state) => state.app.error);
     const { t } = useMultilingual();
     const validator = useValidation();
 
@@ -89,10 +87,10 @@ const LoginScreen = () => {
                     {t('login')}
                 </Button>
             </form>
-            <div className="login-signup-link">
+            <div className="login-register-link">
                 <span>{t('noAccount')}</span>
                 <Button
-                    className="signup-link"
+                    className="register-link"
                     variant="text"
                     onClick={onRegisterClick}
                     disabled={form.isSubmitting}>

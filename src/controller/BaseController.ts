@@ -1,6 +1,6 @@
 import { createDraftSafeSelector } from '@reduxjs/toolkit';
 import AppError from '../common/types/AppError';
-import { setError } from '../utils/redux/reducer';
+import { setError } from '../presentation/App/reducer';
 import store, { RootState } from '../utils/redux/store';
 
 class BaseController {
@@ -10,7 +10,7 @@ class BaseController {
         this.dispatch = store.dispatch;
     }
 
-    protected getState = () => {
+    public getState = () => {
         return store.getState();
     };
 
@@ -25,10 +25,6 @@ class BaseController {
     protected createSelector = <T>(selector: (state: RootState) => T) => {
         return createDraftSafeSelector(selector, (state) => state);
     };
-
-    public errorSelector = this.createSelector((state) => state.app.error);
-
-    public userDataSelector = this.createSelector((state) => state.app.userData);
 }
 
 export default BaseController;

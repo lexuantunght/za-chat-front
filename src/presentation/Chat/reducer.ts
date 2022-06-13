@@ -4,7 +4,7 @@ import { Message } from '../../domain/model/Message';
 import _update from 'lodash-es/update';
 import { FriendStatus } from '../../common/types/FriendStatus';
 
-interface ChatState {
+export interface ChatState {
     selectedConversation?: Conversation;
     conversations: Conversation[];
     messages: Message[];

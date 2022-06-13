@@ -1,7 +1,7 @@
 import BaseController from './BaseController';
 import { Authorize } from '../domain/usecase/authentication/Authorize';
-import { clearSearchResult, setUserData } from '../utils/redux/reducer';
 import { SocketAction } from '../domain/usecase/realtime/SocketAction';
+import { clearSearchResult, setUserData } from '../presentation/App/reducer';
 
 class AppController extends BaseController {
     private authorizeUseCase;
@@ -34,8 +34,6 @@ class AppController extends BaseController {
     public clearSearchResult = () => {
         this.dispatch(clearSearchResult());
     };
-
-    public searchResultSelector = this.createSelector((state) => state.app.searchResult);
 }
 
 export default AppController;

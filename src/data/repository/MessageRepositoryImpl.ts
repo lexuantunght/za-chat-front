@@ -6,11 +6,11 @@ import MessageDataSource from '../dataSource/MessageDataSource';
 export class MessageRepositoryImpl implements MessageRepository {
     dataSource: MessageDataSource;
 
-    constructor(_datasource?: MessageDataSource) {
-        if (!_datasource) {
+    constructor(_dataSource?: MessageDataSource) {
+        if (!_dataSource) {
             this.dataSource = new MessageAPIDataSourceImpl();
         } else {
-            this.dataSource = _datasource;
+            this.dataSource = _dataSource;
         }
     }
 

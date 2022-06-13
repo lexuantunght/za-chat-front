@@ -1,13 +1,16 @@
 import React from 'react';
+import moment from 'moment';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import ChatTyping from './ChatTyping';
 import { Conversation } from '../../../domain/model/Conversation';
 import { Message } from '../../../domain/model/Message';
 import { UserData } from '../../../domain/model/UserData';
-import { format, fromNow, toDate } from '../../../utils/helpers/momentHelper';
 import useController from '../../../controller/hooks';
 import AppController from '../../../controller/AppController';
+import List, { ListRef } from '../../../common/components/List';
+import ItemMeasurerCache from '../../../common/components/List/ItemMeasurerCache';
+import ItemMeasurer from '../../../common/components/List/ItemMeasurer';
 
 type ChatSectionProps = {
     conversation: Conversation;
@@ -26,6 +29,8 @@ export type ChatSectionRef = {
     appendMessage: (msg: Message) => void;
     updateStatusMessage: (msg: Message) => void;
 };
+
+const messageSizeCache = new ItemMeasurerCache();
 
 const ChatSection = ({
     conversation,
@@ -46,11 +51,12 @@ const ChatSection = ({
         [conversation._id, conversation.friendStatus]
     );
     const [activeTime, setActiveTime] = React.useState<string | Date>('');
+    const listMessagesRef = React.useRef<ListRef>(null);
 
     React.useEffect(() => {
         addSocketListener('is-active', (active: string, time?: Date) => {
             if (active === 'offline') {
-                setActiveTime(toDate(time));
+                setActiveTime(moment(time).toDate());
                 return;
             }
             setActiveTime(t(active));
@@ -77,6 +83,10 @@ const ChatSection = ({
         onSend(msg);
     };
 
+    const getItemHeight = (index: number) => {
+        return messageSizeCache.getSize(index)?.height || 75;
+    };
+
     return (
         <div className="chat-section">
             <div className="chat-section-title">
@@ -87,7 +97,7 @@ const ChatSection = ({
                         {typeof activeTime === 'string'
                             ? activeTime
                             : t('onlineFor', {
-                                  value: fromNow(activeTime, language),
+                                  value: moment(activeTime).locale(language).fromNow(),
                               })}
                     </div>
                 </div>
@@ -100,7 +110,7 @@ const ChatSection = ({
                     </Button>
                 </>
                 {conversation.friendStatus !== 'friend' && (
-                    <div className="chat-title-addfriend">
+                    <div className="chat-title-add-friend">
                         {!conversation.friendStatus && (
                             <Button variant="text" onClick={() => onRequestFriend(partnerId)}>
                                 <Icon name="user-plus" strokeWidth={1.25} />
@@ -139,37 +149,53 @@ const ChatSection = ({
                 )}
             </div>
             <div className="chat-section-body custom-scroll scrolling">
-                <br />
-                {messages.map((message, index, msgArr) => (
-                    <div
-                        key={message.conversationId + index}
-                        className={`chat-message-item ${
-                            message.userId === user?._id ? 'chat-self-message' : ''
-                        }`}>
-                        <img
-                            className={`chat-avatar ${
-                                index < msgArr.length - 1 &&
-                                message.userId === msgArr[index + 1].userId
-                                    ? 'chat-avatar-invisible'
-                                    : ''
-                            }`}
-                            src={message.userId === user?._id ? user.avatar : conversation.avatar}
-                        />
-
-                        <div>
-                            <div className="chat-message-content">{message.content}</div>
-                            <div>
-                                <small className="chat-message-time">
-                                    {format(message.created_at, 'hh:mm')}
-                                </small>
-                                {index === 0 && message.userId === user?._id && (
-                                    <small>{t(message.status)}</small>
+                <List
+                    ref={listMessagesRef}
+                    isVirtualizationEnabled
+                    rowHeight={getItemHeight}
+                    scrollDirection="reverse"
+                    paddingStart={30}>
+                    {messages.map((message, index) => (
+                        <ItemMeasurer
+                            id={message._id || moment(message.created_at).toString()}
+                            index={index}
+                            parent={listMessagesRef}
+                            cache={messageSizeCache}
+                            key={index}>
+                            <div
+                                key={message.conversationId + index}
+                                className={`chat-message-item ${
+                                    message.userId === user?._id ? 'chat-self-message' : ''
+                                }`}>
+                                {index < messages.length - 1 &&
+                                message.userId === messages[index + 1].userId ? (
+                                    <span className="chat-avatar" />
+                                ) : (
+                                    <img
+                                        className="chat-avatar"
+                                        src={
+                                            message.userId === user?._id
+                                                ? user.avatar
+                                                : conversation.avatar
+                                        }
+                                    />
                                 )}
+
+                                <div>
+                                    <div className="chat-message-content">{message.content}</div>
+                                    <div>
+                                        <small className="chat-message-time">
+                                            {moment(message.created_at).format('hh:mm')}
+                                        </small>
+                                        {index === 0 && message.userId === user?._id && (
+                                            <small>{t(message.status)}</small>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                ))}
-                <br />
+                        </ItemMeasurer>
+                    ))}
+                </List>
             </div>
             <ChatTyping
                 onSend={onSendMessage}

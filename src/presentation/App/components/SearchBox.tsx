@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import SearchBar from '../../../common/components/SearchBar';
@@ -19,8 +18,8 @@ const SearchBox = ({ onClickResult, onClose, t }: SearchBoxProps) => {
     const [isFocused, setIsFocused] = React.useState(false);
     const [keyword, setKeyword] = React.useState('');
     const { findContacts } = useController(ContactController);
-    const { searchResultSelector, clearSearchResult } = useController(AppController);
-    const searchResult = useSelector(searchResultSelector);
+    const { useGetState, clearSearchResult } = useController(AppController);
+    const searchResult = useGetState((state) => state.app.searchResult);
 
     const onCloseSearch = () => {
         setIsFocused(false);
@@ -51,7 +50,7 @@ const SearchBox = ({ onClickResult, onClose, t }: SearchBoxProps) => {
             ) : (
                 <Button
                     variant="text"
-                    className="app-search-view-addcontact"
+                    className="app-search-view-add-contact"
                     title={t('addContact')}>
                     <Icon name="user-plus" />
                 </Button>
