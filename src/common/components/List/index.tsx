@@ -7,19 +7,17 @@ export interface ListProps {
     isVirtualizationEnabled?: boolean;
     paddingStart?: number;
     scrollDirection?: 'default' | 'reverse';
+    bufferedItems?: number;
 }
 
 export interface ListRef {
     recomputeRowHeight: () => void;
 }
 
-const bufferedItems = 10;
-
 const getRowHeight = (rowHeight: number | ((index: number) => number), index: number) => {
     if (typeof rowHeight === 'number') {
         return rowHeight;
     }
-    console.log(rowHeight(0));
     return rowHeight(index);
 };
 
@@ -81,6 +79,7 @@ const List = (
         isVirtualizationEnabled = true,
         paddingStart = 0,
         scrollDirection = 'default',
+        bufferedItems = 10,
     }: ListProps,
     ref: React.ForwardedRef<ListRef>
 ) => {
