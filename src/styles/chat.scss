@@ -184,8 +184,11 @@
 
 .chat-name {
     font-size: 1rem;
-    text-overflow: ellipsis;
     margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 10rem;
 }
 
 .chat-message {

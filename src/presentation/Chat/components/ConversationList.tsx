@@ -79,7 +79,7 @@ const ConversationList = ({
                                     <div className="chat-latest-time">
                                         {moment(chatItem.latestMessage?.created_at)
                                             .locale(language)
-                                            .fromNow()}
+                                            .fromNow(true)}
                                     </div>
                                 </div>
                                 <div className="chat-message">{`${
