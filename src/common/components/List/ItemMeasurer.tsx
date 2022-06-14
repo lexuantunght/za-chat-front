@@ -37,9 +37,6 @@ const ItemMeasurer = ({
 
     React.useEffect(() => {
         handleGetSize();
-        if (index === 0) {
-            console.log(ref.current?.offsetHeight);
-        }
     }, [id]);
 
     return (

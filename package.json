@@ -98,7 +98,7 @@
         "productName": "ZaChat",
         "files": [
             "build/**/*",
-            "public/electron.js"
+            "electron/index.js"
         ],
         "win": {
             "target": "nsis"

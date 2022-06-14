@@ -366,6 +366,6 @@
 }
 
 .za-image {
-    min-width: 10rem;
-    min-height: 10rem;
+    width: 100%;
+    height: 100%;
 }
