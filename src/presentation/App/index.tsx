@@ -15,10 +15,23 @@ const AppScreen = () => {
     const { useGetState, authorize, addSocketListener, emitSocket } = useController(AppController);
     const userData = useGetState((state) => state.app.userData);
 
+    const getMessageContent = (latestMessage?: Message) => {
+        if (!latestMessage) {
+            return '';
+        }
+        if (latestMessage.files && latestMessage.files.length > 0) {
+            if (latestMessage.files.length > 1) {
+                return t('sentSomeImages', { value: latestMessage.files.length });
+            }
+            return t('sentImage');
+        }
+        return latestMessage.content;
+    };
+
     React.useEffect(() => {
         authorize();
         addSocketListener('receive-message', (msg: Message, user: UserData) => {
-            new Notification(user.name, { body: msg.content, icon: user.avatar });
+            new Notification(user.name, { body: getMessageContent(msg), icon: user.avatar });
             emitSocket('action-message', msg, 'received');
         });
     }, []);

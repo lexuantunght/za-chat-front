@@ -87,9 +87,13 @@ const List = (
     const [scrollPosition, setScrollPosition] = React.useState(0);
     const [recomputed, setRecomputed] = React.useState(1);
 
+    const handleRecomputed = () => {
+        setRecomputed(recomputed * -1);
+    };
+
     React.useImperativeHandle(ref, () => ({
         recomputeRowHeight: () => {
-            setRecomputed(recomputed * -1);
+            handleRecomputed();
         },
     }));
 

@@ -66,5 +66,7 @@
     "requestedFriend": "Sent friend request.",
     "cancelRequest": "Cancel request",
     "acceptRequest": "Accept request",
-    "rejectRequest": "Reject request"
+    "rejectRequest": "Reject request",
+    "sentImage": "Sent an image",
+    "sentSomeImages": "Send {{value}} images"
 }

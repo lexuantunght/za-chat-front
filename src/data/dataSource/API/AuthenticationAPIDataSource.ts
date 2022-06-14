@@ -17,7 +17,8 @@ export default class AuthenticationAPIDataSourceImpl implements AuthenticationDa
     async register(data: RegisterData) {
         const response = await Network.getInstance().postHelper<UserDataAPIEntity>(
             `${appConfig.baseUrl}/users/signup`,
-            objectToFormData(data)
+            objectToFormData(data),
+            { Accept: 'application/json' }
         );
         return response.data;
     }

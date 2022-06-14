@@ -10,6 +10,7 @@ import useController from '../../controller/hooks';
 import { Message } from '../../domain/model/Message';
 import { UserData } from '../../domain/model/UserData';
 import AppController from '../../controller/AppController';
+import { Conversation } from '../../domain/model/Conversation';
 
 const ChatScreen = () => {
     const { getConversations, selectConversation } = useController(ConversationController);
@@ -24,6 +25,17 @@ const ChatScreen = () => {
     const selectedConversation = useGetState((state) => state.chat.selectedConversation);
     const messages = useGetState((state) => state.chat.messages);
     const { t, language } = useMultilingual();
+
+    const onSelectConversation = (item: Conversation) => {
+        if (!userData) return;
+        if (item.latestMessage?.seen && !item.latestMessage.seen.includes(userData._id)) {
+            emitSocket('action-message', item.latestMessage, 'seen');
+            const seen = [...item.latestMessage.seen, userData._id];
+            selectConversation({ ...item, latestMessage: { ...item.latestMessage, seen } });
+        } else {
+            selectConversation(item);
+        }
+    };
 
     React.useEffect(() => {
         getConversations();
@@ -81,7 +93,7 @@ const ChatScreen = () => {
                     data={conversations}
                     selectedItem={selectedConversation}
                     userData={userData}
-                    onSelectedItem={selectConversation}
+                    onSelectedItem={onSelectConversation}
                     t={t}
                     language={language}
                 />

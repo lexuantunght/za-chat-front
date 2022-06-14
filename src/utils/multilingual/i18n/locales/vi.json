@@ -66,5 +66,7 @@
     "requestedFriend": "Đã gửi yêu cầu kết bạn.",
     "cancelRequest": "Hủy yêu cầu",
     "acceptRequest": "Đồng ý kết bạn",
-    "rejectRequest": "Từ chối"
+    "rejectRequest": "Từ chối",
+    "sentImage": "Đã gửi 1 ảnh",
+    "sentSomeImages": "Đã gửi {{value}} ảnh"
 }

@@ -4,6 +4,7 @@ import { Contact } from '../../../domain/model/Contact';
 import { Conversation } from '../../../domain/model/Conversation';
 import { UserData } from '../../../domain/model/UserData';
 import SearchBox from '../../App/components/SearchBox';
+import { Message } from '../../../domain/model/Message';
 
 interface ConversationListProps {
     data?: Conversation[];
@@ -26,9 +27,6 @@ const ConversationList = ({
     const userId = userData._id;
 
     const onClickItem = (item: Conversation) => {
-        if (!item.latestMessage?.seen?.includes(userId)) {
-            item.latestMessage?.seen?.push(userId);
-        }
         onSelectedItem?.(item);
         const sideTab = document.getElementById(`chat-side-tab-container`);
         if (sideTab?.classList.contains(`chat-side-tab-container-show`)) {
@@ -51,6 +49,19 @@ const ConversationList = ({
                 users: [userData, contact],
             });
         }
+    };
+
+    const getLatestMessageContent = (latestMessage?: Message) => {
+        if (!latestMessage) {
+            return '';
+        }
+        if (latestMessage.files && latestMessage.files.length > 0) {
+            if (latestMessage.files.length > 1) {
+                return t('sentSomeImages', { value: latestMessage.files.length });
+            }
+            return t('sentImage');
+        }
+        return latestMessage.content;
     };
 
     return (
@@ -84,7 +95,7 @@ const ConversationList = ({
                                 </div>
                                 <div className="chat-message">{`${
                                     chatItem.latestMessage?.userId === userId ? `${t('you')}: ` : ''
-                                } ${chatItem.latestMessage?.content}`}</div>
+                                } ${getLatestMessageContent(chatItem.latestMessage)}`}</div>
                             </div>
                         </div>
                     </div>

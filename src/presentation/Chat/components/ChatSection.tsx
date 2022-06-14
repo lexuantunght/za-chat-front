@@ -11,6 +11,8 @@ import AppController from '../../../controller/AppController';
 import List, { ListRef } from '../../../common/components/List';
 import ItemMeasurerCache from '../../../common/components/List/ItemMeasurerCache';
 import ItemMeasurer from '../../../common/components/List/ItemMeasurer';
+import { FileData } from '../../../domain/model/FileData';
+import MessageItem from './MessageItem';
 
 type ChatSectionProps = {
     conversation: Conversation;
@@ -75,6 +77,20 @@ const ChatSection = ({
             content,
             conversationId: conversation._id,
             toUserId: partnerId,
+            userId: user?._id || '',
+            seen: user?._id ? [user?._id] : [],
+            status: 'sending',
+            created_at: new Date(),
+        };
+        onSend(msg);
+    };
+
+    const onSendFiles = (files: FileData[]) => {
+        const msg: Message = {
+            content: '',
+            conversationId: conversation._id,
+            toUserId: partnerId,
+            files,
             userId: user?._id || '',
             seen: user?._id ? [user?._id] : [],
             status: 'sending',
@@ -162,43 +178,22 @@ const ChatSection = ({
                             parent={listMessagesRef}
                             cache={messageSizeCache}
                             key={index}>
-                            <div
-                                key={message.conversationId + index}
-                                className={`chat-message-item ${
-                                    message.userId === user?._id ? 'chat-self-message' : ''
-                                }`}>
-                                {index < messages.length - 1 &&
-                                message.userId === messages[index + 1].userId ? (
-                                    <span className="chat-avatar" />
-                                ) : (
-                                    <img
-                                        className="chat-avatar"
-                                        src={
-                                            message.userId === user?._id
-                                                ? user.avatar
-                                                : conversation.avatar
-                                        }
-                                    />
-                                )}
-
-                                <div>
-                                    <div className="chat-message-content">{message.content}</div>
-                                    <div>
-                                        <small className="chat-message-time">
-                                            {moment(message.created_at).format('hh:mm')}
-                                        </small>
-                                        {index === 0 && message.userId === user?._id && (
-                                            <small>{t(message.status)}</small>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
+                            <MessageItem
+                                index={index}
+                                t={t}
+                                message={message}
+                                messagesLength={messages.length}
+                                nextMessage={messages[index + 1]}
+                                user={user}
+                                conversationAvatar={conversation.avatar}
+                            />
                         </ItemMeasurer>
                     ))}
                 </List>
             </div>
             <ChatTyping
                 onSend={onSendMessage}
+                onSendFiles={onSendFiles}
                 conversationId={conversation._id}
                 userId={partnerId || conversation.users[0]._id}
                 t={t}
