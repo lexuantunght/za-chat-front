@@ -24,10 +24,14 @@ class MessageController extends BaseController {
         this.sendMessageUseCase.invoke(message).catch(this.handleError);
     };
 
-    public getMessages = (conversationId: string) => {
-        this.getMessagesUseCase
-            .invoke(conversationId)
-            .then((messages) => this.dispatch(setMessages(messages)));
+    public getMessages = (conversationId: string, page = 0, limit = 30) => {
+        this.getMessagesUseCase.invoke(conversationId, page, limit).then((messages) => {
+            if (page > 0) {
+                this.dispatch(setMessages([...messages, ...this.getState().chat.messages]));
+            } else {
+                this.dispatch(setMessages(messages));
+            }
+        });
     };
 
     public appendMessage = (message: Message) => {

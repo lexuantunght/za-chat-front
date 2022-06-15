@@ -3,6 +3,8 @@ import moment from 'moment';
 import { Message } from '../../../domain/model/Message';
 import { UserData } from '../../../domain/model/UserData';
 import Image from '../../../common/components/Image';
+import { FileData } from '../../../domain/model/FileData';
+import Video from '../../../common/components/Video';
 
 type MessageItemProps = {
     message: Message;
@@ -12,6 +14,18 @@ type MessageItemProps = {
     conversationAvatar?: string;
     nextMessage?: Message;
     messagesLength: number;
+};
+
+type FileMessageItemProp = {
+    file: FileData;
+    style?: React.CSSProperties;
+};
+
+const FileMessageItem = ({ file, style }: FileMessageItemProp) => {
+    if (file.type?.startsWith('video/')) {
+        return <Video className="message-video" url={file.url} />;
+    }
+    return <Image src={file.url} style={style} />;
 };
 
 const MessageItem = ({
@@ -53,9 +67,9 @@ const MessageItem = ({
                     className="chat-message-image-only"
                     style={{ gridTemplateColumns: `repeat(${getNumOfCols}, minmax(0, 1fr))` }}>
                     {message.files.map((file, index) => (
-                        <Image
+                        <FileMessageItem
                             key={index}
-                            src={file.url}
+                            file={file}
                             style={
                                 getNumOfCols > 1
                                     ? {

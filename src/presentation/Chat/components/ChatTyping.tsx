@@ -83,6 +83,7 @@ const ChatTyping = ({ onSend, conversationId, userId, t, onSendFiles }: ChatTypi
                                     file,
                                     url: fileReader.result,
                                     name: file.name,
+                                    type: file.type,
                                 });
                             }
                         };
@@ -112,7 +113,7 @@ const ChatTyping = ({ onSend, conversationId, userId, t, onSendFiles }: ChatTypi
                     onClick={() => onClickUploader(true)}>
                     <Icon name="photo" />
                 </Button>
-                <Button variant="text" title={t('sendFile')}>
+                <Button variant="text" title={t('sendFile')} onClick={() => onClickUploader()}>
                     <Icon name="file-plus" />
                 </Button>
             </div>

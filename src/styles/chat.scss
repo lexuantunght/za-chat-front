@@ -292,6 +292,13 @@
     background-color: #ffffff;
     cursor: pointer;
 }
+.chat-message-image-only > .message-video {
+    border-radius: var(--border-radius);
+    max-width: 100%;
+    max-height: 28rem;
+    min-height: 100%;
+    overflow: hidden;
+}
 
 .chat-message-content {
     margin-bottom: 0.5rem;

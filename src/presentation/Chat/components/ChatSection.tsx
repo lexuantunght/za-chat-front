@@ -13,6 +13,7 @@ import ItemMeasurerCache from '../../../common/components/List/ItemMeasurerCache
 import ItemMeasurer from '../../../common/components/List/ItemMeasurer';
 import { FileData } from '../../../domain/model/FileData';
 import MessageItem from './MessageItem';
+import VirtualizedList from '../../../common/components/VirtualizedList';
 
 type ChatSectionProps = {
     conversation: Conversation;
@@ -165,31 +166,20 @@ const ChatSection = ({
                 )}
             </div>
             <div className="chat-section-body custom-scroll scrolling">
-                <List
-                    ref={listMessagesRef}
-                    isVirtualizationEnabled
-                    rowHeight={getItemHeight}
-                    scrollDirection="reverse"
-                    paddingStart={30}>
-                    {messages.map((message, index) => (
-                        <ItemMeasurer
-                            id={message._id || moment(message.created_at).toString()}
+                <VirtualizedList
+                    data={messages}
+                    rowRenderer={(item, index) => (
+                        <MessageItem
                             index={index}
-                            parent={listMessagesRef}
-                            cache={messageSizeCache}
-                            key={index}>
-                            <MessageItem
-                                index={index}
-                                t={t}
-                                message={message}
-                                messagesLength={messages.length}
-                                nextMessage={messages[index + 1]}
-                                user={user}
-                                conversationAvatar={conversation.avatar}
-                            />
-                        </ItemMeasurer>
-                    ))}
-                </List>
+                            t={t}
+                            message={item}
+                            messagesLength={messages.length}
+                            nextMessage={messages[index + 1]}
+                            user={user}
+                            conversationAvatar={conversation.avatar}
+                        />
+                    )}
+                />
             </div>
             <ChatTyping
                 onSend={onSendMessage}

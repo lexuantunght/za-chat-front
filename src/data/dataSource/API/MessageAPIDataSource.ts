@@ -7,9 +7,9 @@ import MessageDataSource from '../MessageDataSource';
 import { MessageAPIEntity } from './entity/MessageAPIEntity';
 
 export default class MessageAPIDataSourceImpl implements MessageDataSource {
-    async getMessages(conversationId: string) {
+    async getMessages(conversationId: string, page?: number, limit?: number) {
         const response = await Network.getInstance().getHelper<MessageAPIEntity[]>(
-            `${appConfig.baseUrl}/chat/messages?conversationId=${conversationId}`
+            `${appConfig.baseUrl}/chat/messages?conversationId=${conversationId}&page=${page}&limit=${limit}`
         );
         return response.data || [];
     }
@@ -25,7 +25,7 @@ export default class MessageAPIDataSourceImpl implements MessageDataSource {
                     .getSocket()
                     .emit('send-message', {
                         ...message,
-                        files: response.data.map((url) => ({ url })),
+                        files: response.data,
                     });
             }
             return;
