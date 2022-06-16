@@ -15,19 +15,21 @@ type MessageItemProps = {
     nextMessage?: Message;
     messagesLength: number;
     onLoad?: () => void;
+    onClick?: (file: FileData) => void;
 };
 
 type FileMessageItemProp = {
     file: FileData;
     style?: React.CSSProperties;
     onLoad?: () => void;
+    onClick?: (file: FileData) => void;
 };
 
-const FileMessageItem = ({ file, style, onLoad }: FileMessageItemProp) => {
+const FileMessageItem = ({ file, style, onLoad, onClick }: FileMessageItemProp) => {
     if (file.type?.startsWith('video/')) {
         return <Video className="message-video" url={file.url} style={style} onLoad={onLoad} />;
     }
-    return <Image src={file.url} style={style} onLoad={onLoad} />;
+    return <Image src={file.url} style={style} onLoad={onLoad} onClick={() => onClick?.(file)} />;
 };
 
 const MessageItem = ({
@@ -39,6 +41,7 @@ const MessageItem = ({
     messagesLength,
     nextMessage,
     onLoad,
+    onClick,
 }: MessageItemProps) => {
     const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -91,6 +94,7 @@ const MessageItem = ({
                                     : { objectFit: 'contain', aspectRatio: 'auto' }
                             }
                             onLoad={onLoad}
+                            onClick={onClick}
                         />
                     ))}
 

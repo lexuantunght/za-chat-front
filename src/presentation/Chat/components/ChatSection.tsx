@@ -23,6 +23,7 @@ type ChatSectionProps = {
     onRejectFriend: (userId: string) => void;
     t: CallableFunction;
     language: string;
+    onClickMessage?: (file: FileData) => void;
 };
 
 export type ChatSectionRef = {
@@ -41,6 +42,7 @@ const ChatSection = ({
     t,
     language,
     messages = [],
+    onClickMessage,
 }: ChatSectionProps) => {
     const { emitSocket, addSocketListener, removeAllSocketListeners } =
         useController(AppController);
@@ -168,6 +170,7 @@ const ChatSection = ({
                             user={user}
                             conversationAvatar={conversation.avatar}
                             onLoad={measure}
+                            onClick={onClickMessage}
                         />
                     )}
                 />

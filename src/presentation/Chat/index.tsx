@@ -11,6 +11,8 @@ import { Message } from '../../domain/model/Message';
 import { UserData } from '../../domain/model/UserData';
 import AppController from '../../controller/AppController';
 import { Conversation } from '../../domain/model/Conversation';
+import { openFileViewer } from '../../utils/app/eventHandler';
+import { FileData } from '../../domain/model/FileData';
 
 const ChatScreen = () => {
     const { getConversations, selectConversation } = useController(ConversationController);
@@ -34,6 +36,12 @@ const ChatScreen = () => {
             selectConversation({ ...item, latestMessage: { ...item.latestMessage, seen } });
         } else {
             selectConversation(item);
+        }
+    };
+
+    const onOpenFileViewer = (file?: FileData) => {
+        if (file?.url) {
+            openFileViewer(file.url);
         }
     };
 
@@ -110,6 +118,7 @@ const ChatScreen = () => {
                     t={t}
                     language={language}
                     messages={messages}
+                    onClickMessage={onOpenFileViewer}
                 />
             ) : (
                 <div className="chat-welcome">
