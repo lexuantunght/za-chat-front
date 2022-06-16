@@ -10,6 +10,9 @@ import useController from '../../controller/hooks';
 import { Message } from '../../domain/model/Message';
 import { UserData } from '../../domain/model/UserData';
 import AppController from '../../controller/AppController';
+import { Conversation } from '../../domain/model/Conversation';
+import { openFileViewer } from '../../utils/app/eventHandler';
+import { FileData } from '../../domain/model/FileData';
 
 const ChatScreen = () => {
     const { getConversations, selectConversation } = useController(ConversationController);
@@ -24,6 +27,23 @@ const ChatScreen = () => {
     const selectedConversation = useGetState((state) => state.chat.selectedConversation);
     const messages = useGetState((state) => state.chat.messages);
     const { t, language } = useMultilingual();
+
+    const onSelectConversation = (item: Conversation) => {
+        if (!userData) return;
+        if (item.latestMessage?.seen && !item.latestMessage.seen.includes(userData._id)) {
+            emitSocket('action-message', item.latestMessage, 'seen');
+            const seen = [...item.latestMessage.seen, userData._id];
+            selectConversation({ ...item, latestMessage: { ...item.latestMessage, seen } });
+        } else {
+            selectConversation(item);
+        }
+    };
+
+    const onOpenFileViewer = (file?: FileData) => {
+        if (file?.url) {
+            openFileViewer(file.url);
+        }
+    };
 
     React.useEffect(() => {
         getConversations();
@@ -81,7 +101,7 @@ const ChatScreen = () => {
                     data={conversations}
                     selectedItem={selectedConversation}
                     userData={userData}
-                    onSelectedItem={selectConversation}
+                    onSelectedItem={onSelectConversation}
                     t={t}
                     language={language}
                 />
@@ -98,6 +118,7 @@ const ChatScreen = () => {
                     t={t}
                     language={language}
                     messages={messages}
+                    onClickMessage={onOpenFileViewer}
                 />
             ) : (
                 <div className="chat-welcome">

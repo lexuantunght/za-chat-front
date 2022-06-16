@@ -3,7 +3,7 @@ import { Message } from '../../model/Message';
 import { MessageRepository } from '../../repository/MessageRepository';
 
 export interface GetMessageUseCase {
-    invoke: (conversationId: string) => Promise<Message[]>;
+    invoke: (conversationId: string, page?: number, limit?: number) => Promise<Message[]>;
 }
 
 export class GetMessages implements GetMessageUseCase {
@@ -16,7 +16,7 @@ export class GetMessages implements GetMessageUseCase {
         }
     }
 
-    async invoke(conversationId: string) {
-        return this.messageRepo.getMessages(conversationId);
+    async invoke(conversationId: string, page?: number, limit?: number) {
+        return this.messageRepo.getMessages(conversationId, page, limit);
     }
 }

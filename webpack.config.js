@@ -12,6 +12,7 @@ module.exports = {
         index: ['./src/window/index.tsx', './src/styles/index.scss'],
         login: ['./src/window/login.tsx', './src/styles/login.scss'],
         register: ['./src/window/register.tsx', './src/styles/register.scss'],
+        'file-viewer': ['./src/window/file-viewer.tsx', './src/styles/file-viewer.scss'],
     },
     output: { path: path.join(__dirname, 'build'), filename: '[name].bundle.js' },
     mode: process.env.NODE_ENV || 'development',
@@ -49,24 +50,15 @@ module.exports = {
         ],
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, 'public', 'index.html'),
-            filename: 'index.html',
-            chunks: ['index'],
-            inject: true,
-        }),
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, 'public', 'index.html'),
-            filename: 'login.html',
-            chunks: ['login'],
-            inject: true,
-        }),
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, 'public', 'index.html'),
-            filename: 'register.html',
-            chunks: ['register'],
-            inject: true,
-        }),
+        ...['index', 'login', 'register', 'file-viewer'].map(
+            (winName) =>
+                new HtmlWebpackPlugin({
+                    template: path.join(__dirname, 'public', 'index.html'),
+                    filename: `${winName}.html`,
+                    chunks: [winName],
+                    inject: true,
+                })
+        ),
         new MiniCssExtractPlugin({
             filename: '[name].min.css',
         }),

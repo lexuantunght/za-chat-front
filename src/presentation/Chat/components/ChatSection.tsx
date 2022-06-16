@@ -8,9 +8,9 @@ import { Message } from '../../../domain/model/Message';
 import { UserData } from '../../../domain/model/UserData';
 import useController from '../../../controller/hooks';
 import AppController from '../../../controller/AppController';
-import List, { ListRef } from '../../../common/components/List';
-import ItemMeasurerCache from '../../../common/components/List/ItemMeasurerCache';
-import ItemMeasurer from '../../../common/components/List/ItemMeasurer';
+import { FileData } from '../../../domain/model/FileData';
+import MessageItem from './MessageItem';
+import VirtualizedList from '../../../common/components/VirtualizedList';
 
 type ChatSectionProps = {
     conversation: Conversation;
@@ -23,14 +23,13 @@ type ChatSectionProps = {
     onRejectFriend: (userId: string) => void;
     t: CallableFunction;
     language: string;
+    onClickMessage?: (file: FileData) => void;
 };
 
 export type ChatSectionRef = {
     appendMessage: (msg: Message) => void;
     updateStatusMessage: (msg: Message) => void;
 };
-
-const messageSizeCache = new ItemMeasurerCache();
 
 const ChatSection = ({
     conversation,
@@ -43,6 +42,7 @@ const ChatSection = ({
     t,
     language,
     messages = [],
+    onClickMessage,
 }: ChatSectionProps) => {
     const { emitSocket, addSocketListener, removeAllSocketListeners } =
         useController(AppController);
@@ -51,7 +51,6 @@ const ChatSection = ({
         [conversation._id, conversation.friendStatus]
     );
     const [activeTime, setActiveTime] = React.useState<string | Date>('');
-    const listMessagesRef = React.useRef<ListRef>(null);
 
     React.useEffect(() => {
         addSocketListener('is-active', (active: string, time?: Date) => {
@@ -83,8 +82,18 @@ const ChatSection = ({
         onSend(msg);
     };
 
-    const getItemHeight = (index: number) => {
-        return messageSizeCache.getSize(index)?.height || 75;
+    const onSendFiles = (files: FileData[]) => {
+        const msg: Message = {
+            content: '',
+            conversationId: conversation._id,
+            toUserId: partnerId,
+            files,
+            userId: user?._id || '',
+            seen: user?._id ? [user?._id] : [],
+            status: 'sending',
+            created_at: new Date(),
+        };
+        onSend(msg);
     };
 
     return (
@@ -149,56 +158,26 @@ const ChatSection = ({
                 )}
             </div>
             <div className="chat-section-body custom-scroll scrolling">
-                <List
-                    ref={listMessagesRef}
-                    isVirtualizationEnabled
-                    rowHeight={getItemHeight}
-                    scrollDirection="reverse"
-                    paddingStart={30}>
-                    {messages.map((message, index) => (
-                        <ItemMeasurer
-                            id={message._id || moment(message.created_at).toString()}
+                <VirtualizedList
+                    data={messages}
+                    rowRenderer={(item, index, measure) => (
+                        <MessageItem
                             index={index}
-                            parent={listMessagesRef}
-                            cache={messageSizeCache}
-                            key={index}>
-                            <div
-                                key={message.conversationId + index}
-                                className={`chat-message-item ${
-                                    message.userId === user?._id ? 'chat-self-message' : ''
-                                }`}>
-                                {index < messages.length - 1 &&
-                                message.userId === messages[index + 1].userId ? (
-                                    <span className="chat-avatar" />
-                                ) : (
-                                    <img
-                                        className="chat-avatar"
-                                        src={
-                                            message.userId === user?._id
-                                                ? user.avatar
-                                                : conversation.avatar
-                                        }
-                                    />
-                                )}
-
-                                <div>
-                                    <div className="chat-message-content">{message.content}</div>
-                                    <div>
-                                        <small className="chat-message-time">
-                                            {moment(message.created_at).format('hh:mm')}
-                                        </small>
-                                        {index === 0 && message.userId === user?._id && (
-                                            <small>{t(message.status)}</small>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </ItemMeasurer>
-                    ))}
-                </List>
+                            t={t}
+                            message={item}
+                            messagesLength={messages.length}
+                            nextMessage={messages[index + 1]}
+                            user={user}
+                            conversationAvatar={conversation.avatar}
+                            onLoad={measure}
+                            onClick={onClickMessage}
+                        />
+                    )}
+                />
             </div>
             <ChatTyping
                 onSend={onSendMessage}
+                onSendFiles={onSendFiles}
                 conversationId={conversation._id}
                 userId={partnerId || conversation.users[0]._id}
                 t={t}

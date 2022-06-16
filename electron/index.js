@@ -17,6 +17,7 @@ function getWindowUrl(windowName = 'index') {
 }
 
 let appWindow;
+let fileViewerWindow;
 let isQuiting;
 let tray;
 
@@ -48,6 +49,32 @@ function createLoginWindow() {
     appWindow.setMaximizable(false);
     appWindow.setResizable(false);
     appWindow.on('ready-to-show', () => appWindow.show());
+}
+
+function createFileViewerWindow(url) {
+    fileViewerWindow = new BrowserWindow({
+        minWidth: 540,
+        minHeight: 540,
+        title: 'ZaChat - File preview',
+        icon: path.join(__dirname, '/../public/favicon.ico'),
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            devTools: isDev,
+            webSecurity: false,
+            partition: 'persist:app',
+        },
+        maximizable: true,
+        resizable: true,
+        show: true,
+    });
+    fileViewerWindow
+        .loadURL(getWindowUrl('file-viewer'))
+        .then(() => fileViewerWindow.webContents.send('fileView', url));
+    fileViewerWindow.maximize();
+    fileViewerWindow.on('close', () => {
+        fileViewerWindow = null;
+    });
 }
 
 function createMainWindow() {
@@ -122,6 +149,12 @@ ipcMain.on('logout', () => {
 
 ipcMain.on('openApp', () => {
     createMainWindow();
+});
+
+ipcMain.on('openFileViewer', (event, url) => {
+    if (!fileViewerWindow) {
+        createFileViewerWindow(url);
+    }
 });
 
 ipcMain.once('quit', () => {

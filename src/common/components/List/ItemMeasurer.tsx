@@ -25,18 +25,22 @@ const ItemMeasurer = ({
 }: Props) => {
     const ref = React.useRef<HTMLDivElement>(null);
 
-    React.useEffect(() => {
+    const handleGetSize = () => {
         const size = {
-            width: ref.current?.clientWidth || 0,
-            height: ref.current?.clientHeight || defaultHeight,
+            width: ref.current?.offsetWidth || 0,
+            height: ref.current?.offsetHeight || defaultHeight,
         };
         cache.setSize(index, size);
         onReady?.(size);
         parent.current?.recomputeRowHeight();
+    };
+
+    React.useEffect(() => {
+        handleGetSize();
     }, [id]);
 
     return (
-        <div ref={ref} style={style}>
+        <div ref={ref} style={style} onLoad={handleGetSize}>
             {children}
         </div>
     );
