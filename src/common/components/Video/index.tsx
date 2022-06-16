@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import ReactPlayer from 'react-player';
 import Button from '../Button';
 import Icon from '../Icon';
@@ -7,9 +8,11 @@ interface VideoProps {
     className?: string;
     url?: string;
     autoPlay?: boolean;
+    onLoad?: () => void;
+    style?: React.CSSProperties;
 }
 
-const Video = ({ className, url, autoPlay }: VideoProps) => {
+const Video = ({ className, url, autoPlay, onLoad, style }: VideoProps) => {
     let videoRef: ReactPlayer | null;
     const [isPlaying, setIsPlaying] = React.useState(autoPlay);
     const [isMute, setIsMute] = React.useState(true);
@@ -29,16 +32,20 @@ const Video = ({ className, url, autoPlay }: VideoProps) => {
     };
 
     return (
-        <div className={className ? `za-video ${className}` : 'za-video'}>
+        <div className={className ? `za-video ${className}` : 'za-video'} style={style}>
             <ReactPlayer
                 ref={(player) => {
                     videoRef = player;
                 }}
                 url={url}
                 width="100%"
+                height="100%"
                 muted={isMute}
                 playing={isPlaying}
-                onReady={() => setIsReady(true)}
+                onReady={() => {
+                    setIsReady(true);
+                    onLoad?.();
+                }}
                 onDuration={(duration) => setDuration(duration)}
                 onEnded={() => {
                     setIsPlaying(false);
@@ -81,6 +88,11 @@ const Video = ({ className, url, autoPlay }: VideoProps) => {
                                 if (isSeek) setPlayedValue(+e.target.value);
                             }}
                         />
+                        <span>
+                            {moment
+                                .utc((Math.floor(duration) - playedValue) * 1000)
+                                .format('mm:ss')}
+                        </span>
                         <Button variant="text">
                             <div>
                                 <Icon name="arrows-maximize" />

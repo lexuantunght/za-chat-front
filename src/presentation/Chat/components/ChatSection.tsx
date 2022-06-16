@@ -8,9 +8,6 @@ import { Message } from '../../../domain/model/Message';
 import { UserData } from '../../../domain/model/UserData';
 import useController from '../../../controller/hooks';
 import AppController from '../../../controller/AppController';
-import List, { ListRef } from '../../../common/components/List';
-import ItemMeasurerCache from '../../../common/components/List/ItemMeasurerCache';
-import ItemMeasurer from '../../../common/components/List/ItemMeasurer';
 import { FileData } from '../../../domain/model/FileData';
 import MessageItem from './MessageItem';
 import VirtualizedList from '../../../common/components/VirtualizedList';
@@ -33,8 +30,6 @@ export type ChatSectionRef = {
     updateStatusMessage: (msg: Message) => void;
 };
 
-const messageSizeCache = new ItemMeasurerCache();
-
 const ChatSection = ({
     conversation,
     user,
@@ -54,7 +49,6 @@ const ChatSection = ({
         [conversation._id, conversation.friendStatus]
     );
     const [activeTime, setActiveTime] = React.useState<string | Date>('');
-    const listMessagesRef = React.useRef<ListRef>(null);
 
     React.useEffect(() => {
         addSocketListener('is-active', (active: string, time?: Date) => {
@@ -98,10 +92,6 @@ const ChatSection = ({
             created_at: new Date(),
         };
         onSend(msg);
-    };
-
-    const getItemHeight = (index: number) => {
-        return messageSizeCache.getSize(index)?.height || 75;
     };
 
     return (
@@ -168,7 +158,7 @@ const ChatSection = ({
             <div className="chat-section-body custom-scroll scrolling">
                 <VirtualizedList
                     data={messages}
-                    rowRenderer={(item, index) => (
+                    rowRenderer={(item, index, measure) => (
                         <MessageItem
                             index={index}
                             t={t}
@@ -177,6 +167,7 @@ const ChatSection = ({
                             nextMessage={messages[index + 1]}
                             user={user}
                             conversationAvatar={conversation.avatar}
+                            onLoad={measure}
                         />
                     )}
                 />

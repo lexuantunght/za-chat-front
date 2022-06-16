@@ -56,10 +56,20 @@ const ConversationList = ({
             return '';
         }
         if (latestMessage.files && latestMessage.files.length > 0) {
-            if (latestMessage.files.length > 1) {
-                return t('sentSomeImages', { value: latestMessage.files.length });
+            if (
+                latestMessage.files.filter((f) => f.type?.startsWith('image/')).length ===
+                latestMessage.files.length
+            ) {
+                if (latestMessage.files.length > 1) {
+                    return t('sentSomeImages', { value: latestMessage.files.length });
+                }
+                return t('sentImage');
+            } else {
+                if (latestMessage.files.length > 1) {
+                    return t('sentSomeFiles', { value: latestMessage.files.length });
+                }
+                return t('sentFile');
             }
-            return t('sentImage');
         }
         return latestMessage.content;
     };

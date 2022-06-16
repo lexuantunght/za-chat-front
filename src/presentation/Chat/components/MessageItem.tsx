@@ -14,18 +14,20 @@ type MessageItemProps = {
     conversationAvatar?: string;
     nextMessage?: Message;
     messagesLength: number;
+    onLoad?: () => void;
 };
 
 type FileMessageItemProp = {
     file: FileData;
     style?: React.CSSProperties;
+    onLoad?: () => void;
 };
 
-const FileMessageItem = ({ file, style }: FileMessageItemProp) => {
+const FileMessageItem = ({ file, style, onLoad }: FileMessageItemProp) => {
     if (file.type?.startsWith('video/')) {
-        return <Video className="message-video" url={file.url} />;
+        return <Video className="message-video" url={file.url} style={style} onLoad={onLoad} />;
     }
-    return <Image src={file.url} style={style} />;
+    return <Image src={file.url} style={style} onLoad={onLoad} />;
 };
 
 const MessageItem = ({
@@ -36,16 +38,25 @@ const MessageItem = ({
     conversationAvatar,
     messagesLength,
     nextMessage,
+    onLoad,
 }: MessageItemProps) => {
-    const getNumOfCols = React.useMemo(() => {
-        if (!message.files || message.files.length < 2) {
+    const containerRef = React.useRef<HTMLDivElement>(null);
+
+    const calculateGrid = () => {
+        if (
+            !message.files ||
+            message.files.length < 2 ||
+            message.files?.some((f) => f.type?.startsWith('video/'))
+        ) {
             return 1;
         }
         if (message.files.length % 2 === 0) {
             return 2;
         }
         return 3;
-    }, [message]);
+    };
+
+    const getNumOfCols = React.useMemo(calculateGrid, [message]);
 
     return (
         <div
@@ -64,6 +75,7 @@ const MessageItem = ({
 
             {message.files && message.files.length > 0 && !message.content ? (
                 <div
+                    ref={containerRef}
                     className="chat-message-image-only"
                     style={{ gridTemplateColumns: `repeat(${getNumOfCols}, minmax(0, 1fr))` }}>
                     {message.files.map((file, index) => (
@@ -78,6 +90,7 @@ const MessageItem = ({
                                       }
                                     : { objectFit: 'contain', aspectRatio: 'auto' }
                             }
+                            onLoad={onLoad}
                         />
                     ))}
 

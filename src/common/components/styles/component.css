@@ -373,6 +373,7 @@
 .za-video {
     position: relative;
     min-width: 10rem;
+    background-color: #000000;
 }
 .za-video > .za-video-play {
     position: absolute;
@@ -380,6 +381,7 @@
     left: calc(50% - 1.5rem);
 }
 .za-video > .za-video-controls {
+    padding-bottom: 0.25rem;
     position: absolute;
     display: flex;
     align-items: center;
@@ -390,7 +392,7 @@
     color: #ffffff;
 }
 .za-video-controls > .video-slider {
-    width: calc(100% - 6rem);
+    width: calc(100% - 8rem);
     border: none;
     outline: none;
 }
