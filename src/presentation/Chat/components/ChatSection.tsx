@@ -11,6 +11,13 @@ import AppController from '../../../controller/AppController';
 import { FileData } from '../../../domain/model/FileData';
 import MessageItem from './MessageItem';
 import VirtualizedList from '../../../common/components/VirtualizedList';
+import { openFileViewer } from '../../../utils/app/eventHandler';
+
+export type SenderViewerData = {
+    file: FileData;
+    from: string;
+    time: Date;
+};
 
 type ChatSectionProps = {
     conversation: Conversation;
@@ -23,7 +30,6 @@ type ChatSectionProps = {
     onRejectFriend: (userId: string) => void;
     t: CallableFunction;
     language: string;
-    onClickMessage?: (file: FileData) => void;
 };
 
 export type ChatSectionRef = {
@@ -42,7 +48,6 @@ const ChatSection = ({
     t,
     language,
     messages = [],
-    onClickMessage,
 }: ChatSectionProps) => {
     const { emitSocket, addSocketListener, removeAllSocketListeners } =
         useController(AppController);
@@ -51,6 +56,10 @@ const ChatSection = ({
         [conversation._id, conversation.friendStatus]
     );
     const [activeTime, setActiveTime] = React.useState<string | Date>('');
+
+    const handleClickMessage = (data: SenderViewerData) => {
+        openFileViewer(data);
+    };
 
     React.useEffect(() => {
         addSocketListener('is-active', (active: string, time?: Date) => {
@@ -170,7 +179,13 @@ const ChatSection = ({
                             user={user}
                             conversationAvatar={conversation.avatar}
                             onLoad={measure}
-                            onClick={onClickMessage}
+                            onClick={(file) =>
+                                handleClickMessage({
+                                    file,
+                                    from: conversation.name,
+                                    time: item.created_at,
+                                })
+                            }
                         />
                     )}
                 />

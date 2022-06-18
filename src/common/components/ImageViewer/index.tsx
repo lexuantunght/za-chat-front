@@ -1,4 +1,6 @@
 import React from 'react';
+import Button from '../Button';
+import Icon from '../Icon';
 
 const DEFAULT_ZOOM_STEP = 0.3;
 const DEFAULT_LARGE_ZOOM = 4;
@@ -29,7 +31,7 @@ type ImageViewerProps = {
     children?: React.ReactNode;
     startIndex?: number;
     images?: Array<{ url: string; title?: string }>;
-    image?: string;
+    image?: { url: string; title?: string };
     zoomStep?: number;
     allowZoom?: boolean;
     doubleClickZoom?: number;
@@ -41,6 +43,7 @@ type ImageViewerProps = {
     keyboardInteraction?: boolean;
     clickOutsideToExit?: boolean;
     title?: string;
+    onClickDownload?: () => void;
 };
 
 type ImageViewerState = {
@@ -60,21 +63,38 @@ export default class ImageViewer extends React.Component<ImageViewerProps, Image
     lastX = 0;
     lastY = 0;
     _cont = React.createRef<HTMLDivElement>();
-    state: ImageViewerState = {
-        x: 0,
-        y: 0,
-        zoom: 1,
-        rotate: 0,
-        loading: true,
-        moving: false,
-        current: this.props?.startIndex ?? 0,
-        multi: this.props?.images?.length ? true : false,
-    };
+
+    constructor(props: ImageViewerProps) {
+        super(props);
+        this.state = {
+            x: 0,
+            y: 0,
+            zoom: 1,
+            rotate: 0,
+            loading: true,
+            moving: false,
+            current: this.props?.startIndex ?? 0,
+            multi: this.props?.images?.length ? true : false,
+        };
+        this.resetZoom = this.resetZoom.bind(this);
+        this.shockZoom = this.shockZoom.bind(this);
+        this.navigateImage = this.navigateImage.bind(this);
+        this.startMove = this.startMove.bind(this);
+        this.duringMove = this.duringMove.bind(this);
+        this.endMove = this.endMove.bind(this);
+        this.applyRotate = this.applyRotate.bind(this);
+        this.applyZoom = this.applyZoom.bind(this);
+        this.onWheel = this.onWheel.bind(this);
+        this.reset = this.reset.bind(this);
+        this.shouldShowReset = this.shouldShowReset.bind(this);
+        this.keyboardNavigation = this.keyboardNavigation.bind(this);
+    }
+
     createTransform = (x: number, y: number, zoom: number, rotate: number) =>
         `translate3d(${x}px,${y}px,0px) scale(${zoom}) rotate(${rotate}deg)`;
     stopSideEffect = (e: React.MouseEvent | KeyboardEvent) => e.stopPropagation();
     getCurrentImage = (s: ImageViewerState, p: ImageViewerProps) => {
-        if (!s.multi) return p.image ?? '';
+        if (!s.multi) return p.image?.url ?? '';
         return p.images?.[s.current]?.url ?? '';
     };
     getCurrentTitle = (s: ImageViewerState, p: ImageViewerProps) => {
@@ -164,6 +184,13 @@ export default class ImageViewer extends React.Component<ImageViewerProps, Image
                 break;
         }
     };
+    onWheel = (e: React.WheelEvent<HTMLImageElement>) => {
+        if (e.deltaY > 0) {
+            this.applyZoom('out');
+        } else {
+            this.applyZoom('in');
+        }
+    };
     applyRotate = (type: string) => {
         switch (type) {
             case 'cw':
@@ -174,7 +201,7 @@ export default class ImageViewer extends React.Component<ImageViewerProps, Image
                 break;
         }
     };
-    reset = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    reset = (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement, MouseEvent>) => {
         this.stopSideEffect(e);
         this.setState({ x: 0, y: 0, zoom: 1, rotate: 0 });
     };
@@ -253,45 +280,57 @@ export default class ImageViewer extends React.Component<ImageViewerProps, Image
                         </div>
                     </Cond>
                     <Cond condition={Boolean(buttonAlign === 'center' || _reset)}>
-                        <div
-                            title="Reset"
+                        <Button
                             style={{ order: buttonAlign === 'flex-start' ? '1' : 'unset' }}
-                            className={`za-image-viewer-button za-image-viewer-icon-reset za-image-viewer-hide-mobile reload ${
-                                _reset ? '' : 'za-image-viewer-disabled'
-                            }`}
-                            onClick={this.reset}></div>
+                            className="za-image-viewer-button"
+                            variant="text"
+                            disabled={!_reset}
+                            onClick={this.reset}>
+                            <Icon name="refresh" />
+                        </Button>
                     </Cond>
                     <Cond condition={multi}>
                         <div
-                            title="Previous"
                             className="za-image-viewer-button za-image-viewer-icon-arrow prev za-image-viewer-hide-mobile"
                             onClick={(e) => this.navigateImage('prev', e)}></div>
                         <div
-                            title="Next"
                             className="za-image-viewer-button za-image-viewer-icon-arrow next za-image-viewer-hide-mobile"
                             onClick={(e) => this.navigateImage('next', e)}></div>
                     </Cond>
+                    <Button
+                        variant="text"
+                        className="za-image-viewer-button"
+                        onClick={() => this.props.onClickDownload?.()}>
+                        <Icon name="download" />
+                    </Button>
                     <Cond condition={allowZoom}>
-                        <div
-                            title="Zoom In"
-                            className="za-image-viewer-button za-image-viewer-icon-zoomin zoomin"
-                            onClick={() => this.applyZoom('in')}></div>
-                        <div
-                            title="Zoom Out"
-                            className={`za-image-viewer-button za-image-viewer-icon-zoomout zoomout ${
-                                zoom <= 1 ? 'za-image-viewer-disabled' : ''
-                            }`}
-                            onClick={() => this.applyZoom('out')}></div>
+                        <Button
+                            variant="text"
+                            className="za-image-viewer-button"
+                            onClick={() => this.applyZoom('in')}>
+                            <Icon name="zoom-in" />
+                        </Button>
+                        <Button
+                            variant="text"
+                            className="za-image-viewer-button"
+                            disabled={zoom <= 1}
+                            onClick={() => this.applyZoom('out')}>
+                            <Icon name="zoom-out" />
+                        </Button>
                     </Cond>
                     <Cond condition={allowRotate}>
-                        <div
-                            title="Rotate left"
-                            className="za-image-viewer-button za-image-viewer-icon-rotate rotatel"
-                            onClick={() => this.applyRotate('acw')}></div>
-                        <div
-                            title="Rotate right"
-                            className="za-image-viewer-button za-image-viewer-icon-rotate rotater"
-                            onClick={() => this.applyRotate('cw')}></div>
+                        <Button
+                            variant="text"
+                            className="za-image-viewer-button"
+                            onClick={() => this.applyRotate('acw')}>
+                            <Icon name="rotate" />
+                        </Button>
+                        <Button
+                            variant="text"
+                            className="za-image-viewer-button"
+                            onClick={() => this.applyRotate('cw')}>
+                            <Icon name="rotate-clockwise" />
+                        </Button>
                     </Cond>
                 </div>
                 <div
@@ -307,6 +346,7 @@ export default class ImageViewer extends React.Component<ImageViewerProps, Image
                         onMouseDown={this.startMove}
                         onTouchStart={this.startMove}
                         onMouseMove={this.duringMove}
+                        onWheel={this.onWheel}
                         onTouchMove={this.duringMove}
                         onMouseUp={this.endMove}
                         onMouseLeave={this.endMove}

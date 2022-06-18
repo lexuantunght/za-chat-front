@@ -72,5 +72,6 @@
     "sentVideo": "Sent a video",
     "sentSomeVideos": "Send {{value}} videos",
     "sentFile": "Sent an file",
-    "sentSomeFiles": "Send {{value}} files"
+    "sentSomeFiles": "Send {{value}} files",
+    "sentAt": "sent at"
 }

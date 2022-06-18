@@ -1,7 +1,8 @@
-/* eslint-disable */
-const { BrowserWindow, app, ipcMain, Menu, Tray, session } = require('electron');
+const { BrowserWindow, app, ipcMain, Menu, Tray, session, dialog } = require('electron');
 const path = require('path');
 const url = require('url');
+const fs = require('fs');
+const client = require('https');
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -151,10 +152,22 @@ ipcMain.on('openApp', () => {
     createMainWindow();
 });
 
-ipcMain.on('openFileViewer', (event, url) => {
-    if (!fileViewerWindow) {
-        createFileViewerWindow(url);
-    }
+ipcMain.on('openFileViewer', (event, data) => {
+    createFileViewerWindow(data);
+});
+
+ipcMain.on('openSaveDialog', (event, file) => {
+    dialog
+        .showSaveDialog(fileViewerWindow, {
+            title: 'ZaChat - Save file',
+            defaultPath: path.join(app.getPath('downloads'), file.name),
+            filters: [{ name: 'Images', extensions: [file.type] }],
+        })
+        .then((result) => {
+            client.get(file.url, (response) => {
+                response.pipe(fs.createWriteStream(result.filePath));
+            });
+        });
 });
 
 ipcMain.once('quit', () => {
