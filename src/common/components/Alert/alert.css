@@ -1,0 +1,9 @@
+.za-alert-footer {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    margin-top: 1rem;
+}
+.za-alert-accept {
+    margin-left: 0.5rem;
+}

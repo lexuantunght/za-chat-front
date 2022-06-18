@@ -1,0 +1,37 @@
+.za-uploader-container {
+    display: flex;
+    margin-top: 1rem;
+}
+.za-uploader-drop {
+    width: 16rem;
+    height: 16rem;
+    border: 1px dashed var(--secondary);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+.za-uploader-drop > div {
+    margin-top: 0.5rem;
+}
+.za-uploader-result {
+    width: 16rem;
+    height: 16rem;
+}
+.za-uploader-result > .za-uploader-result-title {
+    font-weight: bold;
+}
+@media (max-width: 768px) {
+    .za-uploader-container {
+        flex-direction: column;
+    }
+    .za-uploader-drop,
+    .za-uploader-result {
+        width: 12rem;
+        height: 12rem;
+        margin-right: 0;
+    }
+}

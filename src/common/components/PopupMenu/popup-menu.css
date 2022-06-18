@@ -1,0 +1,15 @@
+.za-popup {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: max-content;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    padding-top: var(--padding-y);
+    padding-bottom: var(--padding-y);
+    border-radius: var(--border-radius);
+}
+
+.za-popup-toggle {
+    cursor: pointer;
+}
