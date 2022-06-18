@@ -4,6 +4,7 @@ import ImageViewer from '../../common/components/ImageViewer';
 import { addListener, openSaveDialog, removeAllListeners } from '../../utils/app/eventHandler';
 import { SenderViewerData } from '../Chat/components/ChatSection';
 import useMultilingual from '../../utils/multilingual';
+import Video from '../../common/components/Video';
 
 const FileViewer = () => {
     const { t } = useMultilingual();
@@ -19,9 +20,21 @@ const FileViewer = () => {
         };
     }, []);
 
+    if (!data?.file.url) {
+        return null;
+    }
+
     return (
         <div className="file-viewer-container">
-            {data?.file.url && (
+            {data.file.type?.startsWith('video/') ? (
+                <Video
+                    className="file-viewer-video"
+                    url={data.file.url}
+                    showControllers
+                    showExtendButton={false}
+                    isNative
+                />
+            ) : (
                 <ImageViewer
                     image={{
                         url: data.file.url,
@@ -34,7 +47,7 @@ const FileViewer = () => {
                         openSaveDialog({
                             url: data.file.url,
                             name: name,
-                            type: name?.substring(name.lastIndexOf('.')),
+                            type: name?.substring(name.lastIndexOf('.') + 1),
                         });
                     }}
                 />

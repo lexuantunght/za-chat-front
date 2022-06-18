@@ -10,9 +10,23 @@ interface VideoProps {
     autoPlay?: boolean;
     onLoad?: () => void;
     style?: React.CSSProperties;
+    showControllers?: boolean;
+    onClickExtend?: () => void;
+    showExtendButton?: boolean;
+    isNative?: boolean;
 }
 
-const Video = ({ className, url, autoPlay, onLoad, style }: VideoProps) => {
+const Video = ({
+    className,
+    url,
+    autoPlay,
+    onLoad,
+    onClickExtend,
+    style,
+    showControllers = true,
+    showExtendButton = true,
+    isNative,
+}: VideoProps) => {
     let videoRef: ReactPlayer | null;
     const [isPlaying, setIsPlaying] = React.useState(autoPlay);
     const [isMute, setIsMute] = React.useState(true);
@@ -31,6 +45,11 @@ const Video = ({ className, url, autoPlay, onLoad, style }: VideoProps) => {
         setIsSeek(true);
     };
 
+    const handleClickExtend = () => {
+        setIsPlaying(false);
+        onClickExtend?.();
+    };
+
     return (
         <div className={className ? `za-video ${className}` : 'za-video'} style={style}>
             <ReactPlayer
@@ -42,6 +61,7 @@ const Video = ({ className, url, autoPlay, onLoad, style }: VideoProps) => {
                 height="100%"
                 muted={isMute}
                 playing={isPlaying}
+                controls={isNative}
                 onReady={() => {
                     setIsReady(true);
                     onLoad?.();
@@ -54,7 +74,7 @@ const Video = ({ className, url, autoPlay, onLoad, style }: VideoProps) => {
                     if (!isSeek) setPlayedValue(Math.floor(e.playedSeconds));
                 }}
             />
-            {isReady && (
+            {isReady && !isNative && (
                 <>
                     <Button
                         variant="text"
@@ -64,49 +84,62 @@ const Video = ({ className, url, autoPlay, onLoad, style }: VideoProps) => {
                             <Icon name={isPlaying ? 'player-pause' : 'player-play'} />
                         </div>
                     </Button>
-                    <div className="za-video-controls">
-                        <Button
-                            variant="text"
-                            className={
-                                'za-video-play-control' + (isPlaying ? ' za-video-playing' : '')
-                            }
-                            onClick={() => setIsPlaying(!isPlaying)}>
-                            <div>
-                                <Icon name={isPlaying ? 'player-pause' : 'player-play'} />
-                            </div>
-                        </Button>
-                        <input
-                            type="range"
-                            className="video-slider"
-                            min={0}
-                            max={Math.floor(duration)}
-                            step={1}
-                            value={playedValue}
-                            onMouseDown={handleSeekMouseDown}
-                            onMouseUp={handleSeekMouseUp}
-                            onChange={(e) => {
-                                if (isSeek) setPlayedValue(+e.target.value);
-                            }}
-                        />
-                        <span>
-                            {moment
-                                .utc((Math.floor(duration) - playedValue) * 1000)
-                                .format('mm:ss')}
-                        </span>
-                        <Button variant="text">
-                            <div>
-                                <Icon name="arrows-maximize" />
-                            </div>
-                        </Button>
-                        <Button
-                            className="video-volume"
-                            variant="text"
-                            onClick={() => setIsMute(!isMute)}>
-                            <div>
-                                <Icon name={isMute ? 'volume-off' : 'volume'} />
-                            </div>
-                        </Button>
-                    </div>
+                    {!showControllers && showExtendButton && (
+                        <div className="za-video-extend">
+                            <Button variant="text" onClick={handleClickExtend}>
+                                <div>
+                                    <Icon name="extend" />
+                                </div>
+                            </Button>
+                        </div>
+                    )}
+                    {showControllers && (
+                        <div className="za-video-controls">
+                            <Button
+                                variant="text"
+                                className={
+                                    'za-video-play-control' + (isPlaying ? ' za-video-playing' : '')
+                                }
+                                onClick={() => setIsPlaying(!isPlaying)}>
+                                <div>
+                                    <Icon name={isPlaying ? 'player-pause' : 'player-play'} />
+                                </div>
+                            </Button>
+                            <input
+                                type="range"
+                                className="video-slider"
+                                min={0}
+                                max={Math.floor(duration)}
+                                step={1}
+                                value={playedValue}
+                                onMouseDown={handleSeekMouseDown}
+                                onMouseUp={handleSeekMouseUp}
+                                onChange={(e) => {
+                                    if (isSeek) setPlayedValue(+e.target.value);
+                                }}
+                            />
+                            <span>
+                                {moment
+                                    .utc((Math.floor(duration) - playedValue) * 1000)
+                                    .format('mm:ss')}
+                            </span>
+                            {showExtendButton && (
+                                <Button variant="text" onClick={handleClickExtend}>
+                                    <div>
+                                        <Icon name="extend" />
+                                    </div>
+                                </Button>
+                            )}
+                            <Button
+                                className="video-volume"
+                                variant="text"
+                                onClick={() => setIsMute(!isMute)}>
+                                <div>
+                                    <Icon name={isMute ? 'volume-off' : 'volume'} />
+                                </div>
+                            </Button>
+                        </div>
+                    )}
                 </>
             )}
         </div>

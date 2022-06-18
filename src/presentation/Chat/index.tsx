@@ -5,7 +5,6 @@ import ChatSection from './components/ChatSection';
 import ConversationController from '../../controller/chat/ConversationController';
 import useMultilingual from '../../utils/multilingual';
 import MessageController from '../../controller/chat/MessageController';
-import ContactController from '../../controller/contact/ContactController';
 import useController from '../../controller/hooks';
 import { Message } from '../../domain/model/Message';
 import { UserData } from '../../domain/model/UserData';
@@ -14,10 +13,7 @@ import { Conversation } from '../../domain/model/Conversation';
 
 const ChatScreen = () => {
     const { getConversations, selectConversation } = useController(ConversationController);
-    const { sendMessage, getMessages, updateStatusMessage, appendMessage } =
-        useController(MessageController);
-    const { requestFriend, cancelRequest, acceptFriend, rejectFriend } =
-        useController(ContactController);
+    const { getMessages, updateStatusMessage, appendMessage } = useController(MessageController);
     const { useGetState, addSocketListener, emitSocket, removeAllSocketListeners } =
         useController(AppController);
     const userData = useGetState((state) => state.app.userData);
@@ -102,11 +98,6 @@ const ChatScreen = () => {
                 <ChatSection
                     conversation={selectedConversation}
                     user={userData}
-                    onSend={sendMessage}
-                    onCancelRequestFriend={cancelRequest}
-                    onRequestFriend={requestFriend}
-                    onAcceptFriend={acceptFriend}
-                    onRejectFriend={rejectFriend}
                     t={t}
                     language={language}
                     messages={messages}

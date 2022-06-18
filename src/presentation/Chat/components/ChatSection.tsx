@@ -12,6 +12,8 @@ import { FileData } from '../../../domain/model/FileData';
 import MessageItem from './MessageItem';
 import VirtualizedList from '../../../common/components/VirtualizedList';
 import { openFileViewer } from '../../../utils/app/eventHandler';
+import ContactController from '../../../controller/contact/ContactController';
+import MessageController from '../../../controller/chat/MessageController';
 
 export type SenderViewerData = {
     file: FileData;
@@ -23,11 +25,6 @@ type ChatSectionProps = {
     conversation: Conversation;
     messages: Message[];
     user: UserData;
-    onSend: (message: Message) => void;
-    onCancelRequestFriend: (userId: string) => void;
-    onRequestFriend: (userId: string) => void;
-    onAcceptFriend: (userId: string) => void;
-    onRejectFriend: (userId: string) => void;
     t: CallableFunction;
     language: string;
 };
@@ -37,20 +34,12 @@ export type ChatSectionRef = {
     updateStatusMessage: (msg: Message) => void;
 };
 
-const ChatSection = ({
-    conversation,
-    user,
-    onSend,
-    onCancelRequestFriend,
-    onRequestFriend,
-    onAcceptFriend,
-    onRejectFriend,
-    t,
-    language,
-    messages = [],
-}: ChatSectionProps) => {
+const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSectionProps) => {
     const { emitSocket, addSocketListener, removeAllSocketListeners } =
         useController(AppController);
+    const { rejectFriend, acceptFriend, requestFriend, cancelRequest } =
+        useController(ContactController);
+    const { sendMessage } = useController(MessageController);
     const partnerId = React.useMemo(
         () => conversation.users.find((u) => u._id !== user?._id)?._id || '',
         [conversation._id, conversation.friendStatus]
@@ -88,7 +77,7 @@ const ChatSection = ({
             status: 'sending',
             created_at: new Date(),
         };
-        onSend(msg);
+        sendMessage(msg);
     };
 
     const onSendFiles = (files: FileData[]) => {
@@ -102,7 +91,7 @@ const ChatSection = ({
             status: 'sending',
             created_at: new Date(),
         };
-        onSend(msg);
+        sendMessage(msg);
     };
 
     return (
@@ -130,7 +119,7 @@ const ChatSection = ({
                 {conversation.friendStatus !== 'friend' && (
                     <div className="chat-title-add-friend">
                         {!conversation.friendStatus && (
-                            <Button variant="text" onClick={() => onRequestFriend(partnerId)}>
+                            <Button variant="text" onClick={() => requestFriend(partnerId)}>
                                 <Icon name="user-plus" strokeWidth={1.25} />
                                 <span className="add-friend">{t('addFriend')}</span>
                             </Button>
@@ -141,7 +130,7 @@ const ChatSection = ({
                                 <Button
                                     className="cancel-request"
                                     variant="text"
-                                    onClick={() => onCancelRequestFriend(partnerId)}>
+                                    onClick={() => cancelRequest(partnerId)}>
                                     {t('cancelRequest')}
                                 </Button>
                             </>
@@ -151,14 +140,14 @@ const ChatSection = ({
                                 <Button
                                     className="accept-request"
                                     variant="text"
-                                    onClick={() => onAcceptFriend(partnerId)}>
+                                    onClick={() => acceptFriend(partnerId)}>
                                     {t('acceptRequest')}
                                 </Button>
                                 <div className="separator" />
                                 <Button
                                     className="reject-request"
                                     variant="text"
-                                    onClick={() => onRejectFriend(partnerId)}>
+                                    onClick={() => rejectFriend(partnerId)}>
                                     {t('rejectRequest')}
                                 </Button>
                             </>

@@ -1,6 +1,6 @@
 .za-video {
     position: relative;
-    min-width: 10rem;
+    min-width: 4rem;
     background-color: #000000;
 }
 .za-video > .za-video-play {
@@ -18,6 +18,11 @@
     left: 0;
     width: 100%;
     color: #ffffff;
+}
+.za-video > .za-video-extend {
+    position: absolute;
+    bottom: 0;
+    left: 0.25rem;
 }
 .za-video-controls > .video-slider {
     width: calc(100% - 8rem);
@@ -54,7 +59,8 @@
     background: var(--primary);
     cursor: pointer;
 }
-.za-video-controls div {
+.za-video-controls div,
+.za-video-extend div {
     color: #ffffff;
 }
 .za-video-controls > .video-volume {
@@ -77,6 +83,11 @@
 .za-video:not(:hover) > .za-video-play.za-video-playing {
     display: none;
 }
-.za-video:not(:hover) > .za-video-controls {
+.za-video:not(:hover) > .za-video-controls,
+.za-video:not(:hover) > .za-video-extend {
+    display: none;
+}
+.za-video.za-video-cursor-inactive > .za-video-controls,
+.za-video.za-video-cursor-inactive > .za-video-play {
     display: none;
 }

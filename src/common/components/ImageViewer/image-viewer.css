@@ -79,6 +79,7 @@
     cursor: grab;
     background-size: 50px;
     transform-origin: center center;
+    object-fit: contain;
 }
 .za-image-viewer-canvas .za-image-viewer-img.za-image-viewer-loading {
     opacity: 0;

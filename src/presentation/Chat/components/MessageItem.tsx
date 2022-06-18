@@ -23,11 +23,27 @@ type FileMessageItemProp = {
     style?: React.CSSProperties;
     onLoad?: () => void;
     onClick?: (file: FileData) => void;
+    showControllers?: boolean;
 };
 
-const FileMessageItem = ({ file, style, onLoad, onClick }: FileMessageItemProp) => {
+const FileMessageItem = ({
+    file,
+    style,
+    onLoad,
+    onClick,
+    showControllers = true,
+}: FileMessageItemProp) => {
     if (file.type?.startsWith('video/')) {
-        return <Video className="message-video" url={file.url} style={style} onLoad={onLoad} />;
+        return (
+            <Video
+                className="message-video"
+                url={file.url}
+                style={style}
+                onLoad={onLoad}
+                showControllers={showControllers}
+                onClickExtend={() => onClick?.(file)}
+            />
+        );
     }
     return <Image src={file.url} style={style} onLoad={onLoad} onClick={() => onClick?.(file)} />;
 };
@@ -46,11 +62,7 @@ const MessageItem = ({
     const containerRef = React.useRef<HTMLDivElement>(null);
 
     const calculateGrid = () => {
-        if (
-            !message.files ||
-            message.files.length < 2 ||
-            message.files?.some((f) => f.type?.startsWith('video/'))
-        ) {
+        if (!message.files || message.files.length < 2) {
             return 1;
         }
         if (message.files.length % 2 === 0) {
@@ -85,6 +97,7 @@ const MessageItem = ({
                         <FileMessageItem
                             key={index}
                             file={file}
+                            showControllers={getNumOfCols === 1}
                             style={
                                 getNumOfCols > 1
                                     ? {
