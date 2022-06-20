@@ -43,7 +43,10 @@ const ChatTyping = ({ onSend, conversationId, userId, t, onSendFiles }: ChatTypi
             content: '',
         },
         validationSchema: validator.object({
-            content: validator.string().required(),
+            content: validator
+                .string()
+                .matches(/^\s*\S[\s\S]*$/)
+                .required(),
         }),
         onSubmit: (values, { resetForm }) => {
             onSend?.(values.content);
@@ -134,6 +137,7 @@ const ChatTyping = ({ onSend, conversationId, userId, t, onSendFiles }: ChatTypi
                         type="submit"
                         className="chat-send-button"
                         variant="text"
+                        disabled={!form.isValid}
                         title={t('sendMessage')}>
                         <Icon name="send" />
                     </Button>

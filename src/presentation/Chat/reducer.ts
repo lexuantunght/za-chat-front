@@ -8,6 +8,7 @@ export interface ChatState {
     selectedConversation?: Conversation;
     conversations: Conversation[];
     messages: Message[];
+    totalMessages: number;
     isLoading?: boolean;
 }
 
@@ -15,6 +16,7 @@ const defaultState: ChatState = {
     conversations: [],
     messages: [],
     isLoading: false,
+    totalMessages: 0,
 };
 
 const chatSlice = createSlice({
@@ -32,6 +34,9 @@ const chatSlice = createSlice({
         },
         setMessages: (state: ChatState, action: PayloadAction<Message[]>) => {
             state.messages = action.payload;
+        },
+        setTotalMessages: (state: ChatState, action: PayloadAction<number>) => {
+            state.totalMessages = action.payload;
         },
         updateStatusMessage: (state: ChatState, action: PayloadAction<Message>) => {
             _update(state.messages, '[0].status', () => action.payload.status);
@@ -60,6 +65,7 @@ export const {
     updateStatusMessage,
     updateNewMessageToConversation,
     updateFriendStatus,
+    setTotalMessages,
 } = chatSlice.actions;
 
 export default chatReducer;

@@ -35,11 +35,12 @@ export type ChatSectionRef = {
 };
 
 const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSectionProps) => {
-    const { emitSocket, addSocketListener, removeAllSocketListeners } =
+    const { emitSocket, addSocketListener, removeAllSocketListeners, useGetState } =
         useController(AppController);
     const { rejectFriend, acceptFriend, requestFriend, cancelRequest } =
         useController(ContactController);
-    const { sendMessage } = useController(MessageController);
+    const { sendMessage, getMessages } = useController(MessageController);
+    const totalMessages = useGetState((state) => state.chat.totalMessages);
     const partnerId = React.useMemo(
         () => conversation.users.find((u) => u._id !== user?._id)?._id || '',
         [conversation._id, conversation.friendStatus]
@@ -92,6 +93,10 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
             created_at: new Date(),
         };
         sendMessage(msg);
+    };
+
+    const handleLoadMore = (page: number) => {
+        getMessages(conversation._id, page);
     };
 
     return (
@@ -158,16 +163,22 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
             <div className="chat-section-body custom-scroll scrolling">
                 <VirtualizedList
                     data={messages}
-                    rowRenderer={(item, index, measure) => (
+                    reverse
+                    initItemCount={30}
+                    total={totalMessages}
+                    onLoadMore={handleLoadMore}
+                    rowRenderer={(item, index) => (
                         <MessageItem
                             index={index}
                             t={t}
                             message={item}
                             messagesLength={messages.length}
-                            nextMessage={messages[index + 1]}
+                            showAvatar={
+                                (index > 0 && item.userId !== messages[index - 1]?.userId) ||
+                                (index === 0 && messages.length === totalMessages)
+                            }
                             user={user}
                             conversationAvatar={conversation.avatar}
-                            onLoad={measure}
                             onClick={(file) =>
                                 handleClickMessage({
                                     file,

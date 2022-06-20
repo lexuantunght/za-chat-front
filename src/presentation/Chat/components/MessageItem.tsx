@@ -12,8 +12,8 @@ type MessageItemProps = {
     user?: UserData;
     t: CallableFunction;
     conversationAvatar?: string;
-    nextMessage?: Message;
     messagesLength: number;
+    showAvatar?: boolean;
     onLoad?: () => void;
     onClick?: (file: FileData) => void;
 };
@@ -55,7 +55,7 @@ const MessageItem = ({
     t,
     conversationAvatar,
     messagesLength,
-    nextMessage,
+    showAvatar,
     onLoad,
     onClick,
 }: MessageItemProps) => {
@@ -79,7 +79,7 @@ const MessageItem = ({
             className={`chat-message-item ${
                 message.userId === user?._id ? 'chat-self-message' : ''
             }`}>
-            {index < messagesLength - 1 && message.userId === nextMessage?.userId ? (
+            {!showAvatar ? (
                 <span className="chat-avatar" />
             ) : (
                 <img
@@ -134,7 +134,7 @@ const MessageItem = ({
                         <small className="chat-message-time">
                             {moment(message.created_at).format('hh:mm')}
                         </small>
-                        {index === 0 && message.userId === user?._id && (
+                        {index === messagesLength - 1 && message.userId === user?._id && (
                             <small>{t(message.status)}</small>
                         )}
                     </div>

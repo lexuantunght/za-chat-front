@@ -3,7 +3,11 @@ import { Message } from '../../model/Message';
 import { MessageRepository } from '../../repository/MessageRepository';
 
 export interface GetMessageUseCase {
-    invoke: (conversationId: string, page?: number, limit?: number) => Promise<Message[]>;
+    invoke: (
+        conversationId: string,
+        page?: number,
+        limit?: number
+    ) => Promise<{ messages: Message[]; total: number }>;
 }
 
 export class GetMessages implements GetMessageUseCase {

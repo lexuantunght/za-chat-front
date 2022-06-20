@@ -253,8 +253,7 @@
 
 .chat-message-item {
     display: flex;
-    padding: 0 1rem;
-    margin-bottom: 0.5rem;
+    padding: 0.25rem 1rem;
 }
 .chat-message-item.chat-self-message {
     flex-direction: row-reverse;
