@@ -1,5 +1,4 @@
-export interface FileData {
-    file?: File;
+export interface FileDataAPIEntity {
     url?: string;
     name?: string;
     type?: string;

@@ -68,25 +68,12 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
         emitSocket('get-active', partnerId);
     }, [conversation._id, conversation.friendStatus]);
 
-    const onSendMessage = (content: string) => {
+    const onSendMessage = (content: string, files?: FileData[]) => {
         const msg: Message = {
             content,
-            conversationId: conversation._id,
-            toUserId: partnerId,
-            userId: user?._id || '',
-            seen: user?._id ? [user?._id] : [],
-            status: 'sending',
-            created_at: new Date(),
-        };
-        sendMessage(msg);
-    };
-
-    const onSendFiles = (files: FileData[]) => {
-        const msg: Message = {
-            content: '',
-            conversationId: conversation._id,
-            toUserId: partnerId,
             files,
+            conversationId: conversation._id,
+            toUserId: partnerId,
             userId: user?._id || '',
             seen: user?._id ? [user?._id] : [],
             status: 'sending',
@@ -192,7 +179,6 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
             </div>
             <ChatTyping
                 onSend={onSendMessage}
-                onSendFiles={onSendFiles}
                 conversationId={conversation._id}
                 userId={partnerId || conversation.users[0]._id}
                 t={t}

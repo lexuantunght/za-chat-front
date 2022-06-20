@@ -24,6 +24,7 @@ type FileMessageItemProp = {
     onLoad?: () => void;
     onClick?: (file: FileData) => void;
     showControllers?: boolean;
+    inGrid?: boolean;
 };
 
 const FileMessageItem = ({
@@ -31,6 +32,7 @@ const FileMessageItem = ({
     style,
     onLoad,
     onClick,
+    inGrid,
     showControllers = true,
 }: FileMessageItemProp) => {
     if (file.type?.startsWith('video/')) {
@@ -38,14 +40,28 @@ const FileMessageItem = ({
             <Video
                 className="message-video"
                 url={file.url}
-                style={style}
+                style={{ ...style, cursor: 'pointer' }}
+                originHeight={file.height}
+                originWidth={file.width}
+                maxHeight={inGrid ? 120 : 400}
                 onLoad={onLoad}
                 showControllers={showControllers}
                 onClickExtend={() => onClick?.(file)}
             />
         );
     }
-    return <Image src={file.url} style={style} onLoad={onLoad} onClick={() => onClick?.(file)} />;
+    return (
+        <Image
+            src={file.url}
+            style={{ ...style, cursor: 'pointer' }}
+            originHeight={file.height}
+            originWidth={file.width}
+            maxHeight={inGrid ? 120 : 400}
+            onLoad={onLoad}
+            onClick={() => onClick?.(file)}
+            className="message-image"
+        />
+    );
 };
 
 const MessageItem = ({
@@ -59,8 +75,6 @@ const MessageItem = ({
     onLoad,
     onClick,
 }: MessageItemProps) => {
-    const containerRef = React.useRef<HTMLDivElement>(null);
-
     const calculateGrid = () => {
         if (!message.files || message.files.length < 2) {
             return 1;
@@ -90,22 +104,15 @@ const MessageItem = ({
 
             {message.files && message.files.length > 0 && !message.content ? (
                 <div
-                    ref={containerRef}
                     className="chat-message-image-only"
-                    style={{ gridTemplateColumns: `repeat(${getNumOfCols}, minmax(0, 1fr))` }}>
+                    style={{ gridTemplateColumns: `repeat(${getNumOfCols}, auto)` }}>
                     {message.files.map((file, index) => (
                         <FileMessageItem
                             key={index}
                             file={file}
                             showControllers={getNumOfCols === 1}
-                            style={
-                                getNumOfCols > 1
-                                    ? {
-                                          objectFit: 'cover',
-                                          aspectRatio: '1/1',
-                                      }
-                                    : { objectFit: 'contain', aspectRatio: 'auto' }
-                            }
+                            inGrid={getNumOfCols > 1}
+                            style={{ objectFit: getNumOfCols > 1 ? 'cover' : 'contain' }}
                             onLoad={onLoad}
                             onClick={onClick}
                         />
@@ -117,7 +124,7 @@ const MessageItem = ({
                         <small className="chat-message-time">
                             {moment(message.created_at).format('hh:mm')}
                         </small>
-                        {index === 0 && message.userId === user?._id && (
+                        {index === messagesLength - 1 && message.userId === user?._id && (
                             <small>{t(message.status)}</small>
                         )}
                     </div>
@@ -126,7 +133,28 @@ const MessageItem = ({
                 <div>
                     <div className="chat-message-content">
                         {message.files && message.files.length > 0 && (
-                            <img width={100} height={100} src={message.files[0].url} />
+                            <div
+                                className="chat-message-text-image"
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: `repeat(${getNumOfCols}, auto)`,
+                                    marginBottom: '0.5rem',
+                                    gap: '0.25rem',
+                                }}>
+                                {message.files.map((file, index) => (
+                                    <FileMessageItem
+                                        key={index}
+                                        file={file}
+                                        showControllers={getNumOfCols === 1}
+                                        inGrid={getNumOfCols > 1}
+                                        style={{
+                                            objectFit: getNumOfCols > 1 ? 'cover' : 'contain',
+                                        }}
+                                        onLoad={onLoad}
+                                        onClick={onClick}
+                                    />
+                                ))}
+                            </div>
                         )}
                         {message.content}
                     </div>

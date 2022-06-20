@@ -39,7 +39,11 @@ const chatSlice = createSlice({
             state.totalMessages = action.payload;
         },
         updateStatusMessage: (state: ChatState, action: PayloadAction<Message>) => {
-            _update(state.messages, '[0].status', () => action.payload.status);
+            _update(
+                state.messages,
+                `[${state.messages.length - 1}].status`,
+                () => action.payload.status
+            );
         },
         updateNewMessageToConversation: (state: ChatState, action: PayloadAction<Message>) => {
             const indexOfItem = (state.conversations || []).findIndex(

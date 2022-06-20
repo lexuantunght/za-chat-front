@@ -3,6 +3,7 @@ import moment from 'moment';
 import ReactPlayer from 'react-player';
 import Button from '../Button';
 import Icon from '../Icon';
+import computeMediaSize from '../../../utils/helpers/computeMediaSize';
 
 interface VideoProps {
     className?: string;
@@ -14,6 +15,10 @@ interface VideoProps {
     onClickExtend?: () => void;
     showExtendButton?: boolean;
     isNative?: boolean;
+    originWidth?: number;
+    originHeight?: number;
+    maxHeight?: number;
+    maxWidth?: number;
 }
 
 const Video = ({
@@ -26,6 +31,10 @@ const Video = ({
     showControllers = true,
     showExtendButton = true,
     isNative,
+    originWidth,
+    originHeight,
+    maxHeight,
+    maxWidth,
 }: VideoProps) => {
     let videoRef: ReactPlayer | null;
     const [isPlaying, setIsPlaying] = React.useState(autoPlay);
@@ -50,8 +59,15 @@ const Video = ({
         onClickExtend?.();
     };
 
+    const size = React.useMemo(
+        () => computeMediaSize(originHeight, originWidth, maxHeight, maxWidth),
+        [maxWidth, maxHeight, originHeight, originWidth]
+    );
+
     return (
-        <div className={className ? `za-video ${className}` : 'za-video'} style={style}>
+        <div
+            className={className ? `za-video ${className}` : 'za-video'}
+            style={{ ...style, height: size?.height, width: size?.width }}>
             <ReactPlayer
                 ref={(player) => {
                     videoRef = player;
