@@ -14,6 +14,7 @@ import VirtualizedList from '../../../common/components/VirtualizedList';
 import { openFileViewer } from '../../../utils/app/eventHandler';
 import ContactController from '../../../controller/contact/ContactController';
 import MessageController from '../../../controller/chat/MessageController';
+import SearchBar from '../../../common/components/SearchBar';
 
 export type SenderViewerData = {
     file: FileData;
@@ -41,11 +42,9 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
         useController(ContactController);
     const { sendMessage, getMessages } = useController(MessageController);
     const totalMessages = useGetState((state) => state.chat.totalMessages);
-    const partnerId = React.useMemo(
-        () => conversation.users.find((u) => u._id !== user?._id)?._id || '',
-        [conversation._id, conversation.friendStatus]
-    );
+    const partnerId = conversation.userId || '';
     const [activeTime, setActiveTime] = React.useState<string | Date>('');
+    const [isOpenSearch, setIsOpenSearch] = React.useState(false);
 
     const handleClickMessage = (data: SenderViewerData) => {
         openFileViewer(data);
@@ -66,32 +65,39 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
 
     React.useEffect(() => {
         emitSocket('get-active', partnerId);
-    }, [conversation._id, conversation.friendStatus]);
+    }, [conversation.userId, conversation.user.relationshipStatus]);
 
     const onSendMessage = (content: string, files?: FileData[]) => {
         const msg: Message = {
             content,
             files,
-            conversationId: conversation._id,
-            toUserId: partnerId,
-            userId: user?._id || '',
+            toUid: partnerId,
+            fromUid: user?._id || '',
             seen: user?._id ? [user?._id] : [],
             status: 'sending',
-            created_at: new Date(),
+            sendTime: new Date(),
+            type:
+                files && files.length > 0
+                    ? files[0].type?.startsWith('image/')
+                        ? 'image'
+                        : 'file'
+                    : 'text',
         };
         sendMessage(msg);
     };
 
     const handleLoadMore = (page: number) => {
-        getMessages(conversation._id, page);
+        if (conversation.userId) {
+            getMessages(conversation.userId, page);
+        }
     };
 
     return (
         <div className="chat-section">
             <div className="chat-section-title">
-                <img className="chat-avatar" src={conversation.avatar} />
+                <img className="chat-avatar" src={conversation.user.avatar} />
                 <div className="chat-section-name-info">
-                    <div className="chat-section-name">{conversation.name}</div>
+                    <div className="chat-section-name">{conversation.user.name}</div>
                     <div>
                         {typeof activeTime === 'string'
                             ? activeTime
@@ -101,22 +107,26 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
                     </div>
                 </div>
                 <>
-                    <Button className="chat-search" variant="text" title={t('searchMessages')}>
+                    <Button
+                        className="chat-search"
+                        variant="text"
+                        title={t('searchMessages')}
+                        onClick={() => setIsOpenSearch(true)}>
                         <Icon name="search" />
                     </Button>
                     <Button variant="text" className="chat-info" title={t('infoConversation')}>
                         <Icon name="info-circle" />
                     </Button>
                 </>
-                {conversation.friendStatus !== 'friend' && (
+                {conversation.user.relationshipStatus !== 'friend' && (
                     <div className="chat-title-add-friend">
-                        {!conversation.friendStatus && (
+                        {conversation.user.relationshipStatus === 'stranger' && (
                             <Button variant="text" onClick={() => requestFriend(partnerId)}>
                                 <Icon name="user-plus" strokeWidth={1.25} />
                                 <span className="add-friend">{t('addFriend')}</span>
                             </Button>
                         )}
-                        {conversation.friendStatus === 'requested' && (
+                        {conversation.user.relationshipStatus === 'requested' && (
                             <>
                                 <div className="requested-friend">{t('requestedFriend')}</div>
                                 <Button
@@ -127,7 +137,7 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
                                 </Button>
                             </>
                         )}
-                        {conversation.friendStatus === 'waiting' && (
+                        {conversation.user.relationshipStatus === 'waiting' && (
                             <>
                                 <Button
                                     className="accept-request"
@@ -146,6 +156,20 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
                         )}
                     </div>
                 )}
+                {isOpenSearch && (
+                    <div className="chat-title-search">
+                        <div>
+                            <SearchBar
+                                id="chat-search-input"
+                                value="1234"
+                                placeholder={t('typeKeyword')}
+                            />
+                            <Button variant="text" onClick={() => setIsOpenSearch(false)}>
+                                {t('close')}
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </div>
             <div className="chat-section-body custom-scroll scrolling">
                 <VirtualizedList
@@ -161,16 +185,16 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
                             message={item}
                             messagesLength={messages.length}
                             showAvatar={
-                                (index > 0 && item.userId !== messages[index - 1]?.userId) ||
+                                (index > 0 && item.fromUid !== messages[index - 1]?.fromUid) ||
                                 (index === 0 && messages.length === totalMessages)
                             }
                             user={user}
-                            conversationAvatar={conversation.avatar}
+                            conversationAvatar={conversation.user.avatar}
                             onClick={(file) =>
                                 handleClickMessage({
                                     file,
-                                    from: conversation.name,
-                                    time: item.created_at,
+                                    from: conversation.user.name,
+                                    time: item.sendTime,
                                 })
                             }
                         />
@@ -180,7 +204,7 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
             <ChatTyping
                 onSend={onSendMessage}
                 conversationId={conversation._id}
-                userId={partnerId || conversation.users[0]._id}
+                userId={partnerId}
                 t={t}
             />
         </div>

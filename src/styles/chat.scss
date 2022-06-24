@@ -46,6 +46,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
 }
 .chat-title-add-friend .add-friend {
     margin-left: 0.25rem;
@@ -65,6 +66,28 @@
     background-color: var(--primary);
     width: 1px;
     height: 60%;
+}
+
+.chat-title-search {
+    background-color: #ffffff;
+    position: absolute;
+    top: 4.5rem;
+    left: 0;
+    width: 100%;
+    border-top: 1px solid #dddddd;
+    height: 3.4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+.chat-title-search > div {
+    display: flex;
+    flex: 1;
+    margin: 0 1rem;
+}
+.chat-title-search > div > button {
+    margin-left: 1rem;
 }
 
 .chat-search {
@@ -163,6 +186,12 @@
     display: flex;
     flex: 1;
     align-items: center;
+}
+.friend-item {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .chat-item-head {

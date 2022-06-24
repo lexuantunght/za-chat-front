@@ -145,3 +145,19 @@
     aspect-ratio: 1/1;
     object-fit: contain;
 }
+
+.app-find-friends {
+    width: 24rem;
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+}
+@media (max-width: 480px) {
+    .app-find-friends {
+        width: 14rem;
+    }
+}
+.app-find-friends > .app-find-friends-title {
+    margin: 1rem 0;
+    font-size: small;
+}

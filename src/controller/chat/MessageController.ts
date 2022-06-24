@@ -26,26 +26,26 @@ class MessageController extends BaseController {
         this.sendMessageUseCase.invoke(message).catch(this.handleError);
     };
 
-    public getMessages = (conversationId: string, page = 0, limit = 30) => {
-        this.getMessagesUseCase.invoke(conversationId, page, limit).then(({ messages, total }) => {
-            if (page > 0 && conversationId === this.getState().chat.selectedConversation?._id) {
-                this.dispatch(setMessages([...messages, ...this.getState().chat.messages]));
+    public getMessages = (userId: string, page = 0, limit = 30) => {
+        this.getMessagesUseCase.invoke(userId, page, limit).then(({ data, total }) => {
+            if (page > 0 && userId === this.getState().chat.selectedConversation?.userId) {
+                this.dispatch(setMessages([...data, ...this.getState().chat.messages]));
             } else {
-                this.dispatch(setMessages(messages));
+                this.dispatch(setMessages(data));
                 this.dispatch(setTotalMessages(total));
             }
         });
     };
 
     public appendMessage = (message: Message) => {
-        if (message.conversationId === this.getState().chat.selectedConversation?._id) {
+        if (message.fromUid === this.getState().chat.selectedConversation?.userId) {
             this.dispatch(setMessages([...this.getState().chat.messages, message]));
             this.dispatch(setTotalMessages(this.getState().chat.totalMessages + 1));
         }
     };
 
     public updateStatusMessage = (message: Message) => {
-        if (message.conversationId === this.getState().chat.selectedConversation?._id) {
+        if (message.fromUid === this.getState().app.userData?._id) {
             this.dispatch(updateStatusMessage(message));
         }
     };

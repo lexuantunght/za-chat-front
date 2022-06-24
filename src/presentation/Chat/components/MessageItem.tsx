@@ -89,16 +89,16 @@ const MessageItem = ({
 
     return (
         <div
-            key={message.conversationId + index}
+            key={message.toUid + index}
             className={`chat-message-item ${
-                message.userId === user?._id ? 'chat-self-message' : ''
+                message.fromUid === user?._id ? 'chat-self-message' : ''
             }`}>
             {!showAvatar ? (
                 <span className="chat-avatar" />
             ) : (
                 <img
                     className="chat-avatar"
-                    src={message.userId === user?._id ? user.avatar : conversationAvatar}
+                    src={message.fromUid === user?._id ? user.avatar : conversationAvatar}
                 />
             )}
 
@@ -122,9 +122,9 @@ const MessageItem = ({
                         className="chat-message-stamp"
                         style={{ gridColumn: `span ${getNumOfCols} / span ${getNumOfCols}` }}>
                         <small className="chat-message-time">
-                            {moment(message.created_at).format('hh:mm')}
+                            {moment(message.sendTime).format('hh:mm')}
                         </small>
-                        {index === messagesLength - 1 && message.userId === user?._id && (
+                        {index === messagesLength - 1 && message.fromUid === user?._id && (
                             <small>{t(message.status)}</small>
                         )}
                     </div>
@@ -160,9 +160,9 @@ const MessageItem = ({
                     </div>
                     <div>
                         <small className="chat-message-time">
-                            {moment(message.created_at).format('hh:mm')}
+                            {moment(message.sendTime).format('hh:mm')}
                         </small>
-                        {index === messagesLength - 1 && message.userId === user?._id && (
+                        {index === messagesLength - 1 && message.fromUid === user?._id && (
                             <small>{t(message.status)}</small>
                         )}
                     </div>

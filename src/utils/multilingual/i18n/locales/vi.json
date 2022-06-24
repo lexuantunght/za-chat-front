@@ -73,5 +73,7 @@
     "sentSomeVideos": "Đã gửi {{value}} videos",
     "sentFile": "Đã gửi 1 tập tin",
     "sentSomeFiles": "Đã gửi {{value}} tập tin",
-    "sentAt": "đã gửi lúc"
+    "sentAt": "đã gửi lúc",
+    "typeKeyword": "Nhập từ khóa...",
+    "findFriends": "Tìm bạn"
 }

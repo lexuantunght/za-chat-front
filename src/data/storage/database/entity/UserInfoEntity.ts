@@ -1,6 +1,6 @@
-export interface UserDataAPIEntity {
-    _id: string;
-    avatar?: string;
+export interface UserInfoEntity {
+    userId: string;
     name: string;
+    avatar?: string;
     relationshipStatus?: 'requested' | 'waiting' | 'friend' | 'stranger';
 }

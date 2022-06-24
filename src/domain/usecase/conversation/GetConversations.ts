@@ -1,9 +1,10 @@
+import { PagingData } from '../../../common/types/PagingData';
 import { ConversationRepositoryImpl } from '../../../data/repository/ConversationRepositoryImpl';
 import { Conversation } from '../../model/Conversation';
 import { ConversationRepository } from '../../repository/ConversationRepository';
 
 export interface GetConversationUseCase {
-    invoke: () => Promise<Conversation[]>;
+    invoke: () => Promise<PagingData<Conversation>>;
 }
 
 export class GetConversations implements GetConversationUseCase {

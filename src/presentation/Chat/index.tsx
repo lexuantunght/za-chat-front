@@ -24,10 +24,14 @@ const ChatScreen = () => {
 
     const onSelectConversation = (item: Conversation) => {
         if (!userData) return;
-        if (item.latestMessage?.seen && !item.latestMessage.seen.includes(userData._id)) {
-            emitSocket('action-message', item.latestMessage, 'seen');
-            const seen = [...item.latestMessage.seen, userData._id];
-            selectConversation({ ...item, latestMessage: { ...item.latestMessage, seen } });
+        if (
+            item.lastMessage &&
+            item.lastMessageFromUid !== userData._id &&
+            item.lastMessageStatus !== 'seen'
+        ) {
+            emitSocket('action-message', item.lastMessage, 'seen');
+            //const seen = [...item.latestMessage.seen, userData._id];
+            //selectConversation({ ...item, latestMessage: { ...item.latestMessage, seen } });
         } else {
             selectConversation(item);
         }
@@ -38,7 +42,9 @@ const ChatScreen = () => {
     }, []);
 
     React.useEffect(() => {
-        getMessages(selectedConversation?._id || '');
+        if (selectedConversation?.userId) {
+            getMessages(selectedConversation.userId);
+        }
     }, [selectedConversation?._id]);
 
     React.useEffect(() => {
@@ -71,9 +77,10 @@ const ChatScreen = () => {
             if (
                 userData &&
                 selectedItem &&
-                !selectedItem.latestMessage?.seen?.includes(userData._id)
+                selectedItem.lastMessageFromUid !== userData._id &&
+                selectedItem.lastMessageStatus !== 'seen'
             ) {
-                emitSocket('action-message', selectedConversation?.latestMessage, 'seen');
+                emitSocket('action-message', selectedConversation?.lastMessage, 'seen');
             }
         }
     }, [conversations]);

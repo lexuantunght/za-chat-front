@@ -73,5 +73,7 @@
     "sentSomeVideos": "Send {{value}} videos",
     "sentFile": "Sent an file",
     "sentSomeFiles": "Send {{value}} files",
-    "sentAt": "sent at"
+    "sentAt": "sent at",
+    "typeKeyword": "Type keyword...",
+    "findFriends": "Find friends"
 }

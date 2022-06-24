@@ -14,6 +14,8 @@ type SearchBarProps = {
     onFocus?: () => void;
     onBlur?: () => void;
     onEndEditing?: (value: string) => void;
+    containerStyle?: React.CSSProperties;
+    numberOnly?: boolean;
 };
 
 type SearchBarStates = {
@@ -34,10 +36,13 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarStates> {
     }
 
     handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.props.onChange?.(e);
-        this.setState({ isTyping: true, value: e.target.value }, () => {
-            this.handleTyping();
-        });
+        const regex = /^[0-9\b]+$/;
+        if (!this.props.numberOnly || e.target.value === '' || regex.test(e.target.value)) {
+            this.props.onChange?.(e);
+            this.setState({ isTyping: true, value: e.target.value }, () => {
+                this.handleTyping();
+            });
+        }
     };
 
     handleTyping = _debounce(() => {
@@ -58,7 +63,7 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarStates> {
     render() {
         const { onSearch, name, id, placeholder, onBlur, onFocus } = this.props;
         return (
-            <div className="za-searchbar-container">
+            <div className="za-searchbar-container" style={this.props.containerStyle}>
                 <Button variant="text" type="button" onClick={() => onSearch?.(this.state.value)}>
                     <Icon width="20" height="20" name="search" />
                 </Button>

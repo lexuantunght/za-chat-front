@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Conversation } from '../../domain/model/Conversation';
 import { Message } from '../../domain/model/Message';
 import _update from 'lodash-es/update';
-import { FriendStatus } from '../../common/types/FriendStatus';
+import _orderBy from 'lodash-es/orderBy';
+import moment from 'moment';
 
 export interface ChatState {
     selectedConversation?: Conversation;
@@ -47,13 +48,28 @@ const chatSlice = createSlice({
         },
         updateNewMessageToConversation: (state: ChatState, action: PayloadAction<Message>) => {
             const indexOfItem = (state.conversations || []).findIndex(
-                (item) => item._id === action.payload.conversationId
+                (item) => item.userId === action.payload.toUid
             );
-            _update(state.conversations, `[${indexOfItem}].latestMessage`, () => action.payload);
+            if (indexOfItem >= 0) {
+                state.conversations[indexOfItem].lastMessage = action.payload.content;
+                state.conversations[indexOfItem].lastMessageType = action.payload.type;
+                state.conversations[indexOfItem].lastMessageTime = action.payload.sendTime;
+                state.conversations[indexOfItem].lastMessageStatus = action.payload.status;
+                state.conversations[indexOfItem].lastMessageFromUid = action.payload.fromUid;
+            }
+
+            state.conversations = _orderBy(
+                state.conversations,
+                (conv) => moment(conv.lastMessageTime).toDate(),
+                'desc'
+            );
         },
-        updateFriendStatus: (state: ChatState, action: PayloadAction<FriendStatus>) => {
+        updateFriendStatus: (
+            state: ChatState,
+            action: PayloadAction<undefined | 'stranger' | 'friend' | 'requested' | 'waiting'>
+        ) => {
             if (state.selectedConversation) {
-                state.selectedConversation.friendStatus = action.payload;
+                state.selectedConversation.user.relationshipStatus = action.payload;
             }
         },
     },

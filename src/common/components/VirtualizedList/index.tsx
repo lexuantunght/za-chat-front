@@ -32,7 +32,7 @@ function VirtualizedList<T>({
     React.useEffect(() => {
         if (data.length > initItemCount && isPrepend) {
             setIsPrepend(false);
-            setFirstItemIndex(firstItemIndex - initItemCount);
+            setFirstItemIndex(Math.max(firstItemIndex - initItemCount, 0));
         }
     }, [data]);
 

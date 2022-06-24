@@ -3,9 +3,10 @@ import { RequestFriend } from '../../domain/usecase/contact/RequestFriend';
 import { CancelRequest } from '../../domain/usecase/contact/CancelRequest';
 import { AcceptFriend } from '../../domain/usecase/contact/AcceptFriend';
 import { RejectFriend } from '../../domain/usecase/contact/RejectFriend';
-import { FindContacts } from '../../domain/usecase/contact/FindContacts';
+import { FindUsers } from '../../domain/usecase/contact/FindUsers';
 import { updateFriendStatus } from '../../presentation/Chat/reducer';
-import { setSearchContactsResult } from '../../presentation/App/reducer';
+import { setSearchContactsResult, updateSearchUsersResult } from '../../presentation/App/reducer';
+import { UserData } from '../../domain/model/UserData';
 
 class ContactController extends BaseController {
     private requestFriendUseCase;
@@ -20,34 +21,44 @@ class ContactController extends BaseController {
         this.cancelRequestUseCase = new CancelRequest();
         this.acceptFriendUseCase = new AcceptFriend();
         this.rejectFriendUseCase = new RejectFriend();
-        this.findContactsUseCase = new FindContacts();
+        this.findContactsUseCase = new FindUsers();
     }
 
     public requestFriend = (userId: string) => {
-        this.dispatch(updateFriendStatus('requested'));
+        if (this.getState().chat.selectedConversation?.userId === userId) {
+            this.dispatch(updateFriendStatus('requested'));
+        }
         this.requestFriendUseCase.invoke(userId);
     };
 
     public cancelRequest = (userId: string) => {
         this.cancelRequestUseCase.invoke(userId);
-        this.dispatch(updateFriendStatus());
+        if (this.getState().chat.selectedConversation?.userId === userId) {
+            this.dispatch(updateFriendStatus('stranger'));
+        }
     };
 
     public acceptFriend = (userId: string) => {
         this.acceptFriendUseCase.invoke(userId);
-        this.dispatch(updateFriendStatus('friend'));
+        if (this.getState().chat.selectedConversation?.userId === userId) {
+            this.dispatch(updateFriendStatus('friend'));
+        }
     };
 
     public rejectFriend = (userId: string) => {
         this.rejectFriendUseCase.invoke(userId);
     };
 
-    public findContacts = (keyword: string) => {
+    public findUsers = (keyword: string) => {
         if (keyword !== '') {
             this.findContactsUseCase
                 .invoke(keyword)
-                .then((contacts) => this.dispatch(setSearchContactsResult(contacts)));
+                .then((users) => this.dispatch(setSearchContactsResult(users)));
         }
+    };
+
+    public updateSearchUser = (user: UserData) => {
+        this.dispatch(updateSearchUsersResult(user));
     };
 }
 

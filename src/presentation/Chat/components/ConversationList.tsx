@@ -1,10 +1,8 @@
 import React from 'react';
 import moment from 'moment';
-import { Contact } from '../../../domain/model/Contact';
 import { Conversation } from '../../../domain/model/Conversation';
 import { UserData } from '../../../domain/model/UserData';
 import SearchBox from '../../App/components/SearchBox';
-import { Message } from '../../../domain/model/Message';
 
 interface ConversationListProps {
     data?: Conversation[];
@@ -36,42 +34,38 @@ const ConversationList = ({
         }
     };
 
-    const onClickSearchResult = (contact: Contact) => {
-        if (
-            userData &&
-            (!selectedItem || !selectedItem.users.some((user) => user._id === contact._id))
-        ) {
+    const onClickSearchResult = (contact: UserData) => {
+        if (selectedItem?.userId === contact._id) {
+            return;
+        }
+        const conversation = data.find((conv) => conv.userId === contact._id);
+        if (conversation) {
+            onSelectedItem?.(conversation);
+        } else {
             onSelectedItem?.({
-                _id: contact.conversationId || '',
-                avatar: contact.avatar,
-                friendStatus: contact.friendStatus,
-                name: contact.name,
-                users: [userData, contact],
+                _id: '',
+                userId: contact._id,
+                user: contact,
+                isGroup: false,
             });
         }
     };
 
-    const getLatestMessageContent = (latestMessage?: Message) => {
-        if (!latestMessage) {
+    const getLatestMessageContent = (
+        lastMessage?: string,
+        messageType?: 'file' | 'text' | 'image'
+    ) => {
+        if (!lastMessage) {
             return '';
         }
-        if (latestMessage.files && latestMessage.files.length > 0) {
-            if (
-                latestMessage.files.filter((f) => f.type?.startsWith('image/')).length ===
-                latestMessage.files.length
-            ) {
-                if (latestMessage.files.length > 1) {
-                    return t('sentSomeImages', { value: latestMessage.files.length });
-                }
-                return t('sentImage');
-            } else {
-                if (latestMessage.files.length > 1) {
-                    return t('sentSomeFiles', { value: latestMessage.files.length });
-                }
-                return t('sentFile');
-            }
+        if (messageType === 'image') {
+            return t('sentImage');
         }
-        return latestMessage.content;
+        if (messageType === 'file') {
+            return t('sentFile');
+        }
+
+        return lastMessage;
     };
 
     return (
@@ -87,25 +81,29 @@ const ConversationList = ({
                         }`}
                         onClick={() => onClickItem(chatItem)}>
                         <div className="chat-item">
-                            <img src={chatItem.avatar} className="chat-avatar" />
+                            <img src={chatItem.user.avatar} className="chat-avatar" />
                             <div
                                 className={
-                                    (userId && chatItem.latestMessage?.seen?.includes(userId)) ||
+                                    chatItem.lastMessageFromUid === userId ||
+                                    chatItem.lastMessageStatus === 'seen' ||
                                     chatItem._id === selectedItem?._id
                                         ? 'chat-item-seen'
                                         : 'chat-item-not-seen'
                                 }>
                                 <div className="chat-item-head">
-                                    <div className="chat-name">{chatItem.name}</div>
+                                    <div className="chat-name">{chatItem.user.name}</div>
                                     <div className="chat-latest-time">
-                                        {moment(chatItem.latestMessage?.created_at)
+                                        {moment(chatItem.lastMessageTime)
                                             .locale(language)
                                             .fromNow(true)}
                                     </div>
                                 </div>
                                 <div className="chat-message">{`${
-                                    chatItem.latestMessage?.userId === userId ? `${t('you')}: ` : ''
-                                } ${getLatestMessageContent(chatItem.latestMessage)}`}</div>
+                                    chatItem.lastMessageFromUid === userId ? `${t('you')}: ` : ''
+                                } ${getLatestMessageContent(
+                                    chatItem.lastMessage,
+                                    chatItem.lastMessageType
+                                )}`}</div>
                             </div>
                         </div>
                     </div>

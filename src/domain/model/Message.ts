@@ -4,10 +4,10 @@ export interface Message {
     _id?: string;
     content: string;
     files?: FileData[];
-    created_at: Date;
-    conversationId: string;
-    userId: string;
-    toUserId: string;
+    sendTime: Date;
+    fromUid: string;
+    toUid: string;
     seen?: string[];
     status: 'sent' | 'received' | 'seen' | 'failed' | 'sending';
+    type: 'text' | 'image' | 'file';
 }

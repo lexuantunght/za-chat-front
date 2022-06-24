@@ -1,17 +1,18 @@
 import appConfig from '../../../utils/app/appConfig';
 import Network from '../../networking/Network';
 import ContactDataSource from '../ContactDataSource';
-import { ContactAPIEntity } from './entity/ContactAPIEntity';
+import { FriendAPIEntity } from './entity/FriendAPIEntity';
+import { UserDataAPIEntity } from './entity/UserDataAPIEntity';
 
 export default class ContactAPIDataSourceImpl implements ContactDataSource {
     async getContacts() {
-        const response = await Network.getInstance().getHelper<ContactAPIEntity[]>(
+        const response = await Network.getInstance().getHelper<FriendAPIEntity[]>(
             `${appConfig.baseUrl}/contacts`
         );
         return response.data;
     }
-    async findContacts(keyword: string) {
-        const response = await Network.getInstance().getHelper<ContactAPIEntity[]>(
+    async findUsers(keyword: string) {
+        const response = await Network.getInstance().getHelper<UserDataAPIEntity[]>(
             `${appConfig.baseUrl}/contacts/find?keyword=${keyword}`
         );
         return response.data;
@@ -37,7 +38,7 @@ export default class ContactAPIDataSourceImpl implements ContactDataSource {
         });
     }
     async getInvitations() {
-        const response = await Network.getInstance().getHelper<ContactAPIEntity[]>(
+        const response = await Network.getInstance().getHelper<FriendAPIEntity[]>(
             `${appConfig.baseUrl}/contacts/invitations`
         );
         return response.data;
