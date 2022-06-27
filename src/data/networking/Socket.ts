@@ -36,6 +36,14 @@ class Socket {
     public getSocket = () => {
         return this.socket;
     };
+
+    public onErrorConnection = (callback: () => void) => {
+        this.manager.on('reconnect', callback);
+    };
+
+    public onReconnectSuccess = (callback: () => void) => {
+        this.manager.on('error', callback);
+    };
 }
 
 export default Socket;

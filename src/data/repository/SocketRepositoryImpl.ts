@@ -31,4 +31,12 @@ export class SocketRepositoryImpl implements SocketRepository {
     removeAllListeners(key: string) {
         this.dataSource.removeAllListeners(key);
     }
+
+    onConnectSuccess(callback: () => void) {
+        this.dataSource.onErrorConnection(callback);
+    }
+
+    onErrorConnection(callback: () => void) {
+        this.dataSource.onReconnectSuccess(callback);
+    }
 }

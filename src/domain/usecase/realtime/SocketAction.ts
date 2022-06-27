@@ -5,7 +5,7 @@ export interface SocketActionUseCase {
     emit: <T>(key: string, ...args: T[]) => void;
     on: (key: string, fn: <T>(...args: T[]) => void) => void;
     removeAllListeners: (key: string) => void;
-    connect(): void;
+    connect(errorConnectionCb?: () => void, reConnectSuccessCb?: () => void): void;
     disconnect(): void;
 }
 
@@ -31,8 +31,14 @@ export class SocketAction implements SocketActionUseCase {
         this.socketRepo.removeAllListeners(key);
     }
 
-    connect() {
+    connect(errorConnectionCb?: () => void, reConnectSuccessCb?: () => void) {
         this.socketRepo.connect();
+        if (errorConnectionCb) {
+            this.socketRepo.onErrorConnection(errorConnectionCb);
+        }
+        if (reConnectSuccessCb) {
+            this.socketRepo.onConnectSuccess(reConnectSuccessCb);
+        }
     }
 
     disconnect() {

@@ -8,6 +8,8 @@ interface VirtualizedListProps<T> {
     onLoadMore?: (page: number) => void;
     total?: number;
     initItemCount?: number;
+    spaceTop?: number;
+    spaceBottom?: number;
 }
 
 const defaultMaxFirst = 999999999;
@@ -19,6 +21,8 @@ function VirtualizedList<T>({
     onLoadMore,
     total = 0,
     initItemCount = 30,
+    spaceTop = 10,
+    spaceBottom = 10,
 }: VirtualizedListProps<T>) {
     const [firstItemIndex, setFirstItemIndex] = React.useState(defaultMaxFirst);
     const [isPrepend, setIsPrepend] = React.useState(false);
@@ -51,7 +55,10 @@ function VirtualizedList<T>({
             initialTopMostItemIndex={reverse ? initItemCount - 1 : 0}
             startReached={prependItems}
             itemContent={(index, item) => rowRenderer(item, data.indexOf(item))}
-            components={{ Header: () => <br />, Footer: () => <br /> }}
+            components={{
+                Header: () => <div style={{ height: spaceTop }} />,
+                Footer: () => <div style={{ height: spaceBottom }} />,
+            }}
         />
     );
 }

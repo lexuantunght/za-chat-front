@@ -77,5 +77,6 @@
     "typeKeyword": "Type keyword...",
     "findFriends": "Find friends",
     "image": "Image",
-    "file": "File"
+    "file": "File",
+    "errorConnection": "Can't connect to server. Please check your connection"
 }

@@ -4,4 +4,6 @@ export interface SocketRepository {
     removeAllListeners: (key: string) => void;
     connect(): void;
     disconnect(): void;
+    onErrorConnection(callback: () => void): void;
+    onConnectSuccess(callback: () => void): void;
 }

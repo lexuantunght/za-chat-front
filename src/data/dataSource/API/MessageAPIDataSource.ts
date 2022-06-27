@@ -4,17 +4,26 @@ import appConfig from '../../../utils/app/appConfig';
 import objectToFormData from '../../../utils/helpers/objectToFormData';
 import Network from '../../networking/Network';
 import Socket from '../../networking/Socket';
+import MessageQueries from '../../storage/database/query/MessageQueries';
 import MessageDataSource from '../MessageDataSource';
 import { FileDataAPIEntity } from './entity/FileDataAPIEntity';
 import { MessageAPIEntity } from './entity/MessageAPIEntity';
 
 export default class MessageAPIDataSourceImpl implements MessageDataSource {
+    private clientQuery;
+    constructor(clientQuery: MessageQueries) {
+        this.clientQuery = clientQuery;
+    }
     async getMessages(conversationId: string, fromSendTime?: Date, limit?: number) {
+        if (Network.getInstance().getIsErrorConnection()) {
+            return this.clientQuery.getMessages(conversationId, fromSendTime, limit);
+        }
         const response = await Network.getInstance().getHelper<PagingData<MessageAPIEntity>>(
             `${
                 appConfig.baseUrl
             }/chat/messages?conversationId=${conversationId}&fromSendTime=${fromSendTime?.toISOString()}&limit=${limit}`
         );
+        this.clientQuery.addMessages(response.data.data);
         return response.data || {};
     }
     async sendMessage(message: Message) {

@@ -11,6 +11,7 @@ export type AppState = {
         messages?: Message[];
         users?: UserData[];
     };
+    errorConnection?: boolean;
 };
 
 const defaultAppState: AppState = {
@@ -20,6 +21,7 @@ const defaultAppState: AppState = {
         messages: undefined,
         users: undefined,
     },
+    errorConnection: false,
 };
 
 const appSlice = createSlice({
@@ -47,6 +49,9 @@ const appSlice = createSlice({
                 _update(state.searchResult.users, `[${index}]`, () => action.payload);
             }
         },
+        setErrorConnection: (state: AppState, action: PayloadAction<boolean>) => {
+            state.errorConnection = action.payload;
+        },
     },
 });
 
@@ -58,6 +63,7 @@ export const {
     setSearchContactsResult,
     clearSearchResult,
     updateSearchUsersResult,
+    setErrorConnection,
 } = appSlice.actions;
 
 export default appReducer;

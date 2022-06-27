@@ -6,15 +6,13 @@ import MessageQueries from '../storage/database/query/MessageQueries';
 
 export class MessageRepositoryImpl implements MessageRepository {
     private dataSource: MessageDataSource;
-    private clientDataSource: MessageQueries;
 
     constructor(_dataSource?: MessageDataSource) {
         if (!_dataSource) {
-            this.dataSource = new MessageAPIDataSourceImpl();
+            this.dataSource = new MessageAPIDataSourceImpl(new MessageQueries());
         } else {
             this.dataSource = _dataSource;
         }
-        this.clientDataSource = new MessageQueries();
     }
 
     async getMessages(conversationId: string, fromSendTime?: Date, limit?: number) {

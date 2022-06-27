@@ -37,6 +37,7 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
         useController(ContactController);
     const { sendMessage, getMessages } = useController(MessageController);
     const totalMessages = useGetState((state) => state.chat.totalMessages);
+    const errorConnection = useGetState((state) => state.app.errorConnection);
     const partnerId = conversation.user._id || '';
     const [activeTime, setActiveTime] = React.useState<string | Date>('');
     const [isOpenSearch, setIsOpenSearch] = React.useState(false);
@@ -169,12 +170,17 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
                         </div>
                     </div>
                 )}
+                {errorConnection && (
+                    <div className="app-connection-error">{t('errorConnection')}</div>
+                )}
             </div>
             <div className="chat-section-body custom-scroll scrolling">
                 <VirtualizedList
                     data={messages}
                     reverse
                     initItemCount={30}
+                    spaceBottom={30}
+                    spaceTop={60}
                     total={totalMessages}
                     onLoadMore={handleLoadMore}
                     rowRenderer={(item, index) => (
