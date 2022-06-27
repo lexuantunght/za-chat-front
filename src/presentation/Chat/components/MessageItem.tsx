@@ -54,9 +54,9 @@ const FileMessageItem = ({
         <Image
             src={file.url}
             style={{ ...style, cursor: 'pointer' }}
-            originHeight={file.height}
-            originWidth={file.width}
-            maxHeight={inGrid ? 120 : 400}
+            originHeight={inGrid ? 400 : file.height}
+            originWidth={inGrid ? 400 : file.width}
+            maxHeight={inGrid ? undefined : 400}
             onLoad={onLoad}
             onClick={() => onClick?.(file)}
             className="message-image"
@@ -105,7 +105,7 @@ const MessageItem = ({
             {message.files && message.files.length > 0 && !message.content ? (
                 <div
                     className="chat-message-image-only"
-                    style={{ gridTemplateColumns: `repeat(${getNumOfCols}, auto)` }}>
+                    style={{ gridTemplateColumns: `repeat(${getNumOfCols}, minmax(0, 1fr))` }}>
                     {message.files.map((file, index) => (
                         <FileMessageItem
                             key={index}

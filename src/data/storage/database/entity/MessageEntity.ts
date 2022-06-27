@@ -5,8 +5,8 @@ export interface MessageEntity {
     fromUid: string;
     toUid: string;
     content: string;
-    seen: string[];
+    seen?: string[];
     status: 'sent' | 'received' | 'seen' | 'failed' | 'sending';
-    files: FileDataAPIEntity[];
+    files?: FileDataAPIEntity[];
     sendTime: Date;
 }

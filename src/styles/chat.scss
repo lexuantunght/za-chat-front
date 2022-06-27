@@ -369,7 +369,7 @@
 .chat-message-content {
     margin-bottom: 0.5rem;
     flex-wrap: wrap;
-    word-break: break-all;
+    word-break: normal;
 }
 
 .chat-message-content + div {

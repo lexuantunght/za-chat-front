@@ -152,7 +152,7 @@
     flex-direction: column;
     height: 70vh;
 }
-@media (max-width: 480px) {
+@media (max-width: 512px) {
     .app-find-friends {
         width: 14rem;
     }
@@ -160,4 +160,11 @@
 .app-find-friends > .app-find-friends-title {
     margin: 1rem 0;
     font-size: small;
+}
+.friend-item-check {
+    display: flex;
+    align-items: center;
+}
+.friend-item-check > span {
+    margin-left: 0.5rem;
 }

@@ -75,5 +75,7 @@
     "sentSomeFiles": "Đã gửi {{value}} tập tin",
     "sentAt": "đã gửi lúc",
     "typeKeyword": "Nhập từ khóa...",
-    "findFriends": "Tìm bạn"
+    "findFriends": "Tìm bạn",
+    "image": "Hình ảnh",
+    "file": "Tập tin"
 }

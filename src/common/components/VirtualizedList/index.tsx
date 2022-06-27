@@ -25,7 +25,7 @@ function VirtualizedList<T>({
     const prependItems = () => {
         if (data.length < total) {
             setIsPrepend(true);
-            onLoadMore?.(data.length / initItemCount);
+            onLoadMore?.(reverse ? 0 : data.length - 1);
         }
     };
 

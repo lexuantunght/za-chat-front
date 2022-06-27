@@ -4,7 +4,11 @@ import { Message } from '../../model/Message';
 import { MessageRepository } from '../../repository/MessageRepository';
 
 export interface GetMessageUseCase {
-    invoke: (userId: string, page?: number, limit?: number) => Promise<PagingData<Message>>;
+    invoke: (
+        conversationId: string,
+        fromSendTime?: Date,
+        limit?: number
+    ) => Promise<PagingData<Message>>;
 }
 
 export class GetMessages implements GetMessageUseCase {
@@ -17,7 +21,7 @@ export class GetMessages implements GetMessageUseCase {
         }
     }
 
-    async invoke(userId: string, page?: number, limit?: number) {
-        return this.messageRepo.getMessages(userId, page, limit);
+    async invoke(conversationId: string, fromSendTime?: Date, limit?: number) {
+        return this.messageRepo.getMessages(conversationId, fromSendTime, limit);
     }
 }

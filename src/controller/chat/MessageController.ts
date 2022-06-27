@@ -26,19 +26,29 @@ class MessageController extends BaseController {
         this.sendMessageUseCase.invoke(message).catch(this.handleError);
     };
 
-    public getMessages = (userId: string, page = 0, limit = 30) => {
-        this.getMessagesUseCase.invoke(userId, page, limit).then(({ data, total }) => {
-            if (page > 0 && userId === this.getState().chat.selectedConversation?.userId) {
-                this.dispatch(setMessages([...data, ...this.getState().chat.messages]));
-            } else {
-                this.dispatch(setMessages(data));
-                this.dispatch(setTotalMessages(total));
-            }
-        });
+    public getMessages = (
+        conversationId: string,
+        fromSendTime = new Date(),
+        limit = 30,
+        isPrepend = false
+    ) => {
+        this.getMessagesUseCase
+            .invoke(conversationId, fromSendTime, limit)
+            .then(({ data, total }) => {
+                if (
+                    isPrepend &&
+                    conversationId === this.getState().chat.selectedConversation?._id
+                ) {
+                    this.dispatch(setMessages([...data, ...this.getState().chat.messages]));
+                } else {
+                    this.dispatch(setMessages(data));
+                    this.dispatch(setTotalMessages(total));
+                }
+            });
     };
 
     public appendMessage = (message: Message) => {
-        if (message.fromUid === this.getState().chat.selectedConversation?.userId) {
+        if (message.fromUid === this.getState().chat.selectedConversation?.user._id) {
             this.dispatch(setMessages([...this.getState().chat.messages, message]));
             this.dispatch(setTotalMessages(this.getState().chat.totalMessages + 1));
         }

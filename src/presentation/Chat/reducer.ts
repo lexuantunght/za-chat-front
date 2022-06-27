@@ -48,7 +48,7 @@ const chatSlice = createSlice({
         },
         updateNewMessageToConversation: (state: ChatState, action: PayloadAction<Message>) => {
             const indexOfItem = (state.conversations || []).findIndex(
-                (item) => item.userId === action.payload.toUid
+                (item) => item._id === action.payload.toUid
             );
             if (indexOfItem >= 0) {
                 state.conversations[indexOfItem].lastMessage = action.payload.content;

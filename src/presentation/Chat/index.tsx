@@ -29,9 +29,17 @@ const ChatScreen = () => {
             item.lastMessageFromUid !== userData._id &&
             item.lastMessageStatus !== 'seen'
         ) {
-            emitSocket('action-message', item.lastMessage, 'seen');
-            //const seen = [...item.latestMessage.seen, userData._id];
-            //selectConversation({ ...item, latestMessage: { ...item.latestMessage, seen } });
+            emitSocket(
+                'action-message',
+                {
+                    fromUid: item.lastMessageFromUid,
+                    toUid: item._id,
+                    seen: [item.lastMessageFromUid, userData._id],
+                    status: 'seen',
+                },
+                'seen'
+            );
+            selectConversation({ ...item, lastMessageStatus: 'seen' });
         } else {
             selectConversation(item);
         }
@@ -42,8 +50,8 @@ const ChatScreen = () => {
     }, []);
 
     React.useEffect(() => {
-        if (selectedConversation?.userId) {
-            getMessages(selectedConversation.userId);
+        if (selectedConversation) {
+            getMessages(selectedConversation._id);
         }
     }, [selectedConversation?._id]);
 
@@ -71,9 +79,6 @@ const ChatScreen = () => {
             const selectedItem = conversations.find(
                 (item) => item._id === selectedConversation?._id
             );
-            if (!selectedItem && selectedConversation) {
-                selectConversation();
-            }
             if (
                 userData &&
                 selectedItem &&
@@ -81,6 +86,14 @@ const ChatScreen = () => {
                 selectedItem.lastMessageStatus !== 'seen'
             ) {
                 emitSocket('action-message', selectedConversation?.lastMessage, 'seen');
+            }
+            if (!selectedItem) {
+                const item = conversations.find(
+                    (conv) => conv.user._id === selectedConversation?.user._id
+                );
+                if (item) {
+                    selectConversation(item);
+                }
             }
         }
     }, [conversations]);

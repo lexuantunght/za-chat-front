@@ -5,7 +5,7 @@ import { MessageAPIEntity } from './API/entity/MessageAPIEntity';
 export default interface MessageDataSource {
     getMessages(
         conversationId: string,
-        page?: number,
+        fromSendTime?: Date,
         limit?: number
     ): Promise<PagingData<MessageAPIEntity>>;
     sendMessage(message: Message): Promise<void>;

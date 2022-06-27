@@ -8,6 +8,7 @@ export interface MessageAPIEntity {
     conversationId: string;
     fromUid: string;
     toUid: string;
+    userId?: string;
     seen: string[];
     status: 'sent' | 'received' | 'seen' | 'failed' | 'sending';
     type: 'text' | 'file' | 'image';

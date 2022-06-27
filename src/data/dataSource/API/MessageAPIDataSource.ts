@@ -9,9 +9,11 @@ import { FileDataAPIEntity } from './entity/FileDataAPIEntity';
 import { MessageAPIEntity } from './entity/MessageAPIEntity';
 
 export default class MessageAPIDataSourceImpl implements MessageDataSource {
-    async getMessages(userId: string, page?: number, limit?: number) {
+    async getMessages(conversationId: string, fromSendTime?: Date, limit?: number) {
         const response = await Network.getInstance().getHelper<PagingData<MessageAPIEntity>>(
-            `${appConfig.baseUrl}/chat/messages?userId=${userId}&page=${page}&limit=${limit}`
+            `${
+                appConfig.baseUrl
+            }/chat/messages?conversationId=${conversationId}&fromSendTime=${fromSendTime?.toISOString()}&limit=${limit}`
         );
         return response.data || {};
     }

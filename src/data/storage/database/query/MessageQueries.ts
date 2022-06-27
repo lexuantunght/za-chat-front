@@ -1,34 +1,29 @@
-import { Message } from '../../../../domain/model/Message';
 import { MessageAPIEntity } from '../../../dataSource/API/entity/MessageAPIEntity';
-import MessageDataSource from '../../../dataSource/MessageDataSource';
 import BaseAdapter from '../adapter/BaseAdapter';
 import IndexedDBAdapter from '../adapter/IndexedDBAdapter';
+import { MessageEntity } from '../entity/MessageEntity';
 
-class MessageQueries implements MessageDataSource {
+class MessageQueries {
     private adapter: BaseAdapter;
     public constructor() {
         this.adapter = new IndexedDBAdapter();
     }
 
-    public getMessages(
-        conversationId: string,
-        page?: number | undefined,
-        limit?: number | undefined
-    ) {
+    public getMessages(conversationId: string, fromSendTime?: Date, limit?: number) {
         return this.adapter.getAll<MessageAPIEntity>('messages', {
-            indexName: 'conversationId',
-            keyMatch: [conversationId],
-            orderby: 'order',
-            page,
+            indexName: 'userId',
+            keyMatch: conversationId,
+            orderby: 'sendTime',
+            fromCondition: fromSendTime?.toISOString(),
             limit,
         });
     }
 
-    public sendMessage(message: Message) {
+    public addMessage(message: MessageEntity) {
         return this.adapter.addOne('messages', message);
     }
 
-    public addMessages(messages: Message[]) {
+    public addMessages(messages: MessageEntity[]) {
         return this.adapter.addMany('messages', messages);
     }
 }

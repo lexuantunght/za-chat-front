@@ -75,5 +75,7 @@
     "sentSomeFiles": "Send {{value}} files",
     "sentAt": "sent at",
     "typeKeyword": "Type keyword...",
-    "findFriends": "Find friends"
+    "findFriends": "Find friends",
+    "image": "Image",
+    "file": "File"
 }

@@ -3,6 +3,8 @@ import moment from 'moment';
 import { Conversation } from '../../../domain/model/Conversation';
 import { UserData } from '../../../domain/model/UserData';
 import SearchBox from '../../App/components/SearchBox';
+import useController from '../../../controller/hooks';
+import ConversationController from '../../../controller/chat/ConversationController';
 
 interface ConversationListProps {
     data?: Conversation[];
@@ -23,6 +25,7 @@ const ConversationList = ({
     language,
 }: ConversationListProps) => {
     const userId = userData._id;
+    const { getConversations } = useController(ConversationController);
 
     const onClickItem = (item: Conversation) => {
         onSelectedItem?.(item);
@@ -35,10 +38,10 @@ const ConversationList = ({
     };
 
     const onClickSearchResult = (contact: UserData) => {
-        if (selectedItem?.userId === contact._id) {
+        if (selectedItem?.user._id === contact._id) {
             return;
         }
-        const conversation = data.find((conv) => conv.userId === contact._id);
+        const conversation = data.find((conv) => conv.user._id === contact._id);
         if (conversation) {
             onSelectedItem?.(conversation);
         } else {
@@ -55,14 +58,11 @@ const ConversationList = ({
         lastMessage?: string,
         messageType?: 'file' | 'text' | 'image'
     ) => {
-        if (!lastMessage) {
-            return '';
-        }
         if (messageType === 'image') {
-            return t('sentImage');
+            return t('image');
         }
         if (messageType === 'file') {
-            return t('sentFile');
+            return t('file');
         }
 
         return lastMessage;
@@ -70,7 +70,11 @@ const ConversationList = ({
 
     return (
         <div className="chat-tab">
-            <SearchBox t={t} onClickResult={onClickSearchResult} />
+            <SearchBox
+                t={t}
+                onClickResult={onClickSearchResult}
+                onClose={() => getConversations()}
+            />
             <div className="chat-list-title">{t('conversations')}</div>
             <div className="chat-tab-messages">
                 {data.map((chatItem, index) => (

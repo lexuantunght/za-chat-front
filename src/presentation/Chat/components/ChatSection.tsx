@@ -30,11 +30,6 @@ type ChatSectionProps = {
     language: string;
 };
 
-export type ChatSectionRef = {
-    appendMessage: (msg: Message) => void;
-    updateStatusMessage: (msg: Message) => void;
-};
-
 const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSectionProps) => {
     const { emitSocket, addSocketListener, removeAllSocketListeners, useGetState } =
         useController(AppController);
@@ -42,7 +37,7 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
         useController(ContactController);
     const { sendMessage, getMessages } = useController(MessageController);
     const totalMessages = useGetState((state) => state.chat.totalMessages);
-    const partnerId = conversation.userId || '';
+    const partnerId = conversation.user._id || '';
     const [activeTime, setActiveTime] = React.useState<string | Date>('');
     const [isOpenSearch, setIsOpenSearch] = React.useState(false);
 
@@ -65,14 +60,15 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
 
     React.useEffect(() => {
         emitSocket('get-active', partnerId);
-    }, [conversation.userId, conversation.user.relationshipStatus]);
+    }, [conversation.user._id, conversation.user.relationshipStatus]);
 
     const onSendMessage = (content: string, files?: FileData[]) => {
         const msg: Message = {
             content,
             files,
-            toUid: partnerId,
+            toUid: conversation._id,
             fromUid: user?._id || '',
+            userId: partnerId || conversation.userId,
             seen: user?._id ? [user?._id] : [],
             status: 'sending',
             sendTime: new Date(),
@@ -86,10 +82,13 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
         sendMessage(msg);
     };
 
-    const handleLoadMore = (page: number) => {
-        if (conversation.userId) {
-            getMessages(conversation.userId, page);
-        }
+    const handleLoadMore = (index: number) => {
+        getMessages(
+            conversation._id,
+            moment(messages[index].sendTime).subtract(1, 'millisecond').toDate(),
+            30,
+            true
+        );
     };
 
     return (

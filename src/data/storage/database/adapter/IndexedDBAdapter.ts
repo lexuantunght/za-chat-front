@@ -10,13 +10,9 @@ class IndexedDBAdapter implements BaseAdapter {
         request.onupgradeneeded = function () {
             const db = request.result;
             db.createObjectStore('conversations', { keyPath: '_id' });
-            const messageStore = db.createObjectStore('messages', {
-                keyPath: 'order',
-                autoIncrement: true,
-            });
-            messageStore.createIndex('conversationId', ['conversationId']);
-            messageStore.createIndex('conversationId_content', ['conversationId', 'content']);
-            messageStore.createIndex('conversationId_order', ['conversationId', 'order']);
+            const messageStore = db.createObjectStore('messages', { keyPath: '_id' });
+            messageStore.createIndex('userId_sendTime', ['toUid', 'sendTime']);
+            messageStore.createIndex('userId', 'toUid');
         };
         request.onsuccess = function () {
             request.result.close();
@@ -77,19 +73,33 @@ class IndexedDBAdapter implements BaseAdapter {
                     queryCount = store.index(query.indexName).count(query.keyMatch);
                     queryCount.onsuccess = function () {
                         if (query.orderby) {
-                            queryAll = store
+                            const limit = query.limit || 30;
+                            const cursorQuery = store
                                 .index(`${query.indexName}_${query.orderby}`)
-                                .getAll(
-                                    IDBKeyRange.bound([query.keyMatch, 10], [query.keyMatch, 1])
+                                .openCursor(
+                                    IDBKeyRange.upperBound([query.keyMatch, query.fromCondition]),
+                                    'prev'
                                 );
+                            const result: T[] = [];
+                            let limitCount = 0;
+                            cursorQuery.onsuccess = function (e) {
+                                const cursor = (e.target as IDBRequest<IDBCursorWithValue>).result;
+                                if (cursor && limitCount < limit) {
+                                    result.unshift(cursor.value);
+                                    limitCount += 1;
+                                    cursor.continue();
+                                } else {
+                                    resolve({ data: result, total: queryCount.result });
+                                }
+                            };
                         } else {
                             queryAll = store
                                 .index(query.indexName)
-                                .getAll(IDBKeyRange.bound([query.keyMatch], [query.keyMatch]));
+                                .getAll(IDBKeyRange.only(query.keyMatch), query.limit);
+                            queryAll.onsuccess = function () {
+                                resolve({ data: queryAll.result, total: queryCount.result });
+                            };
                         }
-                        queryAll.onsuccess = function () {
-                            resolve({ data: queryAll.result, total: queryCount.result });
-                        };
                     };
                 } else {
                     queryCount = store.count();

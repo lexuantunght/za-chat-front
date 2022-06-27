@@ -7,6 +7,7 @@ export interface Message {
     sendTime: Date;
     fromUid: string;
     toUid: string;
+    userId?: string;
     seen?: string[];
     status: 'sent' | 'received' | 'seen' | 'failed' | 'sending';
     type: 'text' | 'image' | 'file';

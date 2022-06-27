@@ -128,6 +128,12 @@ const SearchBox = ({ onClickResult, onClose, t }: SearchBoxProps) => {
                                         {t('cancelRequest')}
                                     </Button>
                                 )}
+                                {user.relationshipStatus === 'friend' && (
+                                    <div className="friend-item-check">
+                                        <Icon name="check" />
+                                        <span>{t('friend')}</span>
+                                    </div>
+                                )}
                             </div>
                         ))}
                         {searchResult.users &&

@@ -17,8 +17,8 @@ export class MessageRepositoryImpl implements MessageRepository {
         this.clientDataSource = new MessageQueries();
     }
 
-    async getMessages(userId: string, page?: number, limit?: number) {
-        return this.dataSource.getMessages(userId, page, limit);
+    async getMessages(conversationId: string, fromSendTime?: Date, limit?: number) {
+        return this.dataSource.getMessages(conversationId, fromSendTime, limit);
     }
 
     async sendMessage(message: Message) {
