@@ -77,7 +77,10 @@ class IndexedDBAdapter implements BaseAdapter {
                             const cursorQuery = store
                                 .index(`${query.indexName}_${query.orderby}`)
                                 .openCursor(
-                                    IDBKeyRange.upperBound([query.keyMatch, query.fromCondition]),
+                                    IDBKeyRange.bound(
+                                        [query.keyMatch],
+                                        [query.keyMatch, query.fromCondition]
+                                    ),
                                     'prev'
                                 );
                             const result: T[] = [];

@@ -30,6 +30,7 @@ class Network {
     private defaultHeader: Record<string, string>;
     private static instance: Network | null = null;
     private networkProvider;
+    private isErrorConnection: boolean;
 
     private constructor(networkProvider: NetworkProvider = axios) {
         this.networkProvider = networkProvider;
@@ -37,6 +38,7 @@ class Network {
             'Content-Type': 'application/json',
             Accept: 'application/json',
         };
+        this.isErrorConnection = false;
     }
 
     public static getInstance = () => {
@@ -44,6 +46,14 @@ class Network {
             this.instance = new Network();
         }
         return this.instance;
+    };
+
+    public getIsErrorConnection = () => {
+        return this.isErrorConnection;
+    };
+
+    public setIsErrorConnection = (isError: boolean) => {
+        this.isErrorConnection = isError;
     };
 
     public async getHelper<T>(api: string, headers: Record<string, string> = this.defaultHeader) {

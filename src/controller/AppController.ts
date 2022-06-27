@@ -1,7 +1,7 @@
 import BaseController from './BaseController';
 import { Authorize } from '../domain/usecase/authentication/Authorize';
 import { SocketAction } from '../domain/usecase/realtime/SocketAction';
-import { clearSearchResult, setUserData } from '../presentation/App/reducer';
+import { clearSearchResult, setErrorConnection, setUserData } from '../presentation/App/reducer';
 
 class AppController extends BaseController {
     private authorizeUseCase;
@@ -14,7 +14,10 @@ class AppController extends BaseController {
 
     public authorize = () => {
         this.authorizeUseCase.invoke().then((user) => this.dispatch(setUserData(user)));
-        this.socketActionUseCase.connect();
+        this.socketActionUseCase.connect(
+            () => this.dispatch(setErrorConnection(true)),
+            () => this.dispatch(setErrorConnection(false))
+        );
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

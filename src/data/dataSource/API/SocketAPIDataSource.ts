@@ -1,3 +1,4 @@
+import Network from '../../networking/Network';
 import Socket from '../../networking/Socket';
 import SocketDataSource from '../SocketDataSource';
 
@@ -22,5 +23,19 @@ export default class SocketAPIDataSourceImpl implements SocketDataSource {
 
     removeAllListeners(key: string) {
         Socket.getInstance().getSocket().removeAllListeners(key);
+    }
+
+    onErrorConnection(callback: () => void) {
+        Socket.getInstance().onErrorConnection(() => {
+            Network.getInstance().setIsErrorConnection(false);
+            callback();
+        });
+    }
+
+    onReconnectSuccess(callback: () => void) {
+        Socket.getInstance().onReconnectSuccess(() => {
+            Network.getInstance().setIsErrorConnection(true);
+            callback();
+        });
     }
 }

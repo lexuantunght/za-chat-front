@@ -168,3 +168,17 @@
 .friend-item-check > span {
     margin-left: 0.5rem;
 }
+
+.app-connection-error {
+    background-color: #bbbbbb;
+    position: absolute;
+    top: 4.5rem;
+    left: 0;
+    width: 100%;
+    border-top: 1px solid #dddddd;
+    height: 3.4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+}

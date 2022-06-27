@@ -4,4 +4,6 @@ export default interface SocketDataSource {
     removeAllListeners: (key: string) => void;
     connect(): void;
     disconnect(): void;
+    onErrorConnection(callback: () => void): void;
+    onReconnectSuccess(callback: () => void): void;
 }
