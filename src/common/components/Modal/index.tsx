@@ -11,9 +11,9 @@ type ModalProps = {
     className?: string;
 };
 
-const Modal: React.FC<ModalProps> = (props) => {
+const Modal = (props: ModalProps) => {
     return (
-        <DelayedPortal isOpen={props.isOpen} openDelay={500} closeDelay={100}>
+        <DelayedPortal isOpen={props.isOpen} openDelay={500}>
             {({ isOpen, willOpen, willClose }) => (
                 <div
                     className={`za-modal ${isOpen ? 'za-modal-open' : 'za-modal-closed'} ${

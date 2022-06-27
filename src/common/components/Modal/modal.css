@@ -1,0 +1,52 @@
+.za-modal {
+    transition: all 500ms;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.za-modal.za-modal-open {
+    opacity: 1;
+}
+
+.za-modal.za-modal-closed {
+    opacity: 0;
+}
+
+.za-modal.za-modal-will-open {
+    opacity: 1;
+}
+
+.za-modal.za-modal-will-close {
+    opacity: 0;
+}
+
+.za-modal-content {
+    max-width: 80%;
+    background-color: white;
+    padding: 1rem;
+    box-sizing: border-box;
+    border-radius: var(--border-radius);
+}
+
+.za-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.za-modal-title {
+    font-weight: 600;
+    font-size: large;
+}
+
+.za-modal-body {
+    margin-top: 1rem;
+}

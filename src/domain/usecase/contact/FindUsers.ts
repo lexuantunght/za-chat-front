@@ -1,12 +1,12 @@
 import { ContactRepositoryImpl } from '../../../data/repository/ContactRepositoryImpl';
-import { Contact } from '../../model/Contact';
+import { UserData } from '../../model/UserData';
 import { ContactRepository } from '../../repository/ContactRepository';
 
-export interface FindContactsUseCase {
-    invoke: (keyword: string) => Promise<Contact[]>;
+export interface FindUsersUseCase {
+    invoke: (keyword: string) => Promise<UserData[]>;
 }
 
-export class FindContacts implements FindContactsUseCase {
+export class FindUsers implements FindUsersUseCase {
     private contactRepo: ContactRepository;
     constructor(_contactRepo?: ContactRepository) {
         if (!_contactRepo) {
@@ -17,6 +17,6 @@ export class FindContacts implements FindContactsUseCase {
     }
 
     async invoke(keyword: string) {
-        return this.contactRepo.findContacts(keyword);
+        return this.contactRepo.findUsers(keyword);
     }
 }

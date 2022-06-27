@@ -1,7 +1,8 @@
-/* eslint-disable */
-const { BrowserWindow, app, ipcMain, Menu, Tray, session } = require('electron');
+const { BrowserWindow, app, ipcMain, Menu, Tray, session, dialog } = require('electron');
 const path = require('path');
 const url = require('url');
+const fs = require('fs');
+const client = require('https');
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -51,11 +52,11 @@ function createLoginWindow() {
     appWindow.on('ready-to-show', () => appWindow.show());
 }
 
-function createFileViewerWindow(url) {
+function createFileViewerWindow(data) {
     fileViewerWindow = new BrowserWindow({
         minWidth: 540,
         minHeight: 540,
-        title: 'ZaChat - File preview',
+        title: 'ZaChat',
         icon: path.join(__dirname, '/../public/favicon.ico'),
         webPreferences: {
             nodeIntegration: true,
@@ -70,7 +71,7 @@ function createFileViewerWindow(url) {
     });
     fileViewerWindow
         .loadURL(getWindowUrl('file-viewer'))
-        .then(() => fileViewerWindow.webContents.send('fileView', url));
+        .then(() => fileViewerWindow.webContents.send('fileView', data));
     fileViewerWindow.maximize();
     fileViewerWindow.on('close', () => {
         fileViewerWindow = null;
@@ -151,10 +152,31 @@ ipcMain.on('openApp', () => {
     createMainWindow();
 });
 
-ipcMain.on('openFileViewer', (event, url) => {
+ipcMain.on('openFileViewer', (event, data) => {
     if (!fileViewerWindow) {
-        createFileViewerWindow(url);
+        createFileViewerWindow(data);
+    } else {
+        fileViewerWindow.webContents.send('fileView', data);
+        if (fileViewerWindow.isMinimized()) {
+            fileViewerWindow.restore();
+        }
+        fileViewerWindow.moveTop();
     }
+});
+
+ipcMain.on('openSaveDialog', (event, file) => {
+    dialog
+        .showSaveDialog(fileViewerWindow, {
+            title: 'ZaChat - Save file',
+            defaultPath: path.join(app.getPath('downloads'), file.name),
+            filters: [{ name: `${file.type?.toUpperCase()} Files`, extensions: [file.type] }],
+        })
+        .then((result) => {
+            if (result.canceled) return;
+            client.get(file.url, (response) => {
+                response.pipe(fs.createWriteStream(result.filePath));
+            });
+        });
 });
 
 ipcMain.once('quit', () => {

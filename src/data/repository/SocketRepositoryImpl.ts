@@ -3,7 +3,7 @@ import SocketAPIDataSourceImpl from '../dataSource/API/SocketAPIDataSource';
 import SocketDataSource from '../dataSource/SocketDataSource';
 
 export class SocketRepositoryImpl implements SocketRepository {
-    dataSource: SocketDataSource;
+    private dataSource: SocketDataSource;
     constructor(_dataSource?: SocketDataSource) {
         if (!_dataSource) {
             this.dataSource = new SocketAPIDataSourceImpl();

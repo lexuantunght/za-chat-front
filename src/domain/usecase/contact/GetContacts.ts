@@ -1,9 +1,9 @@
 import { ContactRepositoryImpl } from '../../../data/repository/ContactRepositoryImpl';
-import { Contact } from '../../model/Contact';
+import { Friend } from '../../model/Friend';
 import { ContactRepository } from '../../repository/ContactRepository';
 
 export interface GetContactsUseCase {
-    invoke: () => Promise<Contact[]>;
+    invoke: () => Promise<Friend[]>;
 }
 
 export class GetContacts implements GetContactsUseCase {

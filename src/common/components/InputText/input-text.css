@@ -1,0 +1,17 @@
+.za-inputtext {
+    border: 1px solid var(--secondary);
+    border-radius: var(--border-radius);
+    padding: var(--padding-y);
+}
+.za-inputtext:hover:enabled {
+    border-color: var(--hover-primary);
+}
+.za-inputtext:focus {
+    outline: none;
+    border-color: var(--hover-primary);
+}
+.za-inputtext-error,
+.za-inputtext-error:focus,
+.za-inputtext-error:hover:enabled {
+    border-color: var(--error-color);
+}

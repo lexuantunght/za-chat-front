@@ -5,7 +5,7 @@ import AuthenticationAPIDataSourceImpl from '../dataSource/API/AuthenticationAPI
 import AuthenticationDataSource from '../dataSource/AuthenticationDataSource';
 
 export class AuthenticationRepositoryImpl implements AuthenticationRepository {
-    dataSource: AuthenticationDataSource;
+    private dataSource: AuthenticationDataSource;
 
     constructor(_dataSource?: AuthenticationDataSource) {
         if (!_dataSource) {

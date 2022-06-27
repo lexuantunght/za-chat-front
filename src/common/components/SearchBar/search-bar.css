@@ -1,0 +1,16 @@
+.za-searchbar-container {
+    display: flex;
+    padding: 0.5rem;
+    background-color: #eeeeee;
+    align-items: center;
+    border-radius: var(--border-radius);
+    width: 100%;
+}
+
+.za-searchbar-text {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    flex: 1;
+    margin-left: 0.25rem;
+}

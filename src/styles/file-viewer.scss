@@ -4,24 +4,9 @@
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+    background-color: #00000030;
 }
 
-.file-viewer-image {
-    max-width: 100%;
-    max-height: calc(100% - 3.5rem);
-    object-fit: contain;
-    transition: 300ms linear all;
-}
-
-.file-viewer-buttons {
-    height: 3rem;
-    width: 100%;
-    border-top: 1px solid var(--secondary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.file-viewer-buttons > button {
-    height: max-content;
-    margin: 0 0.5rem;
+.file-viewer-video {
+    height: 100%;
 }

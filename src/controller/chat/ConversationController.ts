@@ -14,12 +14,16 @@ class ConversationController extends BaseController {
     public getConversations = () => {
         this.getConversationUseCase
             .invoke()
-            .then((conversations) => this.dispatch(setConversations(conversations)))
+            .then(({ data }) => this.dispatch(setConversations(data)))
             .catch(this.handleError);
     };
 
     public selectConversation = (conversation?: Conversation) => {
         this.dispatch(selectConversation(conversation));
+    };
+
+    public addConversation = (conversation: Conversation) => {
+        this.dispatch(setConversations([conversation, ...this.getState().chat.conversations]));
     };
 }
 

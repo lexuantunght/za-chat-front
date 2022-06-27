@@ -7,16 +7,16 @@ import { useForm } from '../../../utils/form/formContent';
 import useController from '../../../controller/hooks';
 import AppController from '../../../controller/AppController';
 import { FileData } from '../../../domain/model/FileData';
+import PastedFileItem from './PastedFileItem';
 
 type ChatTypingProps = {
-    onSend?: (content: string) => void;
-    onSendFiles?: (data: FileData[]) => void;
+    onSend?: (content: string, files: FileData[]) => void;
     conversationId: string;
     userId: string;
     t: CallableFunction;
 };
 
-const ChatTyping = ({ onSend, conversationId, userId, t, onSendFiles }: ChatTypingProps) => {
+const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
     const validator = useValidation();
     const { emitSocket, addSocketListener, removeAllSocketListeners } =
         useController(AppController);
@@ -41,12 +41,21 @@ const ChatTyping = ({ onSend, conversationId, userId, t, onSendFiles }: ChatTypi
     const form = useForm({
         initialValues: {
             content: '',
+            files: new Array<FileData>(0),
         },
         validationSchema: validator.object({
-            content: validator.string().required(),
+            content: validator.string().test('contentWithFiles', function (value) {
+                if (this.parent.files.length > 0) {
+                    return true;
+                }
+                if (!value) {
+                    return false;
+                }
+                return /^\s*\S[\s\S]*$/.test(value);
+            }),
         }),
         onSubmit: (values, { resetForm }) => {
-            onSend?.(values.content);
+            onSend?.(values.content, values.files);
             resetForm();
         },
     });
@@ -60,10 +69,58 @@ const ChatTyping = ({ onSend, conversationId, userId, t, onSendFiles }: ChatTypi
     };
 
     const onClickUploader = (isImage?: boolean) => {
-        if (isImage && fileRef.current) {
-            fileRef.current.accept = 'image/*';
+        if (fileRef.current) {
+            if (isImage) {
+                fileRef.current.accept = 'image/*';
+            } else {
+                fileRef.current.accept = '*';
+            }
+            fileRef.current?.click();
         }
-        fileRef.current?.click();
+    };
+
+    const handleReadFile = (file: File) => {
+        return new Promise<FileData>((resolve) => {
+            const fileReader = new FileReader();
+            fileReader.onload = () => {
+                if (fileReader.readyState === 2 && typeof fileReader.result === 'string') {
+                    const objectResult = {
+                        file,
+                        url: fileReader.result,
+                        name: file.name,
+                        type: file.type,
+                    };
+
+                    if (file.type.startsWith('image/')) {
+                        const image = new Image();
+                        image.src = fileReader.result;
+                        image.onload = () => {
+                            resolve({
+                                ...objectResult,
+                                width: image.width,
+                                height: image.height,
+                            });
+                        };
+                    } else if (
+                        file.type.startsWith('video/mp4') ||
+                        file.type.startsWith('video/ogg')
+                    ) {
+                        const video = document.createElement('video');
+                        video.src = fileReader.result;
+                        video.onloadedmetadata = () => {
+                            resolve({
+                                ...objectResult,
+                                width: video.videoWidth,
+                                height: video.videoHeight,
+                            });
+                        };
+                    } else {
+                        resolve(objectResult);
+                    }
+                }
+            };
+            fileReader.readAsDataURL(file);
+        });
     };
 
     const handleSelectFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,28 +128,10 @@ const ChatTyping = ({ onSend, conversationId, userId, t, onSendFiles }: ChatTypi
             const promises: Promise<FileData>[] = [];
             for (let i = 0; i < e.target.files.length; i++) {
                 const file = e.target.files[i];
-                promises.push(
-                    new Promise((resolve) => {
-                        const fileReader = new FileReader();
-                        fileReader.onload = () => {
-                            if (
-                                fileReader.readyState === 2 &&
-                                typeof fileReader.result === 'string'
-                            ) {
-                                resolve({
-                                    file,
-                                    url: fileReader.result,
-                                    name: file.name,
-                                    type: file.type,
-                                });
-                            }
-                        };
-                        fileReader.readAsDataURL(file);
-                    })
-                );
+                promises.push(handleReadFile(file));
             }
             Promise.all(promises).then((files) => {
-                onSendFiles?.(files);
+                onSend?.('', files);
             });
         }
     };
@@ -100,6 +139,27 @@ const ChatTyping = ({ onSend, conversationId, userId, t, onSendFiles }: ChatTypi
     const handleRemoveSelectedFile = (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
         const element = event.target as HTMLInputElement;
         element.value = '';
+    };
+
+    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+        if (!e.clipboardData.items[0].type.startsWith('text/')) {
+            const promises: Promise<FileData>[] = [];
+            for (let index = 0; index < e.clipboardData.items.length; index++) {
+                const file = e.clipboardData.items[index].getAsFile();
+                if (file) {
+                    promises.push(handleReadFile(file));
+                }
+            }
+            Promise.all(promises).then((files) => {
+                form.setFieldValue('files', [...form.values.files, ...files]);
+            });
+        }
+    };
+
+    const handleRemovePasted = (index: number) => {
+        const pasted = [...form.values.files];
+        pasted.splice(index, 1);
+        form.setFieldValue('files', pasted);
     };
 
     return (
@@ -128,17 +188,32 @@ const ChatTyping = ({ onSend, conversationId, userId, t, onSendFiles }: ChatTypi
                     value={form.values.content}
                     onBeginEditing={onBeginEditing}
                     onEndEditing={onEndEditing}
+                    onPaste={handlePaste}
                 />
                 <>
                     <Button
                         type="submit"
                         className="chat-send-button"
                         variant="text"
+                        disabled={!form.isValid}
                         title={t('sendMessage')}>
                         <Icon name="send" />
                     </Button>
                 </>
             </form>
+            {form.values.files.length > 0 && (
+                <div>
+                    <div className="chat-pasted-files">
+                        {form.values.files.map((file, index) => (
+                            <PastedFileItem
+                                key={index}
+                                file={file}
+                                onRemove={() => handleRemovePasted(index)}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
             <input
                 type="file"
                 ref={fileRef}

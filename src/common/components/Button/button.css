@@ -1,0 +1,53 @@
+.za-button {
+    border: 1px solid var(--primary);
+    cursor: pointer;
+    padding: var(--padding-y) var(--padding-x);
+    border-radius: var(--border-radius);
+    background-color: var(--primary);
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.za-button:hover:enabled {
+    border-color: var(--hover-primary);
+    background-color: var(--hover-primary);
+}
+.za-button-text {
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    color: var(--primary);
+}
+.za-button-text:hover:enabled {
+    color: var(--hover-primary);
+}
+.za-button-outlined {
+    cursor: pointer;
+    border: 1px solid var(--primary);
+    background-color: #ffffff;
+    color: var(--primary);
+    padding: var(--padding-y) var(--padding-x);
+    border-radius: var(--border-radius);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.za-button-outlined:hover:enabled {
+    border-color: var(--hover-primary);
+    color: var(--hover-primary);
+}
+
+.za-button-error {
+    background-color: var(--error-color);
+    border-color: var(--error-color);
+}
+.za-button-error:hover:enabled {
+    border-color: var(--hover-error);
+    background-color: var(--hover-error);
+}

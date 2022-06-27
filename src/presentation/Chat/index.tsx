@@ -5,21 +5,15 @@ import ChatSection from './components/ChatSection';
 import ConversationController from '../../controller/chat/ConversationController';
 import useMultilingual from '../../utils/multilingual';
 import MessageController from '../../controller/chat/MessageController';
-import ContactController from '../../controller/contact/ContactController';
 import useController from '../../controller/hooks';
 import { Message } from '../../domain/model/Message';
 import { UserData } from '../../domain/model/UserData';
 import AppController from '../../controller/AppController';
 import { Conversation } from '../../domain/model/Conversation';
-import { openFileViewer } from '../../utils/app/eventHandler';
-import { FileData } from '../../domain/model/FileData';
 
 const ChatScreen = () => {
     const { getConversations, selectConversation } = useController(ConversationController);
-    const { sendMessage, getMessages, updateStatusMessage, appendMessage } =
-        useController(MessageController);
-    const { requestFriend, cancelRequest, acceptFriend, rejectFriend } =
-        useController(ContactController);
+    const { getMessages, updateStatusMessage, appendMessage } = useController(MessageController);
     const { useGetState, addSocketListener, emitSocket, removeAllSocketListeners } =
         useController(AppController);
     const userData = useGetState((state) => state.app.userData);
@@ -30,18 +24,24 @@ const ChatScreen = () => {
 
     const onSelectConversation = (item: Conversation) => {
         if (!userData) return;
-        if (item.latestMessage?.seen && !item.latestMessage.seen.includes(userData._id)) {
-            emitSocket('action-message', item.latestMessage, 'seen');
-            const seen = [...item.latestMessage.seen, userData._id];
-            selectConversation({ ...item, latestMessage: { ...item.latestMessage, seen } });
+        if (
+            item.lastMessage &&
+            item.lastMessageFromUid !== userData._id &&
+            item.lastMessageStatus !== 'seen'
+        ) {
+            emitSocket(
+                'action-message',
+                {
+                    fromUid: item.lastMessageFromUid,
+                    toUid: item._id,
+                    seen: [item.lastMessageFromUid, userData._id],
+                    status: 'seen',
+                },
+                'seen'
+            );
+            selectConversation({ ...item, lastMessageStatus: 'seen' });
         } else {
             selectConversation(item);
-        }
-    };
-
-    const onOpenFileViewer = (file?: FileData) => {
-        if (file?.url) {
-            openFileViewer(file.url);
         }
     };
 
@@ -50,7 +50,9 @@ const ChatScreen = () => {
     }, []);
 
     React.useEffect(() => {
-        getMessages(selectedConversation?._id || '');
+        if (selectedConversation) {
+            getMessages(selectedConversation._id);
+        }
     }, [selectedConversation?._id]);
 
     React.useEffect(() => {
@@ -77,15 +79,21 @@ const ChatScreen = () => {
             const selectedItem = conversations.find(
                 (item) => item._id === selectedConversation?._id
             );
-            if (!selectedItem && selectedConversation) {
-                selectConversation();
-            }
             if (
                 userData &&
                 selectedItem &&
-                !selectedItem.latestMessage?.seen?.includes(userData._id)
+                selectedItem.lastMessageFromUid !== userData._id &&
+                selectedItem.lastMessageStatus !== 'seen'
             ) {
-                emitSocket('action-message', selectedConversation?.latestMessage, 'seen');
+                emitSocket('action-message', selectedConversation?.lastMessage, 'seen');
+            }
+            if (!selectedItem) {
+                const item = conversations.find(
+                    (conv) => conv.user._id === selectedConversation?.user._id
+                );
+                if (item) {
+                    selectConversation(item);
+                }
             }
         }
     }, [conversations]);
@@ -110,15 +118,9 @@ const ChatScreen = () => {
                 <ChatSection
                     conversation={selectedConversation}
                     user={userData}
-                    onSend={sendMessage}
-                    onCancelRequestFriend={cancelRequest}
-                    onRequestFriend={requestFriend}
-                    onAcceptFriend={acceptFriend}
-                    onRejectFriend={rejectFriend}
                     t={t}
                     language={language}
                     messages={messages}
-                    onClickMessage={onOpenFileViewer}
                 />
             ) : (
                 <div className="chat-welcome">

@@ -3,7 +3,7 @@ import ContactAPIDataSourceImpl from '../dataSource/API/ContactAPIDataSource';
 import ContactDataSource from '../dataSource/ContactDataSource';
 
 export class ContactRepositoryImpl implements ContactRepository {
-    dataSource: ContactDataSource;
+    private dataSource: ContactDataSource;
 
     constructor(_dataSource?: ContactDataSource) {
         if (!_dataSource) {
@@ -17,8 +17,8 @@ export class ContactRepositoryImpl implements ContactRepository {
         return this.dataSource.getContacts();
     }
 
-    async findContacts(keyword: string) {
-        return this.dataSource.findContacts(keyword);
+    async findUsers(keyword: string) {
+        return this.dataSource.findUsers(keyword);
     }
 
     async acceptFriend(userId: string) {

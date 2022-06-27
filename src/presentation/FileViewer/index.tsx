@@ -1,52 +1,56 @@
 import React from 'react';
-import Button from '../../common/components/Button';
-import Icon from '../../common/components/Icon';
-import Image from '../../common/components/Image';
-import { addListener, removeAllListeners } from '../../utils/app/eventHandler';
+import moment from 'moment';
+import ImageViewer from '../../common/components/ImageViewer';
+import { addListener, openSaveDialog, removeAllListeners } from '../../utils/app/eventHandler';
+import { SenderViewerData } from '../Chat/components/ChatSection';
+import useMultilingual from '../../utils/multilingual';
+import Video from '../../common/components/Video';
 
 const FileViewer = () => {
-    const [url, setUrl] = React.useState<string | undefined>();
-    const [rotation, setRotation] = React.useState(0);
+    const { t } = useMultilingual();
+    const [data, setData] = React.useState<SenderViewerData | undefined>();
+
     React.useEffect(() => {
-        addListener('fileView', (event: Event, url: string) => {
-            setUrl(url);
+        addListener('fileView', (event: Event, data: SenderViewerData) => {
+            setData(data);
         });
+
         return () => {
             removeAllListeners('fileView');
         };
     }, []);
 
+    if (!data?.file.url) {
+        return null;
+    }
+
     return (
         <div className="file-viewer-container">
-            {url && (
-                <>
-                    <Image
-                        src={url}
-                        className="file-viewer-image"
-                        style={{ transform: `rotate(${rotation}deg)` }}
-                    />
-                    <div className="file-viewer-buttons">
-                        <Button variant="text">
-                            <Icon name="download" />
-                        </Button>
-                        <Button
-                            variant="text"
-                            onClick={() => setRotation((rotation) => rotation - 90)}>
-                            <Icon name="rotate" />
-                        </Button>
-                        <Button
-                            variant="text"
-                            onClick={() => setRotation((rotation) => rotation + 90)}>
-                            <Icon name="rotate-clockwise" />
-                        </Button>
-                        <Button variant="text">
-                            <Icon name="zoom-in" />
-                        </Button>
-                        <Button variant="text">
-                            <Icon name="zoom-out" />
-                        </Button>
-                    </div>
-                </>
+            {data.file.type?.startsWith('video/') ? (
+                <Video
+                    className="file-viewer-video"
+                    url={data.file.url}
+                    showControllers
+                    showExtendButton={false}
+                    isNative
+                />
+            ) : (
+                <ImageViewer
+                    image={{
+                        url: data.file.url,
+                    }}
+                    title={`${data.from} ${t('sentAt')} ${moment(data.time).format(
+                        'HH:mm, DD/MM/yyyy'
+                    )}`}
+                    onClickDownload={() => {
+                        const name = data.file.url?.substring(data.file.url?.lastIndexOf('/'));
+                        openSaveDialog({
+                            url: data.file.url,
+                            name: name,
+                            type: name?.substring(name.lastIndexOf('.') + 1),
+                        });
+                    }}
+                />
             )}
         </div>
     );

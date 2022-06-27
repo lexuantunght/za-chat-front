@@ -1,0 +1,12 @@
+.za-loading-mask {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.za-loading-mask > .za-spin {
+    border-color: var(--primary);
+    border-top-color: transparent;
+    margin-bottom: 0.5rem;
+}

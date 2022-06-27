@@ -47,6 +47,7 @@ class MessageInput extends React.Component<MessageInputProps, MessageInputStates
                 onBlur={this.props.onBlur}
                 value={this.props.value}
                 onChange={this.handleChange}
+                onPaste={this.props.onPaste}
             />
         );
     }

@@ -2,9 +2,11 @@ import { Message } from '../../domain/model/Message';
 import { MessageRepository } from '../../domain/repository/MessageRepository';
 import MessageAPIDataSourceImpl from '../dataSource/API/MessageAPIDataSource';
 import MessageDataSource from '../dataSource/MessageDataSource';
+import MessageQueries from '../storage/database/query/MessageQueries';
 
 export class MessageRepositoryImpl implements MessageRepository {
-    dataSource: MessageDataSource;
+    private dataSource: MessageDataSource;
+    private clientDataSource: MessageQueries;
 
     constructor(_dataSource?: MessageDataSource) {
         if (!_dataSource) {
@@ -12,10 +14,11 @@ export class MessageRepositoryImpl implements MessageRepository {
         } else {
             this.dataSource = _dataSource;
         }
+        this.clientDataSource = new MessageQueries();
     }
 
-    async getMessages(conversationId: string, page?: number, limit?: number) {
-        return this.dataSource.getMessages(conversationId, page, limit);
+    async getMessages(conversationId: string, fromSendTime?: Date, limit?: number) {
+        return this.dataSource.getMessages(conversationId, fromSendTime, limit);
     }
 
     async sendMessage(message: Message) {

@@ -12,8 +12,8 @@ type MessageItemProps = {
     user?: UserData;
     t: CallableFunction;
     conversationAvatar?: string;
-    nextMessage?: Message;
     messagesLength: number;
+    showAvatar?: boolean;
     onLoad?: () => void;
     onClick?: (file: FileData) => void;
 };
@@ -23,13 +23,45 @@ type FileMessageItemProp = {
     style?: React.CSSProperties;
     onLoad?: () => void;
     onClick?: (file: FileData) => void;
+    showControllers?: boolean;
+    inGrid?: boolean;
 };
 
-const FileMessageItem = ({ file, style, onLoad, onClick }: FileMessageItemProp) => {
+const FileMessageItem = ({
+    file,
+    style,
+    onLoad,
+    onClick,
+    inGrid,
+    showControllers = true,
+}: FileMessageItemProp) => {
     if (file.type?.startsWith('video/')) {
-        return <Video className="message-video" url={file.url} style={style} onLoad={onLoad} />;
+        return (
+            <Video
+                className="message-video"
+                url={file.url}
+                style={{ ...style, cursor: 'pointer' }}
+                originHeight={file.height}
+                originWidth={file.width}
+                maxHeight={inGrid ? 120 : 400}
+                onLoad={onLoad}
+                showControllers={showControllers}
+                onClickExtend={() => onClick?.(file)}
+            />
+        );
     }
-    return <Image src={file.url} style={style} onLoad={onLoad} onClick={() => onClick?.(file)} />;
+    return (
+        <Image
+            src={file.url}
+            style={{ ...style, cursor: 'pointer' }}
+            originHeight={inGrid ? 400 : file.height}
+            originWidth={inGrid ? 400 : file.width}
+            maxHeight={inGrid ? undefined : 400}
+            onLoad={onLoad}
+            onClick={() => onClick?.(file)}
+            className="message-image"
+        />
+    );
 };
 
 const MessageItem = ({
@@ -39,18 +71,12 @@ const MessageItem = ({
     t,
     conversationAvatar,
     messagesLength,
-    nextMessage,
+    showAvatar,
     onLoad,
     onClick,
 }: MessageItemProps) => {
-    const containerRef = React.useRef<HTMLDivElement>(null);
-
     const calculateGrid = () => {
-        if (
-            !message.files ||
-            message.files.length < 2 ||
-            message.files?.some((f) => f.type?.startsWith('video/'))
-        ) {
+        if (!message.files || message.files.length < 2) {
             return 1;
         }
         if (message.files.length % 2 === 0) {
@@ -63,36 +89,30 @@ const MessageItem = ({
 
     return (
         <div
-            key={message.conversationId + index}
+            key={message.toUid + index}
             className={`chat-message-item ${
-                message.userId === user?._id ? 'chat-self-message' : ''
+                message.fromUid === user?._id ? 'chat-self-message' : ''
             }`}>
-            {index < messagesLength - 1 && message.userId === nextMessage?.userId ? (
+            {!showAvatar ? (
                 <span className="chat-avatar" />
             ) : (
                 <img
                     className="chat-avatar"
-                    src={message.userId === user?._id ? user.avatar : conversationAvatar}
+                    src={message.fromUid === user?._id ? user.avatar : conversationAvatar}
                 />
             )}
 
             {message.files && message.files.length > 0 && !message.content ? (
                 <div
-                    ref={containerRef}
                     className="chat-message-image-only"
                     style={{ gridTemplateColumns: `repeat(${getNumOfCols}, minmax(0, 1fr))` }}>
                     {message.files.map((file, index) => (
                         <FileMessageItem
                             key={index}
                             file={file}
-                            style={
-                                getNumOfCols > 1
-                                    ? {
-                                          objectFit: 'cover',
-                                          aspectRatio: '1/1',
-                                      }
-                                    : { objectFit: 'contain', aspectRatio: 'auto' }
-                            }
+                            showControllers={getNumOfCols === 1}
+                            inGrid={getNumOfCols > 1}
+                            style={{ objectFit: getNumOfCols > 1 ? 'cover' : 'contain' }}
                             onLoad={onLoad}
                             onClick={onClick}
                         />
@@ -102,9 +122,9 @@ const MessageItem = ({
                         className="chat-message-stamp"
                         style={{ gridColumn: `span ${getNumOfCols} / span ${getNumOfCols}` }}>
                         <small className="chat-message-time">
-                            {moment(message.created_at).format('hh:mm')}
+                            {moment(message.sendTime).format('hh:mm')}
                         </small>
-                        {index === 0 && message.userId === user?._id && (
+                        {index === messagesLength - 1 && message.fromUid === user?._id && (
                             <small>{t(message.status)}</small>
                         )}
                     </div>
@@ -113,15 +133,36 @@ const MessageItem = ({
                 <div>
                     <div className="chat-message-content">
                         {message.files && message.files.length > 0 && (
-                            <img width={100} height={100} src={message.files[0].url} />
+                            <div
+                                className="chat-message-text-image"
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: `repeat(${getNumOfCols}, auto)`,
+                                    marginBottom: '0.5rem',
+                                    gap: '0.25rem',
+                                }}>
+                                {message.files.map((file, index) => (
+                                    <FileMessageItem
+                                        key={index}
+                                        file={file}
+                                        showControllers={getNumOfCols === 1}
+                                        inGrid={getNumOfCols > 1}
+                                        style={{
+                                            objectFit: getNumOfCols > 1 ? 'cover' : 'contain',
+                                        }}
+                                        onLoad={onLoad}
+                                        onClick={onClick}
+                                    />
+                                ))}
+                            </div>
                         )}
                         {message.content}
                     </div>
                     <div>
                         <small className="chat-message-time">
-                            {moment(message.created_at).format('hh:mm')}
+                            {moment(message.sendTime).format('hh:mm')}
                         </small>
-                        {index === 0 && message.userId === user?._id && (
+                        {index === messagesLength - 1 && message.fromUid === user?._id && (
                             <small>{t(message.status)}</small>
                         )}
                     </div>

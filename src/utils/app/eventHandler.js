@@ -16,8 +16,12 @@ export const openMainApp = () => {
     ipcRenderer.send('openApp');
 };
 
-export const openFileViewer = (url) => {
-    ipcRenderer.send('openFileViewer', url);
+export const openFileViewer = (data) => {
+    ipcRenderer.send('openFileViewer', data);
+};
+
+export const openSaveDialog = (file) => {
+    ipcRenderer.send('openSaveDialog', file);
 };
 
 export const addListener = (key, callback) => {
