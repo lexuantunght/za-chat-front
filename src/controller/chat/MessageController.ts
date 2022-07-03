@@ -3,20 +3,26 @@ import { Message } from '../../domain/model/Message';
 import { SendMessage } from '../../domain/usecase/message/SendMessage';
 import { GetMessages } from '../../domain/usecase/message/GetMessages';
 import {
+    setIsOpenSearch,
     setMessages,
+    setSearchKeyword,
+    setSearchMsgResult,
     setTotalMessages,
     updateNewMessageToConversation,
     updateStatusMessage,
 } from '../../presentation/Chat/reducer';
+import { SearchMessages } from '../../domain/usecase/message/SearchMessages';
 
 class MessageController extends BaseController {
     private sendMessageUseCase;
     private getMessagesUseCase;
+    private searchMessagesUseCase;
 
     constructor() {
         super();
         this.sendMessageUseCase = new SendMessage();
         this.getMessagesUseCase = new GetMessages();
+        this.searchMessagesUseCase = new SearchMessages();
     }
 
     public sendMessage = (message: Message) => {
@@ -57,6 +63,23 @@ class MessageController extends BaseController {
     public updateStatusMessage = (message: Message) => {
         if (message.fromUid === this.getState().app.userData?._id) {
             this.dispatch(updateStatusMessage(message));
+        }
+    };
+
+    public toggleSearch = (isOpen?: boolean) => {
+        if (!isOpen) {
+            this.dispatch(setSearchKeyword());
+            this.dispatch(setSearchMsgResult());
+        }
+        this.dispatch(setIsOpenSearch(isOpen));
+    };
+
+    public searchMessages = (keyword: string) => {
+        if (keyword !== '') {
+            this.dispatch(setSearchKeyword(keyword));
+            this.searchMessagesUseCase
+                .invoke(keyword)
+                .then((pagingMsg) => this.dispatch(setSearchMsgResult(pagingMsg.data)));
         }
     };
 }

@@ -10,7 +10,6 @@ class MessageQueries {
     }
 
     public getMessages(conversationId: string, fromSendTime?: Date, limit?: number) {
-        console.log(conversationId);
         return this.adapter.getAll<MessageAPIEntity>('messages', {
             indexName: 'userId',
             keyMatch: conversationId,

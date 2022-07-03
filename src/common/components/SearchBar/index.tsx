@@ -16,6 +16,7 @@ type SearchBarProps = {
     onEndEditing?: (value: string) => void;
     containerStyle?: React.CSSProperties;
     numberOnly?: boolean;
+    autoFocus?: boolean;
 };
 
 type SearchBarStates = {
@@ -61,7 +62,7 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarStates> {
     };
 
     render() {
-        const { onSearch, name, id, placeholder, onBlur, onFocus } = this.props;
+        const { onSearch, name, id, placeholder, onBlur, onFocus, autoFocus } = this.props;
         return (
             <div className="za-searchbar-container" style={this.props.containerStyle}>
                 <Button variant="text" type="button" onClick={() => onSearch?.(this.state.value)}>
@@ -77,6 +78,7 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarStates> {
                     placeholder={placeholder}
                     onFocus={onFocus}
                     onBlur={onBlur}
+                    autoFocus={autoFocus}
                 />
                 {this.state.value !== '' && (
                     <Button variant="text" type="button" onClick={this.handleCancel}>

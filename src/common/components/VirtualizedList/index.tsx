@@ -3,7 +3,7 @@ import { Virtuoso } from 'react-virtuoso';
 
 interface VirtualizedListProps<T> {
     data: T[];
-    rowRenderer: (item: T, index: number, measure?: () => void) => React.ReactNode;
+    rowRenderer: (item: T, index: number) => React.ReactNode;
     reverse?: boolean;
     onLoadMore?: (page: number) => void;
     total?: number;
@@ -38,7 +38,7 @@ function VirtualizedList<T>({
             setIsPrepend(false);
             setFirstItemIndex(Math.max(firstItemIndex - initItemCount, 0));
         }
-    }, [data]);
+    }, [data, isPrepend]);
 
     React.useEffect(() => {
         if (total > initItemCount && firstItemIndex === defaultMaxFirst) {

@@ -8,4 +8,5 @@ export interface MessageRepository {
         limit?: number
     ): Promise<PagingData<Message>>;
     sendMessage(message: Message): Promise<void>;
+    searchMessages(keyword: string): Promise<PagingData<Message>>;
 }

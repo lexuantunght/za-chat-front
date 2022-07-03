@@ -11,6 +11,9 @@ export interface ChatState {
     messages: Message[];
     totalMessages: number;
     isLoading?: boolean;
+    isOpenSearch?: boolean;
+    searchMsgResult?: Message[];
+    searchKeyword?: string;
 }
 
 const defaultState: ChatState = {
@@ -18,6 +21,9 @@ const defaultState: ChatState = {
     messages: [],
     isLoading: false,
     totalMessages: 0,
+    isOpenSearch: false,
+    searchMsgResult: [],
+    searchKeyword: '',
 };
 
 const chatSlice = createSlice({
@@ -72,6 +78,15 @@ const chatSlice = createSlice({
                 state.selectedConversation.user.relationshipStatus = action.payload;
             }
         },
+        setIsOpenSearch: (state: ChatState, action: PayloadAction<boolean | undefined>) => {
+            state.isOpenSearch = action.payload;
+        },
+        setSearchMsgResult: (state: ChatState, action: PayloadAction<Message[] | undefined>) => {
+            state.searchMsgResult = action.payload;
+        },
+        setSearchKeyword: (state: ChatState, action: PayloadAction<string | undefined>) => {
+            state.searchKeyword = action.payload;
+        },
     },
 });
 
@@ -86,6 +101,9 @@ export const {
     updateNewMessageToConversation,
     updateFriendStatus,
     setTotalMessages,
+    setIsOpenSearch,
+    setSearchMsgResult,
+    setSearchKeyword,
 } = chatSlice.actions;
 
 export default chatReducer;

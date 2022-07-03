@@ -6,6 +6,19 @@ class IndexedDBAdapter implements BaseAdapter {
     protected dbProvider: IDBFactory;
     public constructor() {
         this.dbProvider = window.indexedDB;
+        this.initMainDB();
+    }
+
+    protected open = () => {
+        const request = this.dbProvider.open('ZaChat');
+        request.onerror = function (event) {
+            console.error('An error occurred with IndexedDB');
+            console.error(event);
+        };
+        return request;
+    };
+
+    private initMainDB = () => {
         const request = this.open();
         request.onupgradeneeded = function () {
             const db = request.result;
@@ -17,19 +30,10 @@ class IndexedDBAdapter implements BaseAdapter {
         request.onsuccess = function () {
             request.result.close();
         };
-    }
-
-    private open = () => {
-        const request = this.dbProvider.open('ZaChat');
-        request.onerror = function (event) {
-            console.error('An error occurred with IndexedDB');
-            console.error(event);
-        };
-        return request;
     };
 
-    public addOne = <T>(collectionName: string, data: T) => {
-        return new Promise<void>(() => {
+    public addOne = <T, R>(collectionName: string, data: T) => {
+        return new Promise<R>(() => {
             const request = this.open();
             request.onsuccess = function () {
                 const db = request.result;
@@ -43,8 +47,8 @@ class IndexedDBAdapter implements BaseAdapter {
         });
     };
 
-    public addMany = <T>(collectionName: string, data: T[]) => {
-        return new Promise<void>(() => {
+    public addMany = <T, R>(collectionName: string, data: T[]) => {
+        return new Promise<R>(() => {
             const request = this.open();
             request.onsuccess = function () {
                 const db = request.result;
@@ -114,6 +118,24 @@ class IndexedDBAdapter implements BaseAdapter {
                     };
                     queryAll = store.getAll();
                 }
+                transaction.oncomplete = function () {
+                    db.close();
+                };
+            };
+        });
+    };
+
+    public get = <T>(collectionName: string, key: string | number) => {
+        return new Promise<T>((resolve) => {
+            const request = this.open();
+            request.onsuccess = function () {
+                const db = request.result;
+                const transaction = db.transaction(collectionName, 'readwrite');
+                const store = transaction.objectStore(collectionName);
+                store.get(key).onsuccess = (e) => {
+                    resolve((e.target as IDBRequest<T>).result);
+                };
+
                 transaction.oncomplete = function () {
                     db.close();
                 };

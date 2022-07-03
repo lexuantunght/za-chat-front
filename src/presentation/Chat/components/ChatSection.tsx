@@ -35,12 +35,13 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
         useController(AppController);
     const { rejectFriend, acceptFriend, requestFriend, cancelRequest } =
         useController(ContactController);
-    const { sendMessage, getMessages } = useController(MessageController);
+    const { sendMessage, getMessages, searchMessages, toggleSearch } =
+        useController(MessageController);
     const totalMessages = useGetState((state) => state.chat.totalMessages);
     const errorConnection = useGetState((state) => state.app.errorConnection);
+    const isOpenSearch = useGetState((state) => state.chat.isOpenSearch);
     const partnerId = conversation.user._id || '';
     const [activeTime, setActiveTime] = React.useState<string | Date>('');
-    const [isOpenSearch, setIsOpenSearch] = React.useState(false);
 
     const handleClickMessage = (data: SenderViewerData) => {
         openFileViewer(data);
@@ -111,7 +112,7 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
                         className="chat-search"
                         variant="text"
                         title={t('searchMessages')}
-                        onClick={() => setIsOpenSearch(true)}>
+                        onClick={() => toggleSearch(true)}>
                         <Icon name="search" />
                     </Button>
                     <Button variant="text" className="chat-info" title={t('infoConversation')}>
@@ -163,8 +164,10 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
                                 id="chat-search-input"
                                 value="1234"
                                 placeholder={t('typeKeyword')}
+                                onEndEditing={(value) => searchMessages(value)}
+                                autoFocus
                             />
-                            <Button variant="text" onClick={() => setIsOpenSearch(false)}>
+                            <Button variant="text" onClick={() => toggleSearch(false)}>
                                 {t('close')}
                             </Button>
                         </div>

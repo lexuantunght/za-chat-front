@@ -22,4 +22,8 @@ export class MessageRepositoryImpl implements MessageRepository {
     async sendMessage(message: Message) {
         return this.dataSource.sendMessage(message);
     }
+
+    async searchMessages(keyword: string) {
+        return this.dataSource.searchMessages(keyword);
+    }
 }

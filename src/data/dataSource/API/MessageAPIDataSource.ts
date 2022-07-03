@@ -5,14 +5,17 @@ import objectToFormData from '../../../utils/helpers/objectToFormData';
 import Network from '../../networking/Network';
 import Socket from '../../networking/Socket';
 import MessageQueries from '../../storage/database/query/MessageQueries';
+import SearchQueries from '../../storage/database/query/SearchQueries';
 import MessageDataSource from '../MessageDataSource';
 import { FileDataAPIEntity } from './entity/FileDataAPIEntity';
 import { MessageAPIEntity } from './entity/MessageAPIEntity';
 
 export default class MessageAPIDataSourceImpl implements MessageDataSource {
     private clientQuery;
+    private seacrhQuery;
     constructor(clientQuery: MessageQueries) {
         this.clientQuery = clientQuery;
+        this.seacrhQuery = new SearchQueries();
     }
     async getMessages(conversationId: string, fromSendTime?: Date, limit?: number) {
         if (Network.getInstance().getIsErrorConnection()) {
@@ -24,6 +27,7 @@ export default class MessageAPIDataSourceImpl implements MessageDataSource {
             }/chat/messages?conversationId=${conversationId}&fromSendTime=${fromSendTime?.toISOString()}&limit=${limit}`
         );
         this.clientQuery.addMessages(response.data.data);
+        response.data.data.forEach((msg) => this.seacrhQuery.addMessage(msg));
         return response.data || {};
     }
     async sendMessage(message: Message) {
@@ -49,5 +53,9 @@ export default class MessageAPIDataSourceImpl implements MessageDataSource {
             return;
         }
         Socket.getInstance().getSocket().emit('send-message', message);
+    }
+
+    async searchMessages(keyword: string) {
+        return this.seacrhQuery.searchMessages(keyword);
     }
 }
