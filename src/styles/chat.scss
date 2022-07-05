@@ -144,8 +144,11 @@
 
 .chat-tab {
     width: 100%;
+    height: 100%;
 }
-
+.chat-tab > .search-list-result {
+    height: calc(100% - 3.5rem);
+}
 .chat-tab > .chat-list-title {
     margin: 0 1rem 0.25rem 1rem;
     font-weight: 500;
@@ -153,6 +156,7 @@
 }
 .chat-tab > .chat-list-title.chat-tab-search-result {
     margin-top: 1rem;
+    height: 2rem;
 }
 
 .chat-tab-messages {

@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import Highlighter from 'react-highlight-words';
+import { Virtuoso } from 'react-virtuoso';
 import { Conversation } from '../../../domain/model/Conversation';
 import { UserData } from '../../../domain/model/UserData';
 import SearchBox from '../../App/components/SearchBox';
@@ -83,38 +84,43 @@ const ConversationList = ({
         return (
             <div className="chat-tab">
                 <div className="chat-list-title chat-tab-search-result">{t('suitableResult')}</div>
-                <div>
-                    {searchKeyword &&
-                        searchMsgResult?.map((msg, index) => (
-                            <div
-                                key={index}
-                                className="chat-item-container"
-                                onClick={() => onSelectSearchMsgResult?.(msg)}>
-                                <div className="chat-item">
-                                    <img
-                                        src={getSearchUserData(msg)?.avatar}
-                                        className="chat-avatar"
-                                    />
-                                    <div>
-                                        <div className="chat-name">
-                                            {getSearchUserData(msg)?.name}
-                                        </div>
-                                        <div className="chat-message">
-                                            <Highlighter
-                                                searchWords={[searchKeyword]}
-                                                textToHighlight={msg.content}
-                                                sanitize={(text) =>
-                                                    text
-                                                        .normalize('NFD')
-                                                        .replace(/[\u0300-\u036f]/g, '')
-                                                }
-                                                autoEscape
-                                            />
+                <div className="search-list-result custom-scroll scrolling">
+                    {searchKeyword && (
+                        <Virtuoso
+                            data={searchMsgResult}
+                            style={{ height: '100%', width: '100%' }}
+                            itemContent={(index, item) => (
+                                <div
+                                    key={index}
+                                    className="chat-item-container"
+                                    onClick={() => onSelectSearchMsgResult?.(item)}>
+                                    <div className="chat-item">
+                                        <img
+                                            src={getSearchUserData(item)?.avatar}
+                                            className="chat-avatar"
+                                        />
+                                        <div>
+                                            <div className="chat-name">
+                                                {getSearchUserData(item)?.name}
+                                            </div>
+                                            <div className="chat-message">
+                                                <Highlighter
+                                                    searchWords={[searchKeyword]}
+                                                    textToHighlight={item.content}
+                                                    sanitize={(text) =>
+                                                        text
+                                                            .normalize('NFD')
+                                                            .replace(/[\u0300-\u036f]/g, '')
+                                                    }
+                                                    autoEscape
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            )}
+                        />
+                    )}
                 </div>
             </div>
         );
