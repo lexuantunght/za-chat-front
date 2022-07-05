@@ -10,7 +10,7 @@ import useController from '../../../controller/hooks';
 import AppController from '../../../controller/AppController';
 import { FileData } from '../../../domain/model/FileData';
 import MessageItem from './MessageItem';
-import VirtualizedList from '../../../common/components/VirtualizedList';
+import VirtualizedList, { VirtualizedListRef } from '../../../common/components/VirtualizedList';
 import { openFileViewer } from '../../../utils/app/eventHandler';
 import ContactController from '../../../controller/contact/ContactController';
 import MessageController from '../../../controller/chat/MessageController';
@@ -19,7 +19,7 @@ import SearchBar from '../../../common/components/SearchBar';
 export type SenderViewerData = {
     file: FileData;
     from: string;
-    time: Date;
+    time: number;
 };
 
 type ChatSectionProps = {
@@ -30,18 +30,31 @@ type ChatSectionProps = {
     language: string;
 };
 
-const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSectionProps) => {
+export type ChatSectionRef = {
+    scrollToMessage: (msg: Message) => void;
+};
+
+const ChatSection = (
+    { conversation, user, t, language, messages = [] }: ChatSectionProps,
+    ref: React.ForwardedRef<ChatSectionRef>
+) => {
     const { emitSocket, addSocketListener, removeAllSocketListeners, useGetState } =
         useController(AppController);
     const { rejectFriend, acceptFriend, requestFriend, cancelRequest } =
         useController(ContactController);
-    const { sendMessage, getMessages, searchMessages, toggleSearch } =
+    const { sendMessage, getMessages, searchMessages, navigateMessage, toggleSearch } =
         useController(MessageController);
     const totalMessages = useGetState((state) => state.chat.totalMessages);
     const errorConnection = useGetState((state) => state.app.errorConnection);
     const isOpenSearch = useGetState((state) => state.chat.isOpenSearch);
+    const searchKeyword = useGetState((state) => state.chat.searchKeyword);
+    const isEndTopMsgList = useGetState((state) => state.chat.isEndTopMsgList);
+    const isEndBottomMsgList = useGetState((state) => state.chat.isEndBottomMsgList);
     const partnerId = conversation.user._id || '';
     const [activeTime, setActiveTime] = React.useState<string | Date>('');
+    const [highlightMsgId, setHighlightMsgId] = React.useState<string | undefined>();
+    const [scrolledSearch, setScrolledSearch] = React.useState(true);
+    const listMsgRef = React.useRef<VirtualizedListRef>(null);
 
     const handleClickMessage = (data: SenderViewerData) => {
         openFileViewer(data);
@@ -64,6 +77,27 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
         emitSocket('get-active', partnerId);
     }, [conversation.user._id, conversation.user.relationshipStatus]);
 
+    React.useImperativeHandle(ref, () => ({
+        scrollToMessage: (msg: Message) => {
+            if (msg._id) {
+                setScrolledSearch(false);
+                setHighlightMsgId(msg._id);
+                navigateMessage(msg.toUid, msg.sendTime, msg._id, 15);
+            }
+        },
+    }));
+
+    React.useEffect(() => {
+        if (isOpenSearch && !scrolledSearch) {
+            setScrolledSearch(true);
+            listMsgRef.current?.scrollToIndex({
+                index: 14,
+                behavior: 'auto',
+                align: 'end',
+            });
+        }
+    }, [messages]);
+
     const onSendMessage = (content: string, files?: FileData[]) => {
         const msg: Message = {
             content,
@@ -73,7 +107,7 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
             userId: partnerId || conversation.userId,
             seen: user?._id ? [user?._id] : [],
             status: 'sending',
-            sendTime: new Date(),
+            sendTime: Date.now(),
             type:
                 files && files.length > 0
                     ? files[0].type?.startsWith('image/')
@@ -84,12 +118,13 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
         sendMessage(msg);
     };
 
-    const handleLoadMore = (index: number) => {
+    const handleLoadMore = (index: number, isBottom?: boolean) => {
         getMessages(
             conversation._id,
-            moment(messages[index].sendTime).subtract(1, 'millisecond').toDate(),
+            messages[index].sendTime + (isBottom ? 1 : -1),
             30,
-            true
+            true,
+            isBottom
         );
     };
 
@@ -164,7 +199,7 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
                                 id="chat-search-input"
                                 value="1234"
                                 placeholder={t('typeKeyword')}
-                                onEndEditing={(value) => searchMessages(value)}
+                                onEndEditing={(value) => searchMessages(value, conversation._id)}
                                 autoFocus
                             />
                             <Button variant="text" onClick={() => toggleSearch(false)}>
@@ -179,12 +214,14 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
             </div>
             <div className="chat-section-body custom-scroll scrolling">
                 <VirtualizedList
+                    ref={listMsgRef}
                     data={messages}
                     reverse
                     initItemCount={30}
                     spaceBottom={30}
                     spaceTop={60}
-                    total={totalMessages}
+                    isEndBottom={isEndBottomMsgList}
+                    isEndTop={isEndTopMsgList}
                     onLoadMore={handleLoadMore}
                     rowRenderer={(item, index) => (
                         <MessageItem
@@ -198,6 +235,11 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
                             }
                             user={user}
                             conversationAvatar={conversation.user.avatar}
+                            highlightWords={
+                                isOpenSearch && searchKeyword && item._id === highlightMsgId
+                                    ? [searchKeyword]
+                                    : undefined
+                            }
                             onClick={(file) =>
                                 handleClickMessage({
                                     file,
@@ -219,4 +261,4 @@ const ChatSection = ({ conversation, user, t, language, messages = [] }: ChatSec
     );
 };
 
-export default ChatSection;
+export default React.forwardRef(ChatSection);

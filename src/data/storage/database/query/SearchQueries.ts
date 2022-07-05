@@ -77,7 +77,7 @@ class SearchQueries {
         return this.searchAdapter.addOne('stidx', idx);
     }
 
-    public async searchMessages(keyword: string) {
+    public async searchMessages(keyword: string, conversationId?: string) {
         const subkeys = Array.from(this.segmenter.segment(keyword)[Symbol.iterator]())
             .filter((kw) => kw.isWordLike)
             .map((kw) =>
@@ -91,7 +91,10 @@ class SearchQueries {
         for (const subkey of subkeys) {
             const contexts = await this.searchAdapter.searchMessages(subkey);
             contexts.forEach((context) => {
-                if (!sconts.has(context.messageId)) {
+                if (
+                    !sconts.has(context.messageId) &&
+                    (!conversationId || context.conversationId === conversationId)
+                ) {
                     sconts.set(context.messageId, context);
                 }
             });

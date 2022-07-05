@@ -10,5 +10,5 @@ export interface MessageEntity {
     status: 'sent' | 'received' | 'seen' | 'failed' | 'sending';
     files?: FileDataAPIEntity[];
     type: 'text' | 'file' | 'image';
-    sendTime: Date;
+    sendTime: number;
 }

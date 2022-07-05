@@ -10,6 +10,8 @@ export interface ChatState {
     conversations: Conversation[];
     messages: Message[];
     totalMessages: number;
+    isEndTopMsgList?: boolean;
+    isEndBottomMsgList?: boolean;
     isLoading?: boolean;
     isOpenSearch?: boolean;
     searchMsgResult?: Message[];
@@ -22,6 +24,7 @@ const defaultState: ChatState = {
     isLoading: false,
     totalMessages: 0,
     isOpenSearch: false,
+    isEndBottomMsgList: true,
     searchMsgResult: [],
     searchKeyword: '',
 };
@@ -87,6 +90,12 @@ const chatSlice = createSlice({
         setSearchKeyword: (state: ChatState, action: PayloadAction<string | undefined>) => {
             state.searchKeyword = action.payload;
         },
+        setIsEndTopMsgList: (state: ChatState, action: PayloadAction<boolean | undefined>) => {
+            state.isEndTopMsgList = action.payload;
+        },
+        setIsEndBottomMsgList: (state: ChatState, action: PayloadAction<boolean | undefined>) => {
+            state.isEndBottomMsgList = action.payload;
+        },
     },
 });
 
@@ -101,6 +110,8 @@ export const {
     updateNewMessageToConversation,
     updateFriendStatus,
     setTotalMessages,
+    setIsEndTopMsgList,
+    setIsEndBottomMsgList,
     setIsOpenSearch,
     setSearchMsgResult,
     setSearchKeyword,

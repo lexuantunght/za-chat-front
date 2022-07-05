@@ -3,7 +3,7 @@ import { FileDataAPIEntity } from './FileDataAPIEntity';
 export interface MessageAPIEntity {
     _id: string;
     content: string;
-    sendTime: Date;
+    sendTime: number;
     files: FileDataAPIEntity[];
     conversationId: string;
     fromUid: string;

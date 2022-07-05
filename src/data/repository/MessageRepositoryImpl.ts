@@ -15,15 +15,29 @@ export class MessageRepositoryImpl implements MessageRepository {
         }
     }
 
-    async getMessages(conversationId: string, fromSendTime?: Date, limit?: number) {
-        return this.dataSource.getMessages(conversationId, fromSendTime, limit);
+    async getMessages(
+        conversationId: string,
+        fromSendTime?: number,
+        limit?: number,
+        later?: boolean
+    ) {
+        return this.dataSource.getMessages(conversationId, fromSendTime, limit, later);
+    }
+
+    async navigateMessage(
+        conversationId: string,
+        fromSendTime: number,
+        msgId: string,
+        limit?: number
+    ) {
+        return this.dataSource.navigateMessage(conversationId, fromSendTime, msgId, limit);
     }
 
     async sendMessage(message: Message) {
         return this.dataSource.sendMessage(message);
     }
 
-    async searchMessages(keyword: string) {
-        return this.dataSource.searchMessages(keyword);
+    async searchMessages(keyword: string, conversationId?: string) {
+        return this.dataSource.searchMessages(keyword, conversationId);
     }
 }

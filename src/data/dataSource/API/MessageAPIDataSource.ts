@@ -13,23 +13,38 @@ import { MessageAPIEntity } from './entity/MessageAPIEntity';
 export default class MessageAPIDataSourceImpl implements MessageDataSource {
     private clientQuery;
     private seacrhQuery;
+
     constructor(clientQuery: MessageQueries) {
         this.clientQuery = clientQuery;
         this.seacrhQuery = new SearchQueries();
     }
-    async getMessages(conversationId: string, fromSendTime?: Date, limit?: number) {
+
+    async getMessages(
+        conversationId: string,
+        fromSendTime?: number,
+        limit?: number,
+        later?: boolean
+    ) {
         if (Network.getInstance().getIsErrorConnection()) {
             return this.clientQuery.getMessages(conversationId, fromSendTime, limit);
         }
         const response = await Network.getInstance().getHelper<PagingData<MessageAPIEntity>>(
-            `${
-                appConfig.baseUrl
-            }/chat/messages?conversationId=${conversationId}&fromSendTime=${fromSendTime?.toISOString()}&limit=${limit}`
+            `${appConfig.baseUrl}/chat/messages?conversationId=${conversationId}&fromSendTime=${fromSendTime}&limit=${limit}&later=${later}`
         );
         this.clientQuery.addMessages(response.data.data);
         response.data.data.forEach((msg) => this.seacrhQuery.addMessage(msg));
         return response.data || {};
     }
+
+    async navigateMessage(
+        conversationId: string,
+        fromSendTime: number,
+        msgId: string,
+        limit?: number | undefined
+    ) {
+        return this.clientQuery.navigateMessage(conversationId, fromSendTime, msgId, limit);
+    }
+
     async sendMessage(message: Message) {
         if (message.files && message.files.length > 0) {
             const response = await Network.getInstance().postHelper<FileDataAPIEntity[]>(
@@ -55,7 +70,7 @@ export default class MessageAPIDataSourceImpl implements MessageDataSource {
         Socket.getInstance().getSocket().emit('send-message', message);
     }
 
-    async searchMessages(keyword: string) {
-        return this.seacrhQuery.searchMessages(keyword);
+    async searchMessages(keyword: string, conversationId?: string) {
+        return this.seacrhQuery.searchMessages(keyword, conversationId);
     }
 }

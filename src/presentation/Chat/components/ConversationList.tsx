@@ -16,12 +16,14 @@ interface ConversationListProps {
     userData: UserData;
     t: CallableFunction;
     language: string;
+    onSelectSearchMsgResult?: (item: Message) => void;
 }
 
 const ConversationList = ({
     data = [],
     selectedItem,
     onSelectedItem,
+    onSelectSearchMsgResult,
     userData,
     t,
     language,
@@ -84,7 +86,10 @@ const ConversationList = ({
                 <div>
                     {searchKeyword &&
                         searchMsgResult?.map((msg, index) => (
-                            <div key={index} className="chat-item-container">
+                            <div
+                                key={index}
+                                className="chat-item-container"
+                                onClick={() => onSelectSearchMsgResult?.(msg)}>
                                 <div className="chat-item">
                                     <img
                                         src={getSearchUserData(msg)?.avatar}

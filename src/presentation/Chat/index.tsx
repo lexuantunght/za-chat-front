@@ -1,7 +1,7 @@
 import React from 'react';
 import ConversationList from './components/ConversationList';
 import welcomeLogo from '../../common/resources/welcome.png';
-import ChatSection from './components/ChatSection';
+import ChatSection, { ChatSectionRef } from './components/ChatSection';
 import ConversationController from '../../controller/chat/ConversationController';
 import useMultilingual from '../../utils/multilingual';
 import MessageController from '../../controller/chat/MessageController';
@@ -21,6 +21,7 @@ const ChatScreen = () => {
     const selectedConversation = useGetState((state) => state.chat.selectedConversation);
     const messages = useGetState((state) => state.chat.messages);
     const { t, language } = useMultilingual();
+    const chatSectionRef = React.useRef<ChatSectionRef>(null);
 
     const onSelectConversation = (item: Conversation) => {
         if (!userData) return;
@@ -110,6 +111,7 @@ const ChatScreen = () => {
                     selectedItem={selectedConversation}
                     userData={userData}
                     onSelectedItem={onSelectConversation}
+                    onSelectSearchMsgResult={chatSectionRef.current?.scrollToMessage}
                     t={t}
                     language={language}
                 />
@@ -118,6 +120,7 @@ const ChatScreen = () => {
                 <ChatSection
                     conversation={selectedConversation}
                     user={userData}
+                    ref={chatSectionRef}
                     t={t}
                     language={language}
                     messages={messages}

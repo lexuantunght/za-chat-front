@@ -6,7 +6,7 @@ export interface ConversationAPIEntity {
     user: UserDataAPIEntity;
     lastMessage?: string;
     lastMessageType: 'text' | 'file' | 'image';
-    lastMessageTime: Date;
+    lastMessageTime: number;
     lastMessageFromUid: string;
     lastMessageStatus: 'sent' | 'received' | 'seen' | 'failed' | 'sending';
     isGroup?: boolean;

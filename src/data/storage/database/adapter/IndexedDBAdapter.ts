@@ -25,6 +25,7 @@ class IndexedDBAdapter implements BaseAdapter {
             db.createObjectStore('conversations', { keyPath: '_id' });
             const messageStore = db.createObjectStore('messages', { keyPath: '_id' });
             messageStore.createIndex('userId_sendTime', ['toUid', 'sendTime']);
+            messageStore.createIndex('userId_sendTime_msgId', ['toUid', 'sendTime', '_id']);
             messageStore.createIndex('userId', 'toUid');
         };
         request.onsuccess = function () {
@@ -118,6 +119,64 @@ class IndexedDBAdapter implements BaseAdapter {
                     };
                     queryAll = store.getAll();
                 }
+                transaction.oncomplete = function () {
+                    db.close();
+                };
+            };
+        });
+    };
+
+    public getRangeContainsItem = <T>(collectionName: string, query: Query) => {
+        return new Promise<PagingData<T>>((resolve) => {
+            const request = this.open();
+            request.onsuccess = () => {
+                const db = request.result;
+                const transaction = db.transaction(collectionName, 'readwrite');
+                const store = transaction.objectStore(collectionName);
+                store.index(query.indexName).count(query.keyMatch).onsuccess = (e) => {
+                    const total = (e.target as IDBRequest<number>).result;
+                    const limit = query.limit || 30;
+                    let limitCount = 0;
+                    const data: T[] = [];
+                    store
+                        .index(`${query.indexName}_${query.orderby}_${query.primaryKeyName}`)
+                        .openCursor(
+                            IDBKeyRange.bound(
+                                [query.keyMatch],
+                                [query.keyMatch, query.fromCondition, query.primaryKey]
+                            ),
+                            'prev'
+                        ).onsuccess = (e) => {
+                        const cursor = (e.target as IDBRequest<IDBCursorWithValue>).result;
+                        if (cursor && limitCount < limit) {
+                            data.unshift(cursor.value);
+                            limitCount += 1;
+                            cursor.continue();
+                        } else {
+                            limitCount = 0;
+                            store
+                                .index(
+                                    `${query.indexName}_${query.orderby}_${query.primaryKeyName}`
+                                )
+                                .openCursor(
+                                    IDBKeyRange.bound(
+                                        [query.keyMatch, query.fromCondition, query.primaryKey],
+                                        [query.keyMatch, query.toCondition]
+                                    ),
+                                    'next'
+                                ).onsuccess = (e) => {
+                                const cursor = (e.target as IDBRequest<IDBCursorWithValue>).result;
+                                if (cursor) {
+                                    if (limitCount > 0) data.push(cursor.value);
+                                    limitCount += 1;
+                                    cursor.continue();
+                                } else {
+                                    resolve({ data, total });
+                                }
+                            };
+                        }
+                    };
+                };
                 transaction.oncomplete = function () {
                     db.close();
                 };

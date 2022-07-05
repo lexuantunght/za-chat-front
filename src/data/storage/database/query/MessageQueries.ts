@@ -9,12 +9,30 @@ class MessageQueries {
         this.adapter = new IndexedDBAdapter();
     }
 
-    public getMessages(conversationId: string, fromSendTime?: Date, limit?: number) {
+    public getMessages(conversationId: string, fromSendTime?: number, limit?: number) {
         return this.adapter.getAll<MessageAPIEntity>('messages', {
             indexName: 'userId',
             keyMatch: conversationId,
             orderby: 'sendTime',
-            fromCondition: fromSendTime?.toISOString(),
+            fromCondition: fromSendTime,
+            limit,
+        });
+    }
+
+    public navigateMessage(
+        conversationId: string,
+        fromSendTime: number,
+        msgId: string,
+        limit?: number
+    ) {
+        return this.adapter.getRangeContainsItem<MessageAPIEntity>('messages', {
+            indexName: 'userId',
+            keyMatch: conversationId,
+            primaryKeyName: 'msgId',
+            primaryKey: msgId,
+            fromCondition: fromSendTime,
+            toCondition: Date.now(),
+            orderby: 'sendTime',
             limit,
         });
     }

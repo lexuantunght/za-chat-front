@@ -3,7 +3,7 @@ export interface ConversationEntity {
     userId?: string;
     lastMessage: string;
     lastMessageType: 'file' | 'text';
-    lastMessageTime: Date;
+    lastMessageTime: number;
     lastMessageFromUid: string;
     isGroup?: boolean;
     groupId?: string;
