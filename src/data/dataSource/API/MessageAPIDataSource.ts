@@ -10,13 +10,13 @@ import MessageDataSource from '../MessageDataSource';
 import { FileDataAPIEntity } from './entity/FileDataAPIEntity';
 import { MessageAPIEntity } from './entity/MessageAPIEntity';
 
-export default class MessageAPIDataSourceImpl implements MessageDataSource {
+export class MessageAPIDataSourceImpl implements MessageDataSource {
     private clientQuery;
-    private seacrhQuery;
+    private searchQuery;
 
-    constructor(clientQuery: MessageQueries) {
-        this.clientQuery = clientQuery;
-        this.seacrhQuery = new SearchQueries();
+    constructor() {
+        this.clientQuery = new MessageQueries();
+        this.searchQuery = new SearchQueries();
     }
 
     async getMessages(
@@ -32,7 +32,7 @@ export default class MessageAPIDataSourceImpl implements MessageDataSource {
             `${appConfig.baseUrl}/chat/messages?conversationId=${conversationId}&fromSendTime=${fromSendTime}&limit=${limit}&later=${later}`
         );
         this.clientQuery.addMessages(response.data.data);
-        this.seacrhQuery.addMessages(response.data.data);
+        this.searchQuery.addMessages(response.data.data);
         return response.data || {};
     }
 
@@ -75,6 +75,8 @@ export default class MessageAPIDataSourceImpl implements MessageDataSource {
         conversationId?: string,
         callback?: (result: PagingData<MessageAPIEntity>) => void
     ) {
-        this.seacrhQuery.searchMessages(keyword, conversationId, callback);
+        this.searchQuery.searchMessages(keyword, conversationId, callback);
     }
 }
+
+export const messageDataSource = new MessageAPIDataSourceImpl();
