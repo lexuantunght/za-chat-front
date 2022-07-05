@@ -1,48 +1,52 @@
 import { MessageAPIEntity } from '../../../dataSource/API/entity/MessageAPIEntity';
-import BaseAdapter from '../adapter/BaseAdapter';
-import IndexedDBAdapter from '../adapter/IndexedDBAdapter';
+import main_db from '../db/MainDB';
 import { MessageEntity } from '../entity/MessageEntity';
 
 class MessageQueries {
-    private adapter: BaseAdapter;
-    public constructor() {
-        this.adapter = new IndexedDBAdapter();
+    public async getMessages(conversationId: string, fromSendTime?: number, limit?: number) {
+        const total = await main_db.table('messages').where('toUid').equals(conversationId).count();
+        const messages = await main_db
+            .table('messages')
+            .where('[toUid+sendTime]')
+            .between([conversationId], [conversationId, fromSendTime])
+            .offset(Math.max(total - (limit || 0), 0))
+            .toArray();
+        return { data: messages as Array<MessageAPIEntity>, total };
     }
 
-    public getMessages(conversationId: string, fromSendTime?: number, limit?: number) {
-        return this.adapter.getAll<MessageAPIEntity>('messages', {
-            indexName: 'userId',
-            keyMatch: conversationId,
-            orderby: 'sendTime',
-            fromCondition: fromSendTime,
-            limit,
-        });
-    }
-
-    public navigateMessage(
+    public async navigateMessage(
         conversationId: string,
         fromSendTime: number,
         msgId: string,
         limit?: number
     ) {
-        return this.adapter.getRangeContainsItem<MessageAPIEntity>('messages', {
-            indexName: 'userId',
-            keyMatch: conversationId,
-            primaryKeyName: 'msgId',
-            primaryKey: msgId,
-            fromCondition: fromSendTime,
-            toCondition: Date.now(),
-            orderby: 'sendTime',
-            limit,
-        });
+        const total = await main_db.table('messages').where('toUid').equals(conversationId).count();
+        const totalUpper = await main_db
+            .table('messages')
+            .where('[toUid+sendTime+_id]')
+            .between([conversationId], [conversationId, fromSendTime, msgId])
+            .count();
+        const messages = await main_db
+            .table('messages')
+            .where('[toUid+sendTime+_id]')
+            .inAnyRange([
+                [[conversationId], [conversationId, fromSendTime, msgId]],
+                [
+                    [conversationId, fromSendTime, msgId],
+                    [conversationId, Date.now()],
+                ],
+            ])
+            .offset(Math.max(totalUpper - (limit || 0), 0))
+            .toArray();
+        return { data: messages as Array<MessageAPIEntity>, total };
     }
 
     public addMessage(message: MessageEntity) {
-        return this.adapter.addOne('messages', message);
+        return main_db.table('messages').add(message);
     }
 
     public addMessages(messages: MessageEntity[]) {
-        return this.adapter.addMany('messages', messages);
+        main_db.table('messages').bulkPut(messages);
     }
 }
 

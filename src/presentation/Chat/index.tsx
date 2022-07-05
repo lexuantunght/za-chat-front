@@ -19,7 +19,6 @@ const ChatScreen = () => {
     const userData = useGetState((state) => state.app.userData);
     const conversations = useGetState((state) => state.chat.conversations);
     const selectedConversation = useGetState((state) => state.chat.selectedConversation);
-    const messages = useGetState((state) => state.chat.messages);
     const { t, language } = useMultilingual();
     const chatSectionRef = React.useRef<ChatSectionRef>(null);
 
@@ -111,7 +110,9 @@ const ChatScreen = () => {
                     selectedItem={selectedConversation}
                     userData={userData}
                     onSelectedItem={onSelectConversation}
-                    onSelectSearchMsgResult={chatSectionRef.current?.scrollToMessage}
+                    onSelectSearchMsgResult={(item) =>
+                        chatSectionRef.current?.scrollToMessage(item)
+                    }
                     t={t}
                     language={language}
                 />
@@ -123,7 +124,6 @@ const ChatScreen = () => {
                     ref={chatSectionRef}
                     t={t}
                     language={language}
-                    messages={messages}
                 />
             ) : (
                 <div className="chat-welcome">

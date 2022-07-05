@@ -23,6 +23,7 @@
         "@types/react-router-dom": "^5.3.3",
         "@types/redux-logger": "^3.0.9",
         "axios": "^0.26.1",
+        "dexie": "^3.2.2",
         "formik": "^2.2.9",
         "i18next": "^21.8.5",
         "lodash-es": "^4.17.21",

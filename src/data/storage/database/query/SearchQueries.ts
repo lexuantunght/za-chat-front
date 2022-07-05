@@ -1,80 +1,49 @@
-import BaseAdapter from '../adapter/BaseAdapter';
-import IndexedDBAdapter from '../adapter/IndexedDBAdapter';
-import SearchDBAdapter from '../adapter/SearchDBAdapter';
+import _uniqBy from 'lodash-es/uniqBy';
+import { MessageAPIEntity } from '../../../dataSource/API/entity/MessageAPIEntity';
+import main_db from '../db/MainDB';
+import search_db from '../db/SearchDB';
 import { MessageEntity } from '../entity/MessageEntity';
 
-type SearchContext = {
-    conversationId: string;
-    messageId: string;
-    messageType: string;
-};
-
-type SearchIndex = {
-    contextId: number;
-    keywordId: number;
-};
-
 class SearchQueries {
-    private searchAdapter: SearchDBAdapter;
-    private adapter: BaseAdapter;
     private segmenter;
     public constructor() {
-        this.searchAdapter = new SearchDBAdapter();
-        this.adapter = new IndexedDBAdapter();
         this.segmenter = new Intl.Segmenter(['en', 'vi'], {
             granularity: 'word',
         });
     }
 
+    public async addMessages(messages: MessageEntity[]) {
+        for (const message of messages) {
+            await this.addMessage(message);
+        }
+    }
+
     public async addMessage(message: MessageEntity) {
-        return new Promise<void>(() => {
-            this.addContext({
-                messageId: message._id,
-                conversationId: message.toUid,
-                messageType: message.type,
-            }).then((index) => {
-                if (!index) {
-                    return;
-                }
-                const keywords = Array.from(
-                    this.segmenter.segment(message.content)[Symbol.iterator]()
-                )
-                    .filter((kw) => kw.isWordLike)
-                    .map((kw) => ({
-                        keyword: kw.segment
-                            .normalize('NFD')
-                            .replace(/[\u0300-\u036f]/g, '')
-                            .toLowerCase(),
-                    }));
-                this.addKeywords(keywords).then((keywordIds) => {
-                    this.searchAdapter.addMany<SearchIndex, number>(
-                        'stidx',
-                        keywordIds.map((keywordId) => ({ contextId: index, keywordId }))
-                    );
-                });
-            });
+        if ((await search_db.table('stcont').where('messageId').equals(message._id).count()) > 0) {
+            return;
+        }
+        const contextId = await search_db.table('stcont').add({
+            messageId: message._id,
+            conversationId: message.toUid,
+            messageType: message.type,
         });
-    }
-
-    public addKeyword(keyword: { keyword: string }) {
-        return this.searchAdapter.addOne<{ keyword: string }, number>('stkw', keyword, 'keyword');
-    }
-
-    public addKeywords(keywords: Array<{ keyword: string }>) {
-        return this.searchAdapter.addMany<{ keyword: string }, number>('stkw', keywords, 'keyword');
-    }
-
-    public addContext(context: SearchContext) {
-        return this.searchAdapter.addOne<SearchContext, number>(
-            'stcont',
-            context,
-            'messageId',
-            true
-        );
-    }
-
-    public addSearchIndex(idx: SearchIndex) {
-        return this.searchAdapter.addOne('stidx', idx);
+        const keywords = Array.from(this.segmenter.segment(message.content)[Symbol.iterator]())
+            .filter((kw) => kw.isWordLike)
+            .map((kw) => ({
+                keyword: kw.segment
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase(),
+            }));
+        for (const keyword of _uniqBy(keywords, 'keyword')) {
+            let keywordId = (
+                await search_db.table('stkw').where('keyword').equals(keyword.keyword).primaryKeys()
+            )[0];
+            if (!keywordId) {
+                keywordId = await search_db.table('stkw').add(keyword);
+            }
+            await search_db.table('stidx').add({ keywordId, contextId });
+        }
     }
 
     public async searchMessages(keyword: string, conversationId?: string) {
@@ -86,23 +55,22 @@ class SearchQueries {
                     .replace(/[\u0300-\u036f]/g, '')
                     .toLowerCase()
             );
-        const data = [];
-        const sconts = new Map<string, SearchContext>();
-        for (const subkey of subkeys) {
-            const contexts = await this.searchAdapter.searchMessages(subkey);
-            contexts.forEach((context) => {
-                if (
-                    !sconts.has(context.messageId) &&
-                    (!conversationId || context.conversationId === conversationId)
-                ) {
-                    sconts.set(context.messageId, context);
-                }
-            });
-        }
-        for (const scont of Array.from(sconts.values())) {
-            data.push(await this.adapter.get<MessageEntity>('messages', scont.messageId));
-        }
-        return { total: 0, data };
+        const keywordIds = await search_db
+            .table('stkw')
+            .where('keyword')
+            .startsWithAnyOf(subkeys)
+            .primaryKeys();
+        const contextIds = _uniqBy(
+            await search_db.table('stidx').where('keywordId').anyOf(keywordIds).toArray(),
+            'contextId'
+        ).map((idx) => idx.contextId);
+        const contexts = (await search_db.table('stcont').bulkGet(contextIds)).filter(
+            (cont) => !conversationId || cont.conversationId === conversationId
+        );
+        const messages: Array<MessageAPIEntity> = await main_db
+            .table('messages')
+            .bulkGet(contexts.map((context) => context.messageId));
+        return { total: messages.length, data: messages };
     }
 }
 

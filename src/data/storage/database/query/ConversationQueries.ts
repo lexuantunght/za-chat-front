@@ -1,20 +1,15 @@
 import { ConversationAPIEntity } from '../../../dataSource/API/entity/ConversationAPIEntity';
 import ConversationDataSource from '../../../dataSource/ConversationDataSource';
-import BaseAdapter from '../adapter/BaseAdapter';
-import IndexedDBAdapter from '../adapter/IndexedDBAdapter';
+import main_db from '../db/MainDB';
 
 class ConversationQueries implements ConversationDataSource {
-    private adapter: BaseAdapter;
-    public constructor() {
-        this.adapter = new IndexedDBAdapter();
-    }
-
-    public getConversations() {
-        return this.adapter.getAll<ConversationAPIEntity>('conversations');
+    public async getConversations() {
+        const conversations = await main_db.table('conversations').toArray();
+        return { data: conversations as Array<ConversationAPIEntity>, total: conversations.length };
     }
 
     public addConversations(conversations: ConversationAPIEntity[]) {
-        return this.adapter.addMany('conversations', conversations);
+        main_db.table('conversations').bulkPut(conversations);
     }
 }
 

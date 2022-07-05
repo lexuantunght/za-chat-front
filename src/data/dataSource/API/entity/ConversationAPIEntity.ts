@@ -4,7 +4,7 @@ export interface ConversationAPIEntity {
     _id: string;
     userId?: string;
     user: UserDataAPIEntity;
-    lastMessage?: string;
+    lastMessage: string;
     lastMessageType: 'text' | 'file' | 'image';
     lastMessageTime: number;
     lastMessageFromUid: string;

@@ -32,7 +32,7 @@ export default class MessageAPIDataSourceImpl implements MessageDataSource {
             `${appConfig.baseUrl}/chat/messages?conversationId=${conversationId}&fromSendTime=${fromSendTime}&limit=${limit}&later=${later}`
         );
         this.clientQuery.addMessages(response.data.data);
-        response.data.data.forEach((msg) => this.seacrhQuery.addMessage(msg));
+        this.seacrhQuery.addMessages(response.data.data);
         return response.data || {};
     }
 

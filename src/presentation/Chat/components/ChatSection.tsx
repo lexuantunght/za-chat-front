@@ -24,7 +24,6 @@ export type SenderViewerData = {
 
 type ChatSectionProps = {
     conversation: Conversation;
-    messages: Message[];
     user: UserData;
     t: CallableFunction;
     language: string;
@@ -35,7 +34,7 @@ export type ChatSectionRef = {
 };
 
 const ChatSection = (
-    { conversation, user, t, language, messages = [] }: ChatSectionProps,
+    { conversation, user, t, language }: ChatSectionProps,
     ref: React.ForwardedRef<ChatSectionRef>
 ) => {
     const { emitSocket, addSocketListener, removeAllSocketListeners, useGetState } =
@@ -45,6 +44,7 @@ const ChatSection = (
     const { sendMessage, getMessages, searchMessages, navigateMessage, toggleSearch } =
         useController(MessageController);
     const totalMessages = useGetState((state) => state.chat.totalMessages);
+    const messages = useGetState((state) => state.chat.messages);
     const errorConnection = useGetState((state) => state.app.errorConnection);
     const isOpenSearch = useGetState((state) => state.chat.isOpenSearch);
     const searchKeyword = useGetState((state) => state.chat.searchKeyword);
@@ -53,7 +53,7 @@ const ChatSection = (
     const partnerId = conversation.user._id || '';
     const [activeTime, setActiveTime] = React.useState<string | Date>('');
     const [highlightMsgId, setHighlightMsgId] = React.useState<string | undefined>();
-    const [scrolledSearch, setScrolledSearch] = React.useState(true);
+    const [scrolledSearch, setScrolledSearch] = React.useState<string | undefined>();
     const listMsgRef = React.useRef<VirtualizedListRef>(null);
 
     const handleClickMessage = (data: SenderViewerData) => {
@@ -79,22 +79,31 @@ const ChatSection = (
 
     React.useImperativeHandle(ref, () => ({
         scrollToMessage: (msg: Message) => {
+            setHighlightMsgId(msg._id);
+            const indexOfMsg = messages.findIndex((m) => m._id === msg._id);
+            if (indexOfMsg >= 0) {
+                listMsgRef.current?.scrollToIndex({
+                    index: indexOfMsg,
+                    behavior: 'auto',
+                    align: 'end',
+                });
+                return;
+            }
             if (msg._id) {
-                setScrolledSearch(false);
-                setHighlightMsgId(msg._id);
+                setScrolledSearch(msg._id);
                 navigateMessage(msg.toUid, msg.sendTime, msg._id, 15);
             }
         },
     }));
 
     React.useEffect(() => {
-        if (isOpenSearch && !scrolledSearch) {
-            setScrolledSearch(true);
+        if (isOpenSearch && scrolledSearch) {
             listMsgRef.current?.scrollToIndex({
-                index: 14,
+                index: messages.findIndex((msg) => msg._id === scrolledSearch),
                 behavior: 'auto',
                 align: 'end',
             });
+            setScrolledSearch(undefined);
         }
     }, [messages]);
 
