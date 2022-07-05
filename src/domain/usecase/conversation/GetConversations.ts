@@ -1,5 +1,5 @@
 import { PagingData } from '../../../common/types/PagingData';
-import { ConversationRepositoryImpl } from '../../../data/repository/ConversationRepositoryImpl';
+import { conversationRepository } from '../../../data/repository/ConversationRepositoryImpl';
 import { Conversation } from '../../model/Conversation';
 import { ConversationRepository } from '../../repository/ConversationRepository';
 
@@ -9,12 +9,8 @@ export interface GetConversationUseCase {
 
 export class GetConversations implements GetConversationUseCase {
     private conversationRepo: ConversationRepository;
-    constructor(_conversationRepo?: ConversationRepository) {
-        if (!_conversationRepo) {
-            this.conversationRepo = new ConversationRepositoryImpl();
-        } else {
-            this.conversationRepo = _conversationRepo;
-        }
+    constructor() {
+        this.conversationRepo = conversationRepository;
     }
 
     async invoke() {

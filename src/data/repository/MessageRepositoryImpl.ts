@@ -1,19 +1,14 @@
 import { PagingData } from '../../common/types/PagingData';
 import { Message } from '../../domain/model/Message';
 import { MessageRepository } from '../../domain/repository/MessageRepository';
-import MessageAPIDataSourceImpl from '../dataSource/API/MessageAPIDataSource';
+import { messageDataSource } from '../dataSource/API/MessageAPIDataSource';
 import MessageDataSource from '../dataSource/MessageDataSource';
-import MessageQueries from '../storage/database/query/MessageQueries';
 
 export class MessageRepositoryImpl implements MessageRepository {
     private dataSource: MessageDataSource;
 
-    constructor(_dataSource?: MessageDataSource) {
-        if (!_dataSource) {
-            this.dataSource = new MessageAPIDataSourceImpl(new MessageQueries());
-        } else {
-            this.dataSource = _dataSource;
-        }
+    constructor() {
+        this.dataSource = messageDataSource;
     }
 
     async getMessages(
@@ -46,3 +41,5 @@ export class MessageRepositoryImpl implements MessageRepository {
         this.dataSource.searchMessages(keyword, conversationId, callback);
     }
 }
+
+export const messageRepository = new MessageRepositoryImpl();

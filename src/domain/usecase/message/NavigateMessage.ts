@@ -1,5 +1,5 @@
 import { PagingData } from '../../../common/types/PagingData';
-import { MessageRepositoryImpl } from '../../../data/repository/MessageRepositoryImpl';
+import { messageRepository } from '../../../data/repository/MessageRepositoryImpl';
 import { Message } from '../../model/Message';
 import { MessageRepository } from '../../repository/MessageRepository';
 
@@ -14,12 +14,8 @@ export interface NavigateMessageUseCase {
 
 export class NavigateMessage implements NavigateMessageUseCase {
     private messageRepo: MessageRepository;
-    constructor(_messageRepo?: MessageRepository) {
-        if (!_messageRepo) {
-            this.messageRepo = new MessageRepositoryImpl();
-        } else {
-            this.messageRepo = _messageRepo;
-        }
+    constructor() {
+        this.messageRepo = messageRepository;
     }
 
     async invoke(conversationId: string, fromSendTime: number, msgId: string, limit?: number) {

@@ -5,10 +5,10 @@ import ConversationQueries from '../../storage/database/query/ConversationQuerie
 import ConversationDataSource from '../ConversationDataSource';
 import { ConversationAPIEntity } from './entity/ConversationAPIEntity';
 
-export default class ConversationAPIDataSourceImpl implements ConversationDataSource {
+export class ConversationAPIDataSourceImpl implements ConversationDataSource {
     private clientQuery;
-    constructor(clientQuery: ConversationQueries) {
-        this.clientQuery = clientQuery;
+    constructor() {
+        this.clientQuery = new ConversationQueries();
     }
     async getConversations() {
         if (Network.getInstance().getIsErrorConnection()) {
@@ -21,3 +21,5 @@ export default class ConversationAPIDataSourceImpl implements ConversationDataSo
         return response.data || {};
     }
 }
+
+export const conversationDataSource = new ConversationAPIDataSourceImpl();
