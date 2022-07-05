@@ -70,7 +70,11 @@ export default class MessageAPIDataSourceImpl implements MessageDataSource {
         Socket.getInstance().getSocket().emit('send-message', message);
     }
 
-    async searchMessages(keyword: string, conversationId?: string) {
-        return this.seacrhQuery.searchMessages(keyword, conversationId);
+    searchMessages(
+        keyword: string,
+        conversationId?: string,
+        callback?: (result: PagingData<MessageAPIEntity>) => void
+    ) {
+        this.seacrhQuery.searchMessages(keyword, conversationId, callback);
     }
 }

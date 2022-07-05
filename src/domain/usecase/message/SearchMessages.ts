@@ -4,7 +4,7 @@ import { Message } from '../../model/Message';
 import { MessageRepository } from '../../repository/MessageRepository';
 
 export interface SearchMessagesUseCase {
-    invoke: (keyword: string, conversationId?: string) => Promise<PagingData<Message>>;
+    invoke: (keyword: string, conversationId?: string) => void;
 }
 
 export class SearchMessages implements SearchMessagesUseCase {
@@ -17,7 +17,11 @@ export class SearchMessages implements SearchMessagesUseCase {
         }
     }
 
-    async invoke(keyword: string, conversationId?: string) {
-        return this.messageRepo.searchMessages(keyword, conversationId);
+    invoke(
+        keyword: string,
+        conversationId?: string,
+        callback?: (result: PagingData<Message>) => void
+    ) {
+        this.messageRepo.searchMessages(keyword, conversationId, callback);
     }
 }

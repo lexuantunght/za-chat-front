@@ -1,3 +1,4 @@
+import { PagingData } from '../../common/types/PagingData';
 import { Message } from '../../domain/model/Message';
 import { MessageRepository } from '../../domain/repository/MessageRepository';
 import MessageAPIDataSourceImpl from '../dataSource/API/MessageAPIDataSource';
@@ -37,7 +38,11 @@ export class MessageRepositoryImpl implements MessageRepository {
         return this.dataSource.sendMessage(message);
     }
 
-    async searchMessages(keyword: string, conversationId?: string) {
-        return this.dataSource.searchMessages(keyword, conversationId);
+    searchMessages(
+        keyword: string,
+        conversationId?: string,
+        callback?: (result: PagingData<Message>) => void
+    ) {
+        this.dataSource.searchMessages(keyword, conversationId, callback);
     }
 }
