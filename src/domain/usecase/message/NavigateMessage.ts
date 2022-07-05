@@ -3,16 +3,16 @@ import { MessageRepositoryImpl } from '../../../data/repository/MessageRepositor
 import { Message } from '../../model/Message';
 import { MessageRepository } from '../../repository/MessageRepository';
 
-export interface GetMessageUseCase {
+export interface NavigateMessageUseCase {
     invoke: (
         conversationId: string,
-        fromSendTime?: number,
-        limit?: number,
-        later?: boolean
+        fromSendTime: number,
+        msgId: string,
+        limit?: number
     ) => Promise<PagingData<Message>>;
 }
 
-export class GetMessages implements GetMessageUseCase {
+export class NavigateMessage implements NavigateMessageUseCase {
     private messageRepo: MessageRepository;
     constructor(_messageRepo?: MessageRepository) {
         if (!_messageRepo) {
@@ -22,7 +22,7 @@ export class GetMessages implements GetMessageUseCase {
         }
     }
 
-    async invoke(conversationId: string, fromSendTime?: number, limit?: number, later?: boolean) {
-        return this.messageRepo.getMessages(conversationId, fromSendTime, limit, later);
+    async invoke(conversationId: string, fromSendTime: number, msgId: string, limit?: number) {
+        return this.messageRepo.navigateMessage(conversationId, fromSendTime, msgId, limit);
     }
 }

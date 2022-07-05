@@ -4,9 +4,9 @@ export interface ConversationAPIEntity {
     _id: string;
     userId?: string;
     user: UserDataAPIEntity;
-    lastMessage?: string;
+    lastMessage: string;
     lastMessageType: 'text' | 'file' | 'image';
-    lastMessageTime: Date;
+    lastMessageTime: number;
     lastMessageFromUid: string;
     lastMessageStatus: 'sent' | 'received' | 'seen' | 'failed' | 'sending';
     isGroup?: boolean;

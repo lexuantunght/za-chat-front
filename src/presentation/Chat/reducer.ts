@@ -10,7 +10,12 @@ export interface ChatState {
     conversations: Conversation[];
     messages: Message[];
     totalMessages: number;
+    isEndTopMsgList?: boolean;
+    isEndBottomMsgList?: boolean;
     isLoading?: boolean;
+    isOpenSearch?: boolean;
+    searchMsgResult?: Message[];
+    searchKeyword?: string;
 }
 
 const defaultState: ChatState = {
@@ -18,6 +23,10 @@ const defaultState: ChatState = {
     messages: [],
     isLoading: false,
     totalMessages: 0,
+    isOpenSearch: false,
+    isEndBottomMsgList: true,
+    searchMsgResult: [],
+    searchKeyword: '',
 };
 
 const chatSlice = createSlice({
@@ -72,6 +81,21 @@ const chatSlice = createSlice({
                 state.selectedConversation.user.relationshipStatus = action.payload;
             }
         },
+        setIsOpenSearch: (state: ChatState, action: PayloadAction<boolean | undefined>) => {
+            state.isOpenSearch = action.payload;
+        },
+        setSearchMsgResult: (state: ChatState, action: PayloadAction<Message[] | undefined>) => {
+            state.searchMsgResult = action.payload;
+        },
+        setSearchKeyword: (state: ChatState, action: PayloadAction<string | undefined>) => {
+            state.searchKeyword = action.payload;
+        },
+        setIsEndTopMsgList: (state: ChatState, action: PayloadAction<boolean | undefined>) => {
+            state.isEndTopMsgList = action.payload;
+        },
+        setIsEndBottomMsgList: (state: ChatState, action: PayloadAction<boolean | undefined>) => {
+            state.isEndBottomMsgList = action.payload;
+        },
     },
 });
 
@@ -86,6 +110,11 @@ export const {
     updateNewMessageToConversation,
     updateFriendStatus,
     setTotalMessages,
+    setIsEndTopMsgList,
+    setIsEndBottomMsgList,
+    setIsOpenSearch,
+    setSearchMsgResult,
+    setSearchKeyword,
 } = chatSlice.actions;
 
 export default chatReducer;

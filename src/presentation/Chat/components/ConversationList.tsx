@@ -1,10 +1,13 @@
 import React from 'react';
 import moment from 'moment';
+import Highlighter from 'react-highlight-words';
+import { Virtuoso } from 'react-virtuoso';
 import { Conversation } from '../../../domain/model/Conversation';
 import { UserData } from '../../../domain/model/UserData';
 import SearchBox from '../../App/components/SearchBox';
 import useController from '../../../controller/hooks';
 import ConversationController from '../../../controller/chat/ConversationController';
+import { Message } from '../../../domain/model/Message';
 
 interface ConversationListProps {
     data?: Conversation[];
@@ -14,18 +17,23 @@ interface ConversationListProps {
     userData: UserData;
     t: CallableFunction;
     language: string;
+    onSelectSearchMsgResult?: (item: Message) => void;
 }
 
 const ConversationList = ({
     data = [],
     selectedItem,
     onSelectedItem,
+    onSelectSearchMsgResult,
     userData,
     t,
     language,
 }: ConversationListProps) => {
     const userId = userData._id;
-    const { getConversations } = useController(ConversationController);
+    const { getConversations, useGetState } = useController(ConversationController);
+    const isOpenSearch = useGetState((state) => state.chat.isOpenSearch);
+    const searchMsgResult = useGetState((state) => state.chat.searchMsgResult);
+    const searchKeyword = useGetState((state) => state.chat.searchKeyword);
 
     const onClickItem = (item: Conversation) => {
         onSelectedItem?.(item);
@@ -67,6 +75,56 @@ const ConversationList = ({
 
         return lastMessage;
     };
+
+    const getSearchUserData = (msg: Message) => {
+        return msg.fromUid === userData._id ? userData : selectedItem?.user;
+    };
+
+    if (isOpenSearch) {
+        return (
+            <div className="chat-tab">
+                <div className="chat-list-title chat-tab-search-result">{t('suitableResult')}</div>
+                <div className="search-list-result custom-scroll scrolling">
+                    {searchKeyword && (
+                        <Virtuoso
+                            data={searchMsgResult}
+                            style={{ height: '100%', width: '100%' }}
+                            itemContent={(index, item) => (
+                                <div
+                                    key={index}
+                                    className="chat-item-container"
+                                    onClick={() => onSelectSearchMsgResult?.(item)}>
+                                    <div className="chat-item">
+                                        <img
+                                            src={getSearchUserData(item)?.avatar}
+                                            className="chat-avatar"
+                                        />
+                                        <div>
+                                            <div className="chat-name">
+                                                {getSearchUserData(item)?.name}
+                                            </div>
+                                            <div className="chat-message">
+                                                <Highlighter
+                                                    searchWords={[searchKeyword]}
+                                                    textToHighlight={item.content}
+                                                    sanitize={(text) =>
+                                                        text
+                                                            .normalize('NFD')
+                                                            .replace(/[\u0300-\u036f]/g, '')
+                                                    }
+                                                    autoEscape
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        />
+                    )}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="chat-tab">

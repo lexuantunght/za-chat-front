@@ -3,10 +3,12 @@ import { FileDataAPIEntity } from '../../../dataSource/API/entity/FileDataAPIEnt
 export interface MessageEntity {
     _id: string;
     fromUid: string;
+    conversationId?: string;
     toUid: string;
     content: string;
     seen?: string[];
     status: 'sent' | 'received' | 'seen' | 'failed' | 'sending';
     files?: FileDataAPIEntity[];
-    sendTime: Date;
+    type: 'text' | 'file' | 'image';
+    sendTime: number;
 }

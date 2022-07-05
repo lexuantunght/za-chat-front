@@ -5,8 +5,20 @@ import { MessageAPIEntity } from './API/entity/MessageAPIEntity';
 export default interface MessageDataSource {
     getMessages(
         conversationId: string,
-        fromSendTime?: Date,
+        fromSendTime?: number,
+        limit?: number,
+        later?: boolean
+    ): Promise<PagingData<MessageAPIEntity>>;
+    navigateMessage(
+        conversationId: string,
+        fromSendTime: number,
+        msgId: string,
         limit?: number
     ): Promise<PagingData<MessageAPIEntity>>;
     sendMessage(message: Message): Promise<void>;
+    searchMessages(
+        keyword: string,
+        conversationId?: string,
+        callback?: (result: PagingData<MessageAPIEntity>) => void
+    ): void;
 }

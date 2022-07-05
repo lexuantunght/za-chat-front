@@ -21,7 +21,7 @@
         "react",
         "@typescript-eslint"
     ],
-    "ignorePatterns": ["electron/**/*.js", "electron-renderer/**/*.js"],
+    "ignorePatterns": ["electron/**/*.js", "electron-renderer/**/*.js", "public/**/*.js"],
     "rules": {
     }
 }

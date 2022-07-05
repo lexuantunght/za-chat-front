@@ -1,3 +1,4 @@
+import { PagingData } from '../../common/types/PagingData';
 import { Message } from '../../domain/model/Message';
 import { MessageRepository } from '../../domain/repository/MessageRepository';
 import MessageAPIDataSourceImpl from '../dataSource/API/MessageAPIDataSource';
@@ -15,11 +16,33 @@ export class MessageRepositoryImpl implements MessageRepository {
         }
     }
 
-    async getMessages(conversationId: string, fromSendTime?: Date, limit?: number) {
-        return this.dataSource.getMessages(conversationId, fromSendTime, limit);
+    async getMessages(
+        conversationId: string,
+        fromSendTime?: number,
+        limit?: number,
+        later?: boolean
+    ) {
+        return this.dataSource.getMessages(conversationId, fromSendTime, limit, later);
+    }
+
+    async navigateMessage(
+        conversationId: string,
+        fromSendTime: number,
+        msgId: string,
+        limit?: number
+    ) {
+        return this.dataSource.navigateMessage(conversationId, fromSendTime, msgId, limit);
     }
 
     async sendMessage(message: Message) {
         return this.dataSource.sendMessage(message);
+    }
+
+    searchMessages(
+        keyword: string,
+        conversationId?: string,
+        callback?: (result: PagingData<Message>) => void
+    ) {
+        this.dataSource.searchMessages(keyword, conversationId, callback);
     }
 }

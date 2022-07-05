@@ -5,6 +5,7 @@ import { UserData } from '../../../domain/model/UserData';
 import Image from '../../../common/components/Image';
 import { FileData } from '../../../domain/model/FileData';
 import Video from '../../../common/components/Video';
+import Highlighter from 'react-highlight-words';
 
 type MessageItemProps = {
     message: Message;
@@ -16,6 +17,7 @@ type MessageItemProps = {
     showAvatar?: boolean;
     onLoad?: () => void;
     onClick?: (file: FileData) => void;
+    highlightWords?: string[];
 };
 
 type FileMessageItemProp = {
@@ -74,6 +76,7 @@ const MessageItem = ({
     showAvatar,
     onLoad,
     onClick,
+    highlightWords,
 }: MessageItemProps) => {
     const calculateGrid = () => {
         if (!message.files || message.files.length < 2) {
@@ -156,7 +159,18 @@ const MessageItem = ({
                                 ))}
                             </div>
                         )}
-                        {message.content}
+                        {highlightWords && highlightWords.length > 0 ? (
+                            <Highlighter
+                                searchWords={highlightWords}
+                                textToHighlight={message.content}
+                                sanitize={(text) =>
+                                    text.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                                }
+                                autoEscape
+                            />
+                        ) : (
+                            message.content
+                        )}
                     </div>
                     <div>
                         <small className="chat-message-time">

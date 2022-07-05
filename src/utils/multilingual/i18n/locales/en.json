@@ -78,5 +78,6 @@
     "findFriends": "Find friends",
     "image": "Image",
     "file": "File",
-    "errorConnection": "Can't connect to server. Please check your connection"
+    "errorConnection": "Can't connect to server. Please check your connection",
+    "suitableResult": "Suitable result"
 }

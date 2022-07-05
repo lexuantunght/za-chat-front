@@ -1,5 +1,5 @@
 export interface UserInfoEntity {
-    userId: string;
+    _id: string;
     name: string;
     avatar?: string;
     relationshipStatus?: 'requested' | 'waiting' | 'friend' | 'stranger';

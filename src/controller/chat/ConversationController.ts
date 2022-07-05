@@ -1,7 +1,11 @@
 import BaseController from '../BaseController';
 import { GetConversations } from '../../domain/usecase/conversation/GetConversations';
 import { Conversation } from '../../domain/model/Conversation';
-import { selectConversation, setConversations } from '../../presentation/Chat/reducer';
+import {
+    selectConversation,
+    setConversations,
+    setIsEndTopMsgList,
+} from '../../presentation/Chat/reducer';
 
 class ConversationController extends BaseController {
     private getConversationUseCase;
@@ -19,6 +23,7 @@ class ConversationController extends BaseController {
     };
 
     public selectConversation = (conversation?: Conversation) => {
+        this.dispatch(setIsEndTopMsgList(false));
         this.dispatch(selectConversation(conversation));
     };
 
