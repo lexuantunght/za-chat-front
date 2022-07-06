@@ -1,4 +1,5 @@
 import React from 'react';
+import Avatar from '../../../common/components/Avatar';
 import Button from '../../../common/components/Button';
 import ContactController from '../../../controller/contact/ContactController';
 import useController from '../../../controller/hooks';
@@ -26,7 +27,10 @@ const FriendRequestList = ({ t }: FriendRequestListProps) => {
                 {friendRequests.map((request, index) => (
                     <div key={index} className="friend-request-item">
                         <div>
-                            <img src={request.fromUser.avatar} className="friend-request-avatar" />
+                            <Avatar
+                                src={request.fromUser.avatar}
+                                style={{ height: '4rem', width: '4rem' }}
+                            />
                             <span>{request.fromUser.name}</span>
                         </div>
                         <div>

@@ -15,6 +15,7 @@ import { openFileViewer } from '../../../utils/app/eventHandler';
 import ContactController from '../../../controller/contact/ContactController';
 import MessageController from '../../../controller/chat/MessageController';
 import SearchBar from '../../../common/components/SearchBar';
+import Avatar from '../../../common/components/Avatar';
 
 export type SenderViewerData = {
     file: FileData;
@@ -141,7 +142,11 @@ const ChatSection = (
     return (
         <div className="chat-section">
             <div className="chat-section-title">
-                <img className="chat-avatar" src={conversation.user.avatar} />
+                <Avatar
+                    className="chat-avatar"
+                    src={conversation.user.avatar}
+                    name={conversation.user.name}
+                />
                 <div className="chat-section-name-info">
                     <div className="chat-section-name">{conversation.user.name}</div>
                     <div>

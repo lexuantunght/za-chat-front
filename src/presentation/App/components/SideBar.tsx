@@ -6,10 +6,10 @@ import Icon from '../../../common/components/Icon';
 import PopupMenu from '../../../common/components/PopupMenu';
 import Modal from '../../../common/components/Modal';
 import Setting from './Setting';
-import Avatar from './Avatar';
-
+import Avatar from '../../../common/components/Avatar';
 interface SideBarProps {
     avatarUrl?: string;
+    name?: string;
     t: CallableFunction;
     onChangeLanguage: (lang: string) => void;
     languages: string[];
@@ -43,6 +43,7 @@ const findRouteId = (pathname: string) => {
 
 const SideBar = ({
     avatarUrl,
+    name,
     t,
     onChangeLanguage,
     languages,
@@ -92,7 +93,7 @@ const SideBar = ({
             <button
                 className="app-sidebar-avatar-container"
                 onClick={(e) => userMenuRef.current?.toggle(e)}>
-                <Avatar url={avatarUrl} />
+                <Avatar src={avatarUrl} name={name} />
             </button>
             <div className="app-sidebar-buttons">
                 {menuItems.map((item, index) => (

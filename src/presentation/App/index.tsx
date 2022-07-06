@@ -47,6 +47,7 @@ const AppScreen = () => {
                     onLogout={logout}
                     onQuitApp={quitApp}
                     avatarUrl={userData?.avatar}
+                    name={userData?.name}
                 />
                 <Switch>
                     <Route path="/contacts" component={ContactScreen} />

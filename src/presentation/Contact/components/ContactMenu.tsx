@@ -1,4 +1,5 @@
 import React from 'react';
+import Avatar from '../../../common/components/Avatar';
 import Icon from '../../../common/components/Icon';
 import ConversationController from '../../../controller/chat/ConversationController';
 import MessageController from '../../../controller/chat/MessageController';
@@ -78,7 +79,11 @@ const ContactMenu = ({ t }: ContactMenuProps) => {
                             }
                             key={index}
                             onClick={() => onClickFriend(friend.user)}>
-                            <img src={friend.user.avatar} className="chat-avatar" />
+                            <Avatar
+                                src={friend.user.avatar}
+                                name={friend.user.name}
+                                style={{ marginRight: '0.5rem' }}
+                            />
                             <span className="chat-name">{friend.user.name}</span>
                         </div>
                     ))}

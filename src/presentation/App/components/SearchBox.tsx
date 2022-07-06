@@ -1,4 +1,5 @@
 import React from 'react';
+import Avatar from '../../../common/components/Avatar';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import Modal from '../../../common/components/Modal';
@@ -95,7 +96,11 @@ const SearchBox = (
                                 className="chat-item"
                                 key={index}
                                 onClick={() => onClickResult?.(user)}>
-                                <img src={user.avatar} className="chat-avatar" />
+                                <Avatar
+                                    src={user.avatar}
+                                    name={user.name}
+                                    className="chat-avatar"
+                                />
                                 <div className="chat-name">{user.name}</div>
                             </div>
                         ))}

@@ -8,6 +8,7 @@ import SearchBox from '../../App/components/SearchBox';
 import useController from '../../../controller/hooks';
 import ConversationController from '../../../controller/chat/ConversationController';
 import { Message } from '../../../domain/model/Message';
+import Avatar from '../../../common/components/Avatar';
 
 interface ConversationListProps {
     data?: Conversation[];
@@ -95,8 +96,9 @@ const ConversationList = ({
                                     className="chat-item-container"
                                     onClick={() => onSelectSearchMsgResult?.(item)}>
                                     <div className="chat-item">
-                                        <img
+                                        <Avatar
                                             src={getSearchUserData(item)?.avatar}
+                                            name={getSearchUserData(item)?.name}
                                             className="chat-avatar"
                                         />
                                         <div>
@@ -143,7 +145,11 @@ const ConversationList = ({
                         }`}
                         onClick={() => onClickItem(chatItem)}>
                         <div className="chat-item">
-                            <img src={chatItem.user.avatar} className="chat-avatar" />
+                            <Avatar
+                                src={chatItem.user.avatar}
+                                name={chatItem.user.name}
+                                className="chat-avatar"
+                            />
                             <div
                                 className={
                                     chatItem.lastMessageFromUid === userId ||

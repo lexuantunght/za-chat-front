@@ -287,6 +287,9 @@
     margin-right: 1rem;
 }
 
+.chat-pasted-files-container {
+    height: 11rem;
+}
 .chat-pasted-files {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -308,13 +311,14 @@
 
 .chat-pasted-file-item {
     position: relative;
-    border: 1px solid #dddddd;
-    border-radius: var(--border-radius);
     overflow: hidden;
 }
 .chat-pasted-file-item > img {
     aspect-ratio: 1/1;
+    width: calc(100% - 2px);
     object-fit: cover;
+    border: 1px solid #dddddd;
+    border-radius: var(--border-radius);
 }
 
 .chat-pasted-cancel {

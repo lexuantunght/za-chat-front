@@ -202,7 +202,7 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
                 </>
             </form>
             {form.values.files.length > 0 && (
-                <div>
+                <div className="chat-pasted-files-container custom-scroll scrolling">
                     <div className="chat-pasted-files">
                         {form.values.files.map((file, index) => (
                             <PastedFileItem
