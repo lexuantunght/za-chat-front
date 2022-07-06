@@ -5,8 +5,12 @@ import ConversationDataSource from '../dataSource/ConversationDataSource';
 export class ConversationRepositoryImpl implements ConversationRepository {
     private dataSource: ConversationDataSource;
 
-    constructor() {
-        this.dataSource = conversationDataSource;
+    constructor(_dataSource?: ConversationDataSource) {
+        if (!_dataSource) {
+            this.dataSource = conversationDataSource;
+        } else {
+            this.dataSource = _dataSource;
+        }
     }
 
     async getConversations() {

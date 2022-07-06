@@ -18,6 +18,6 @@ export interface MessageRepository {
     searchMessages(
         keyword: string,
         conversationId?: string,
-        callback?: (result: PagingData<Message>) => void
+        callback?: (result: PagingData<Message>, subkeys?: string[]) => void
     ): void;
 }

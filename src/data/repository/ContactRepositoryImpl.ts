@@ -1,5 +1,5 @@
 import { ContactRepository } from '../../domain/repository/ContactRepository';
-import ContactAPIDataSourceImpl from '../dataSource/API/ContactAPIDataSource';
+import { contactDataSource } from '../dataSource/API/ContactAPIDataSource';
 import ContactDataSource from '../dataSource/ContactDataSource';
 
 export class ContactRepositoryImpl implements ContactRepository {
@@ -7,14 +7,14 @@ export class ContactRepositoryImpl implements ContactRepository {
 
     constructor(_dataSource?: ContactDataSource) {
         if (!_dataSource) {
-            this.dataSource = new ContactAPIDataSourceImpl();
+            this.dataSource = contactDataSource;
         } else {
             this.dataSource = _dataSource;
         }
     }
 
-    async getContacts() {
-        return this.dataSource.getContacts();
+    async getFriends() {
+        return this.dataSource.getFriends();
     }
 
     async findUsers(keyword: string) {
@@ -41,3 +41,5 @@ export class ContactRepositoryImpl implements ContactRepository {
         return this.dataSource.getInvitations();
     }
 }
+
+export const contactRepository = new ContactRepositoryImpl();

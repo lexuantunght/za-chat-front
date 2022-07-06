@@ -15,6 +15,7 @@ import { openFileViewer } from '../../../utils/app/eventHandler';
 import ContactController from '../../../controller/contact/ContactController';
 import MessageController from '../../../controller/chat/MessageController';
 import SearchBar from '../../../common/components/SearchBar';
+import Avatar from '../../../common/components/Avatar';
 
 export type SenderViewerData = {
     file: FileData;
@@ -27,6 +28,7 @@ type ChatSectionProps = {
     user: UserData;
     t: CallableFunction;
     language: string;
+    showSearchButton?: boolean;
 };
 
 export type ChatSectionRef = {
@@ -34,7 +36,7 @@ export type ChatSectionRef = {
 };
 
 const ChatSection = (
-    { conversation, user, t, language }: ChatSectionProps,
+    { conversation, user, t, language, showSearchButton = true }: ChatSectionProps,
     ref: React.ForwardedRef<ChatSectionRef>
 ) => {
     const { emitSocket, addSocketListener, removeAllSocketListeners, useGetState } =
@@ -140,7 +142,11 @@ const ChatSection = (
     return (
         <div className="chat-section">
             <div className="chat-section-title">
-                <img className="chat-avatar" src={conversation.user.avatar} />
+                <Avatar
+                    className="chat-avatar"
+                    src={conversation.user.avatar}
+                    name={conversation.user.name}
+                />
                 <div className="chat-section-name-info">
                     <div className="chat-section-name">{conversation.user.name}</div>
                     <div>
@@ -151,7 +157,7 @@ const ChatSection = (
                               })}
                     </div>
                 </div>
-                <>
+                {showSearchButton && (
                     <Button
                         className="chat-search"
                         variant="text"
@@ -159,10 +165,7 @@ const ChatSection = (
                         onClick={() => toggleSearch(true)}>
                         <Icon name="search" />
                     </Button>
-                    <Button variant="text" className="chat-info" title={t('infoConversation')}>
-                        <Icon name="info-circle" />
-                    </Button>
-                </>
+                )}
                 {conversation.user.relationshipStatus !== 'friend' && (
                     <div className="chat-title-add-friend">
                         {conversation.user.relationshipStatus === 'stranger' && (
@@ -246,7 +249,7 @@ const ChatSection = (
                             conversationAvatar={conversation.user.avatar}
                             highlightWords={
                                 isOpenSearch && searchKeyword && item._id === highlightMsgId
-                                    ? [searchKeyword]
+                                    ? searchKeyword
                                     : undefined
                             }
                             onClick={(file) =>

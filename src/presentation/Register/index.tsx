@@ -11,6 +11,7 @@ import useController from '../../controller/hooks';
 const RegisterScreen = () => {
     const { useGetState, register, clearError } = useController(RegisterController);
     const error = useGetState((state) => state.app.error);
+    const [isSuccess, setIsSuccess] = React.useState(false);
     const { t } = useMultilingual();
 
     const onNavigateLogin = () => {
@@ -21,7 +22,7 @@ const RegisterScreen = () => {
         <div className="register-container">
             <img className="register-logo" src={logoIcon} alt="logo" />
             <h3>{t('registerAccount')}</h3>
-            <RegisterForm onSubmit={register} t={t} />
+            <RegisterForm onSubmit={register} t={t} onRegistedSuccess={() => setIsSuccess(true)} />
             <div className="register-login-link">
                 <span>{t('hadAccount')}</span>
                 <Button className="login-link" variant="text" onClick={onNavigateLogin}>
@@ -31,9 +32,17 @@ const RegisterScreen = () => {
             <Alert
                 title={t('notification')}
                 content={t('registerSuccess')}
-                isShow={Boolean(error)}
+                isShow={isSuccess}
                 onAccept={onNavigateLogin}
-                onCancel={clearError}
+                onCancel={() => setIsSuccess(false)}
+                severity="success"
+            />
+            <Alert
+                title={t('notification')}
+                content={error}
+                isShow={Boolean(error)}
+                onAccept={clearError}
+                severity="error"
             />
         </div>
     );

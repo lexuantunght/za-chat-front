@@ -2,10 +2,11 @@ import appConfig from '../../../utils/app/appConfig';
 import Network from '../../networking/Network';
 import ContactDataSource from '../ContactDataSource';
 import { FriendAPIEntity } from './entity/FriendAPIEntity';
+import { FriendRequestAPIEntity } from './entity/FriendRequestAPIEntity';
 import { UserDataAPIEntity } from './entity/UserDataAPIEntity';
 
-export default class ContactAPIDataSourceImpl implements ContactDataSource {
-    async getContacts() {
+export class ContactAPIDataSourceImpl implements ContactDataSource {
+    async getFriends() {
         const response = await Network.getInstance().getHelper<FriendAPIEntity[]>(
             `${appConfig.baseUrl}/contacts`
         );
@@ -38,9 +39,11 @@ export default class ContactAPIDataSourceImpl implements ContactDataSource {
         });
     }
     async getInvitations() {
-        const response = await Network.getInstance().getHelper<FriendAPIEntity[]>(
+        const response = await Network.getInstance().getHelper<FriendRequestAPIEntity[]>(
             `${appConfig.baseUrl}/contacts/invitations`
         );
         return response.data;
     }
 }
+
+export const contactDataSource = new ContactAPIDataSourceImpl();

@@ -1,4 +1,5 @@
 import React from 'react';
+import Avatar from '../../../common/components/Avatar';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import Modal from '../../../common/components/Modal';
@@ -15,7 +16,14 @@ interface SearchBoxProps {
     t: CallableFunction;
 }
 
-const SearchBox = ({ onClickResult, onClose, t }: SearchBoxProps) => {
+export type SearchBoxRef = {
+    openAddFriend: (isOpen: boolean) => void;
+};
+
+const SearchBox = (
+    { onClickResult, onClose, t }: SearchBoxProps,
+    ref: React.ForwardedRef<SearchBoxRef>
+) => {
     const [isFocused, setIsFocused] = React.useState(false);
     const [isOpenAddFriend, setIsOpenAddFriend] = React.useState(false);
     const [keyword, setKeyword] = React.useState('');
@@ -50,6 +58,12 @@ const SearchBox = ({ onClickResult, onClose, t }: SearchBoxProps) => {
         }
     }, [keyword, isFocused, isOpenAddFriend]);
 
+    React.useImperativeHandle(ref, () => ({
+        openAddFriend: (isOpen) => {
+            setIsOpenAddFriend(isOpen);
+        },
+    }));
+
     return (
         <div className="app-search-view">
             <SearchBar
@@ -82,7 +96,11 @@ const SearchBox = ({ onClickResult, onClose, t }: SearchBoxProps) => {
                                 className="chat-item"
                                 key={index}
                                 onClick={() => onClickResult?.(user)}>
-                                <img src={user.avatar} className="chat-avatar" />
+                                <Avatar
+                                    src={user.avatar}
+                                    name={user.name}
+                                    className="chat-avatar"
+                                />
                                 <div className="chat-name">{user.name}</div>
                             </div>
                         ))}
@@ -113,7 +131,11 @@ const SearchBox = ({ onClickResult, onClose, t }: SearchBoxProps) => {
                         {searchResult.users?.map((user, index) => (
                             <div className="friend-item" key={index}>
                                 <div className="chat-item">
-                                    <img src={user.avatar} className="chat-avatar" />
+                                    <Avatar
+                                        src={user.avatar}
+                                        name={user.name}
+                                        className="chat-avatar"
+                                    />
                                     <div className="chat-name">{user.name}</div>
                                 </div>
                                 {user.relationshipStatus === 'stranger' && (
@@ -151,4 +173,4 @@ const SearchBox = ({ onClickResult, onClose, t }: SearchBoxProps) => {
     );
 };
 
-export default SearchBox;
+export default React.forwardRef(SearchBox);

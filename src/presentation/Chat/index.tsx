@@ -119,6 +119,7 @@ const ChatScreen = () => {
             </div>
             {selectedConversation ? (
                 <ChatSection
+                    key={selectedConversation._id}
                     conversation={selectedConversation}
                     user={userData}
                     ref={chatSectionRef}

@@ -44,6 +44,13 @@ class MessageController extends BaseController {
         isPrepend = false,
         later = false
     ) => {
+        if (!conversationId) {
+            this.dispatch(setIsEndBottomMsgList(true));
+            this.dispatch(setIsEndTopMsgList(true));
+            this.dispatch(setMessages([]));
+            this.dispatch(setTotalMessages(0));
+            return;
+        }
         this.dispatch(setIsEndTopMsgList(false));
         this.getMessagesUseCase
             .invoke(conversationId, fromSendTime, limit, later)
@@ -111,10 +118,10 @@ class MessageController extends BaseController {
 
     public searchMessages = (keyword: string, conversationId?: string) => {
         if (keyword !== '') {
-            this.dispatch(setSearchKeyword(keyword));
-            this.searchMessagesUseCase.invoke(keyword, conversationId, (pagingData) =>
-                this.dispatch(setSearchMsgResult(pagingData.data))
-            );
+            this.searchMessagesUseCase.invoke(keyword, conversationId, (pagingData, subkeys) => {
+                this.dispatch(setSearchMsgResult(pagingData.data));
+                this.dispatch(setSearchKeyword(subkeys));
+            });
         }
     };
 }

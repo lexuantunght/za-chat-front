@@ -15,12 +15,12 @@ class SearchQueries {
     public searchMessages(
         keyword: string,
         conversationId?: string,
-        callback?: (result: PagingData<MessageAPIEntity>) => void
+        callback?: (result: PagingData<MessageAPIEntity>, subkeys?: string[]) => void
     ) {
         this.worker.postMessage({ type: 'search', keyword, conversationId });
         this.worker.onmessage = (e) => {
-            const { messages, total } = e.data;
-            callback?.({ data: messages, total });
+            const { messages, total, subkeys } = e.data;
+            callback?.({ data: messages, total }, subkeys);
         };
     }
 }

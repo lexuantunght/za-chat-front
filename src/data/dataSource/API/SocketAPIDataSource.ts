@@ -2,7 +2,7 @@ import Network from '../../networking/Network';
 import Socket from '../../networking/Socket';
 import SocketDataSource from '../SocketDataSource';
 
-export default class SocketAPIDataSourceImpl implements SocketDataSource {
+export class SocketAPIDataSourceImpl implements SocketDataSource {
     connect() {
         Socket.getInstance().connect();
     }
@@ -39,3 +39,5 @@ export default class SocketAPIDataSourceImpl implements SocketDataSource {
         });
     }
 }
+
+export const socketDataSource = new SocketAPIDataSourceImpl();

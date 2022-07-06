@@ -4,19 +4,27 @@ import { Message } from '../../model/Message';
 import { MessageRepository } from '../../repository/MessageRepository';
 
 export interface SearchMessagesUseCase {
-    invoke: (keyword: string, conversationId?: string) => void;
+    invoke: (
+        keyword: string,
+        conversationId?: string,
+        callback?: (result: PagingData<Message>, subkeys?: string[]) => void
+    ) => void;
 }
 
 export class SearchMessages implements SearchMessagesUseCase {
     private messageRepo: MessageRepository;
-    constructor() {
-        this.messageRepo = messageRepository;
+    constructor(_messageRepo?: MessageRepository) {
+        if (!_messageRepo) {
+            this.messageRepo = messageRepository;
+        } else {
+            this.messageRepo = _messageRepo;
+        }
     }
 
     invoke(
         keyword: string,
         conversationId?: string,
-        callback?: (result: PagingData<Message>) => void
+        callback?: (result: PagingData<Message>, subkeys?: string[]) => void
     ) {
         this.messageRepo.searchMessages(keyword, conversationId, callback);
     }

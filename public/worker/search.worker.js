@@ -35,14 +35,24 @@ onmessage = async (e) => {
             .startsWithAnyOf(subkeys)
             .primaryKeys();
 
-        const contextIds = Array.from(
-            new Set(
-                (await search_db.table('stidx').where('keywordId').anyOf(keywordIds).toArray()).map(
-                    (idx) => idx.contextId
-                )
+        let contextIds = Array.from(
+            (await search_db.table('stidx').where('keywordId').anyOf(keywordIds).toArray()).map(
+                (idx) => idx.contextId
             )
         );
 
+        const mappedContexts = new Map();
+        contextIds.forEach((contextId) => {
+            const times = mappedContexts.get(contextId);
+            mappedContexts.set(contextId, times ? times + 1 : 1);
+        });
+        if (subkeys.length > 1) {
+            contextIds = Array.from(mappedContexts.keys()).filter(
+                (id) => mappedContexts.get(id) > 1
+            );
+        } else {
+            contextIds = Array.from(mappedContexts.keys());
+        }
         const contexts = (await search_db.table('stcont').bulkGet(contextIds)).filter(
             (cont) => !conversationId || cont.conversationId === conversationId
         );
@@ -51,7 +61,7 @@ onmessage = async (e) => {
             .table('messages')
             .bulkGet(contexts.map((context) => context.messageId));
 
-        postMessage({ messages, total: messages.length });
+        postMessage({ messages, total: messages.length, subkeys });
     }
     if (e.data.type === 'input') {
         const { messages } = e.data;

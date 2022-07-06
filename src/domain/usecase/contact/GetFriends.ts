@@ -1,22 +1,22 @@
-import { ContactRepositoryImpl } from '../../../data/repository/ContactRepositoryImpl';
+import { contactRepository } from '../../../data/repository/ContactRepositoryImpl';
 import { Friend } from '../../model/Friend';
 import { ContactRepository } from '../../repository/ContactRepository';
 
-export interface GetContactsUseCase {
+export interface GetFriendsUseCase {
     invoke: () => Promise<Friend[]>;
 }
 
-export class GetContacts implements GetContactsUseCase {
+export class GetFriends implements GetFriendsUseCase {
     private contactRepo: ContactRepository;
     constructor(_contactRepo?: ContactRepository) {
         if (!_contactRepo) {
-            this.contactRepo = new ContactRepositoryImpl();
+            this.contactRepo = contactRepository;
         } else {
             this.contactRepo = _contactRepo;
         }
     }
 
     async invoke() {
-        return this.contactRepo.getContacts();
+        return this.contactRepo.getFriends();
     }
 }

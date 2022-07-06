@@ -5,11 +5,15 @@ import { FriendRequest } from '../../domain/model/FriendRequest';
 export type ContactState = {
     friends: Friend[];
     friendRequests: FriendRequest[];
+    showFriendRequest?: boolean;
+    showChatbox?: boolean | string;
 };
 
 const defaultContactState: ContactState = {
     friends: [],
     friendRequests: [],
+    showFriendRequest: true,
+    showChatbox: false,
 };
 
 const contactSlice = createSlice({
@@ -22,11 +26,38 @@ const contactSlice = createSlice({
         setFriendRequests: (state: ContactState, action: PayloadAction<FriendRequest[]>) => {
             state.friendRequests = action.payload;
         },
+        toggleFriendRequest: (state: ContactState, action: PayloadAction<boolean | undefined>) => {
+            state.showFriendRequest = action.payload;
+            state.showChatbox = !action.payload;
+        },
+        toggleChatbox: (
+            state: ContactState,
+            action: PayloadAction<boolean | string | undefined>
+        ) => {
+            state.showChatbox = action.payload;
+            state.showFriendRequest = !action.payload;
+        },
+        removeFriendRequest: (state: ContactState, action: PayloadAction<string>) => {
+            state.friendRequests.splice(
+                state.friendRequests.findIndex((request) => request.fromUid === action.payload),
+                1
+            );
+        },
+        appendFriend: (state: ContactState, action: PayloadAction<Friend>) => {
+            state.friends.unshift(action.payload);
+        },
     },
 });
 
 const contactReducer = contactSlice.reducer;
 
-export const { setFriends, setFriendRequests } = contactSlice.actions;
+export const {
+    setFriends,
+    setFriendRequests,
+    toggleFriendRequest,
+    toggleChatbox,
+    removeFriendRequest,
+    appendFriend,
+} = contactSlice.actions;
 
 export default contactReducer;

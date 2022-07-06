@@ -1,7 +1,7 @@
 import { LoginData } from '../../domain/model/LoginData';
 import { RegisterData } from '../../domain/model/RegisterData';
 import { AuthenticationRepository } from '../../domain/repository/AuthenticationRepository';
-import AuthenticationAPIDataSourceImpl from '../dataSource/API/AuthenticationAPIDataSource';
+import { authenticationDataSource } from '../dataSource/API/AuthenticationAPIDataSource';
 import AuthenticationDataSource from '../dataSource/AuthenticationDataSource';
 
 export class AuthenticationRepositoryImpl implements AuthenticationRepository {
@@ -9,7 +9,7 @@ export class AuthenticationRepositoryImpl implements AuthenticationRepository {
 
     constructor(_dataSource?: AuthenticationDataSource) {
         if (!_dataSource) {
-            this.dataSource = new AuthenticationAPIDataSourceImpl();
+            this.dataSource = authenticationDataSource;
         } else {
             this.dataSource = _dataSource;
         }
@@ -27,3 +27,5 @@ export class AuthenticationRepositoryImpl implements AuthenticationRepository {
         return this.dataSource.authorize();
     }
 }
+
+export const authenticationRepository = new AuthenticationRepositoryImpl();
