@@ -131,7 +131,11 @@ const SearchBox = (
                         {searchResult.users?.map((user, index) => (
                             <div className="friend-item" key={index}>
                                 <div className="chat-item">
-                                    <img src={user.avatar} className="chat-avatar" />
+                                    <Avatar
+                                        src={user.avatar}
+                                        name={user.name}
+                                        className="chat-avatar"
+                                    />
                                     <div className="chat-name">{user.name}</div>
                                 </div>
                                 {user.relationshipStatus === 'stranger' && (
