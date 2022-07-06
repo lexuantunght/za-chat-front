@@ -4,7 +4,11 @@ import { Message } from '../../model/Message';
 import { MessageRepository } from '../../repository/MessageRepository';
 
 export interface SearchMessagesUseCase {
-    invoke: (keyword: string, conversationId?: string) => void;
+    invoke: (
+        keyword: string,
+        conversationId?: string,
+        callback?: (result: PagingData<Message>, subkeys?: string[]) => void
+    ) => void;
 }
 
 export class SearchMessages implements SearchMessagesUseCase {
@@ -16,7 +20,7 @@ export class SearchMessages implements SearchMessagesUseCase {
     invoke(
         keyword: string,
         conversationId?: string,
-        callback?: (result: PagingData<Message>) => void
+        callback?: (result: PagingData<Message>, subkeys?: string[]) => void
     ) {
         this.messageRepo.searchMessages(keyword, conversationId, callback);
     }

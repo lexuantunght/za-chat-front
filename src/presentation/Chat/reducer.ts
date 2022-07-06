@@ -15,7 +15,7 @@ export interface ChatState {
     isLoading?: boolean;
     isOpenSearch?: boolean;
     searchMsgResult?: Message[];
-    searchKeyword?: string;
+    searchKeyword?: string[];
 }
 
 const defaultState: ChatState = {
@@ -26,7 +26,7 @@ const defaultState: ChatState = {
     isOpenSearch: false,
     isEndBottomMsgList: true,
     searchMsgResult: [],
-    searchKeyword: '',
+    searchKeyword: [],
 };
 
 const chatSlice = createSlice({
@@ -87,7 +87,7 @@ const chatSlice = createSlice({
         setSearchMsgResult: (state: ChatState, action: PayloadAction<Message[] | undefined>) => {
             state.searchMsgResult = action.payload;
         },
-        setSearchKeyword: (state: ChatState, action: PayloadAction<string | undefined>) => {
+        setSearchKeyword: (state: ChatState, action: PayloadAction<string[] | undefined>) => {
             state.searchKeyword = action.payload;
         },
         setIsEndTopMsgList: (state: ChatState, action: PayloadAction<boolean | undefined>) => {

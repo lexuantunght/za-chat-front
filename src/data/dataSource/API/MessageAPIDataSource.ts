@@ -73,7 +73,7 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
     searchMessages(
         keyword: string,
         conversationId?: string,
-        callback?: (result: PagingData<MessageAPIEntity>) => void
+        callback?: (result: PagingData<MessageAPIEntity>, subkeys?: string[]) => void
     ) {
         this.searchQuery.searchMessages(keyword, conversationId, callback);
     }

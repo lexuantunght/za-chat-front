@@ -105,7 +105,7 @@ const ConversationList = ({
                                             </div>
                                             <div className="chat-message">
                                                 <Highlighter
-                                                    searchWords={[searchKeyword]}
+                                                    searchWords={searchKeyword}
                                                     textToHighlight={item.content}
                                                     sanitize={(text) =>
                                                         text

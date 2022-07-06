@@ -246,7 +246,7 @@ const ChatSection = (
                             conversationAvatar={conversation.user.avatar}
                             highlightWords={
                                 isOpenSearch && searchKeyword && item._id === highlightMsgId
-                                    ? [searchKeyword]
+                                    ? searchKeyword
                                     : undefined
                             }
                             onClick={(file) =>

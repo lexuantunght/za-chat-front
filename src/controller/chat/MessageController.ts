@@ -111,10 +111,10 @@ class MessageController extends BaseController {
 
     public searchMessages = (keyword: string, conversationId?: string) => {
         if (keyword !== '') {
-            this.dispatch(setSearchKeyword(keyword));
-            this.searchMessagesUseCase.invoke(keyword, conversationId, (pagingData) =>
-                this.dispatch(setSearchMsgResult(pagingData.data))
-            );
+            this.searchMessagesUseCase.invoke(keyword, conversationId, (pagingData, subkeys) => {
+                this.dispatch(setSearchMsgResult(pagingData.data));
+                this.dispatch(setSearchKeyword(subkeys));
+            });
         }
     };
 }
