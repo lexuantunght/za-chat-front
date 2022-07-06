@@ -1,15 +1,20 @@
 import { ConversationAPIEntity } from '../../../dataSource/API/entity/ConversationAPIEntity';
 import ConversationDataSource from '../../../dataSource/ConversationDataSource';
-import main_db from '../db/MainDB';
+import { IndexedDBAdapter } from '../adapter/IndexedDBAdapter';
 
 class ConversationQueries implements ConversationDataSource {
+    private adapter;
+    constructor() {
+        this.adapter = new IndexedDBAdapter('za-chat');
+    }
+
     public async getConversations() {
-        const conversations = await main_db.table('conversations').toArray();
+        const conversations = await this.adapter.getAsArray('conversations');
         return { data: conversations as Array<ConversationAPIEntity>, total: conversations.length };
     }
 
     public addConversations(conversations: ConversationAPIEntity[]) {
-        main_db.table('conversations').bulkPut(conversations);
+        this.adapter.putMany('conversations', conversations);
     }
 }
 
