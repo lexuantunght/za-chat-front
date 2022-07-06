@@ -27,6 +27,7 @@ type ChatSectionProps = {
     user: UserData;
     t: CallableFunction;
     language: string;
+    showSearchButton?: boolean;
 };
 
 export type ChatSectionRef = {
@@ -34,7 +35,7 @@ export type ChatSectionRef = {
 };
 
 const ChatSection = (
-    { conversation, user, t, language }: ChatSectionProps,
+    { conversation, user, t, language, showSearchButton = true }: ChatSectionProps,
     ref: React.ForwardedRef<ChatSectionRef>
 ) => {
     const { emitSocket, addSocketListener, removeAllSocketListeners, useGetState } =
@@ -151,7 +152,7 @@ const ChatSection = (
                               })}
                     </div>
                 </div>
-                <>
+                {showSearchButton && (
                     <Button
                         className="chat-search"
                         variant="text"
@@ -159,10 +160,7 @@ const ChatSection = (
                         onClick={() => toggleSearch(true)}>
                         <Icon name="search" />
                     </Button>
-                    <Button variant="text" className="chat-info" title={t('infoConversation')}>
-                        <Icon name="info-circle" />
-                    </Button>
-                </>
+                )}
                 {conversation.user.relationshipStatus !== 'friend' && (
                     <div className="chat-title-add-friend">
                         {conversation.user.relationshipStatus === 'stranger' && (

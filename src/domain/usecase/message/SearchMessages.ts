@@ -13,8 +13,12 @@ export interface SearchMessagesUseCase {
 
 export class SearchMessages implements SearchMessagesUseCase {
     private messageRepo: MessageRepository;
-    constructor() {
-        this.messageRepo = messageRepository;
+    constructor(_messageRepo?: MessageRepository) {
+        if (!_messageRepo) {
+            this.messageRepo = messageRepository;
+        } else {
+            this.messageRepo = _messageRepo;
+        }
     }
 
     invoke(

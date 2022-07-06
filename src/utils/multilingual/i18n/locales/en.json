@@ -79,5 +79,8 @@
     "image": "Image",
     "file": "File",
     "errorConnection": "Can't connect to server. Please check your connection",
-    "suitableResult": "Suitable result"
+    "suitableResult": "Suitable result",
+    "addFriendByPhone": "Add friend by phone number",
+    "friendRequestList": "Friend request list",
+    "friendRequests": "Friend requests"
 }

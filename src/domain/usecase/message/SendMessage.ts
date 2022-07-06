@@ -8,8 +8,12 @@ export interface SendMessageUseCase {
 
 export class SendMessage implements SendMessageUseCase {
     private messageRepo: MessageRepository;
-    constructor() {
-        this.messageRepo = messageRepository;
+    constructor(_messageRepo?: MessageRepository) {
+        if (!_messageRepo) {
+            this.messageRepo = messageRepository;
+        } else {
+            this.messageRepo = _messageRepo;
+        }
     }
 
     async invoke(message: Message) {

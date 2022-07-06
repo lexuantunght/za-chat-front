@@ -1,4 +1,4 @@
-import { AuthenticationRepositoryImpl } from '../../../data/repository/AuthenticationRepositoryImpl';
+import { authenticationRepository } from '../../../data/repository/AuthenticationRepositoryImpl';
 import { LoginData } from '../../model/LoginData';
 import { UserData } from '../../model/UserData';
 import { AuthenticationRepository } from '../../repository/AuthenticationRepository';
@@ -11,7 +11,7 @@ export class Authorize implements AuthorizeUseCase {
     private authenticationRepo: AuthenticationRepository;
     constructor(_authenticationRepo?: AuthenticationRepository) {
         if (!_authenticationRepo) {
-            this.authenticationRepo = new AuthenticationRepositoryImpl();
+            this.authenticationRepo = authenticationRepository;
         } else {
             this.authenticationRepo = _authenticationRepo;
         }

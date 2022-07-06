@@ -44,6 +44,13 @@ class MessageController extends BaseController {
         isPrepend = false,
         later = false
     ) => {
+        if (!conversationId) {
+            this.dispatch(setIsEndBottomMsgList(true));
+            this.dispatch(setIsEndTopMsgList(true));
+            this.dispatch(setMessages([]));
+            this.dispatch(setTotalMessages(0));
+            return;
+        }
         this.dispatch(setIsEndTopMsgList(false));
         this.getMessagesUseCase
             .invoke(conversationId, fromSendTime, limit, later)

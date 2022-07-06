@@ -1,4 +1,4 @@
-import { ContactRepositoryImpl } from '../../../data/repository/ContactRepositoryImpl';
+import { contactRepository } from '../../../data/repository/ContactRepositoryImpl';
 import { ContactRepository } from '../../repository/ContactRepository';
 
 export interface RejectFriendUseCase {
@@ -9,7 +9,7 @@ export class RejectFriend implements RejectFriendUseCase {
     private contactRepo: ContactRepository;
     constructor(_contactRepo?: ContactRepository) {
         if (!_contactRepo) {
-            this.contactRepo = new ContactRepositoryImpl();
+            this.contactRepo = contactRepository;
         } else {
             this.contactRepo = _contactRepo;
         }

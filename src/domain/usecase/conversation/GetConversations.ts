@@ -9,8 +9,12 @@ export interface GetConversationUseCase {
 
 export class GetConversations implements GetConversationUseCase {
     private conversationRepo: ConversationRepository;
-    constructor() {
-        this.conversationRepo = conversationRepository;
+    constructor(_conversationRepo?: ConversationRepository) {
+        if (!_conversationRepo) {
+            this.conversationRepo = conversationRepository;
+        } else {
+            this.conversationRepo = _conversationRepo;
+        }
     }
 
     async invoke() {

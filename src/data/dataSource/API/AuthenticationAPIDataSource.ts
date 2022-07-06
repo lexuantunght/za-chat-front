@@ -6,7 +6,7 @@ import Network from '../../networking/Network';
 import AuthenticationDataSource from '../AuthenticationDataSource';
 import { UserDataAPIEntity } from './entity/UserDataAPIEntity';
 
-export default class AuthenticationAPIDataSourceImpl implements AuthenticationDataSource {
+export class AuthenticationAPIDataSourceImpl implements AuthenticationDataSource {
     async login(data: LoginData) {
         const response = await Network.getInstance().postHelper<UserDataAPIEntity>(
             `${appConfig.baseUrl}/users/signin`,
@@ -29,3 +29,5 @@ export default class AuthenticationAPIDataSourceImpl implements AuthenticationDa
         return response.data;
     }
 }
+
+export const authenticationDataSource = new AuthenticationAPIDataSourceImpl();

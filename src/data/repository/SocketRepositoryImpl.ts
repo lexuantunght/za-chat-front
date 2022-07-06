@@ -1,12 +1,12 @@
 import { SocketRepository } from '../../domain/repository/SocketRepository';
-import SocketAPIDataSourceImpl from '../dataSource/API/SocketAPIDataSource';
+import { socketDataSource } from '../dataSource/API/SocketAPIDataSource';
 import SocketDataSource from '../dataSource/SocketDataSource';
 
 export class SocketRepositoryImpl implements SocketRepository {
     private dataSource: SocketDataSource;
     constructor(_dataSource?: SocketDataSource) {
         if (!_dataSource) {
-            this.dataSource = new SocketAPIDataSourceImpl();
+            this.dataSource = socketDataSource;
         } else {
             this.dataSource = _dataSource;
         }
@@ -40,3 +40,5 @@ export class SocketRepositoryImpl implements SocketRepository {
         this.dataSource.onReconnectSuccess(callback);
     }
 }
+
+export const socketRepository = new SocketRepositoryImpl();

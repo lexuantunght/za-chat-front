@@ -1,4 +1,4 @@
-import { SocketRepositoryImpl } from '../../../data/repository/SocketRepositoryImpl';
+import { socketRepository } from '../../../data/repository/SocketRepositoryImpl';
 import { SocketRepository } from '../../repository/SocketRepository';
 
 export interface SocketActionUseCase {
@@ -11,12 +11,8 @@ export interface SocketActionUseCase {
 
 export class SocketAction implements SocketActionUseCase {
     private socketRepo: SocketRepository;
-    constructor(_socketRepo?: SocketRepository) {
-        if (!_socketRepo) {
-            this.socketRepo = new SocketRepositoryImpl();
-        } else {
-            this.socketRepo = _socketRepo;
-        }
+    constructor() {
+        this.socketRepo = socketRepository;
     }
 
     emit<T>(key: string, ...args: T[]) {

@@ -1,0 +1,109 @@
+.contact-container {
+    display: flex;
+    flex: 1;
+    height: 100vh;
+}
+
+#contact-side-tab-container {
+    width: 20rem;
+    border-right: 1px solid #dddddd;
+    background-color: #ffffff;
+    height: 100%;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    #contact-side-tab-container {
+        width: 0;
+        border: none;
+    }
+    #contact-side-tab-container.contact-side-tab-container-show {
+        width: calc(100vw - 4rem);
+        position: absolute;
+        z-index: 10;
+    }
+}
+
+.contact-tab {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.contact-tab-list {
+    flex: 1;
+}
+.contact-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    height: 4rem;
+    padding: 0 1rem;
+    font-size: 1rem;
+}
+.contact-item > span {
+    margin-left: 0.5rem;
+}
+.contact-item.contact-item-focused {
+    background-color: #d7e9f7;
+}
+.contact-item:not(.contact-item-focused):hover {
+    background-color: #eeeeee70;
+}
+
+.friend-list-title {
+    padding: 1rem;
+    border-top: 1px solid #dddddd;
+    font-size: 1rem;
+}
+.friend-request-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.friend-request-list-title {
+    display: flex;
+    align-items: center;
+    height: 4rem;
+    padding: 0rem 1rem;
+    border-bottom: 1px solid #dddddd;
+    font-weight: 600;
+    font-size: large;
+}
+.friend-request-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 6rem;
+    border: 1px solid #dddddd;
+    border-radius: var(--border-radius);
+    padding: 0 1rem;
+    background-color: #ffffff;
+    margin: 1rem;
+}
+.friend-request-item > div {
+    display: flex;
+    align-items: center;
+}
+.friend-request-item > div > span {
+    margin-left: 0.5rem;
+    font-size: 1rem;
+}
+.friend-request-avatar {
+    width: 4rem;
+    height: 4rem;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    border: 1px solid #dddddd;
+}
+.friend-request-list {
+    background-color: #eeeeee70;
+    flex: 1;
+}
+.friend-request-list > .friend-request-total {
+    margin: 1rem 1rem 0 1rem;
+    font-weight: 600;
+}
+.friend-request-item .accept-friend {
+    margin-left: 1rem;
+}

@@ -7,8 +7,12 @@ import MessageDataSource from '../dataSource/MessageDataSource';
 export class MessageRepositoryImpl implements MessageRepository {
     private dataSource: MessageDataSource;
 
-    constructor() {
-        this.dataSource = messageDataSource;
+    constructor(_dataSource?: MessageDataSource) {
+        if (!_dataSource) {
+            this.dataSource = messageDataSource;
+        } else {
+            this.dataSource = _dataSource;
+        }
     }
 
     async getMessages(

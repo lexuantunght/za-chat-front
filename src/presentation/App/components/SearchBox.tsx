@@ -15,7 +15,14 @@ interface SearchBoxProps {
     t: CallableFunction;
 }
 
-const SearchBox = ({ onClickResult, onClose, t }: SearchBoxProps) => {
+export type SearchBoxRef = {
+    openAddFriend: (isOpen: boolean) => void;
+};
+
+const SearchBox = (
+    { onClickResult, onClose, t }: SearchBoxProps,
+    ref: React.ForwardedRef<SearchBoxRef>
+) => {
     const [isFocused, setIsFocused] = React.useState(false);
     const [isOpenAddFriend, setIsOpenAddFriend] = React.useState(false);
     const [keyword, setKeyword] = React.useState('');
@@ -49,6 +56,12 @@ const SearchBox = ({ onClickResult, onClose, t }: SearchBoxProps) => {
             findUsers(keyword);
         }
     }, [keyword, isFocused, isOpenAddFriend]);
+
+    React.useImperativeHandle(ref, () => ({
+        openAddFriend: (isOpen) => {
+            setIsOpenAddFriend(isOpen);
+        },
+    }));
 
     return (
         <div className="app-search-view">
@@ -151,4 +164,4 @@ const SearchBox = ({ onClickResult, onClose, t }: SearchBoxProps) => {
     );
 };
 
-export default SearchBox;
+export default React.forwardRef(SearchBox);

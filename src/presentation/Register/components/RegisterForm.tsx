@@ -10,10 +10,11 @@ import { UserData } from '../../../domain/model/UserData';
 
 interface RegisterFormProps {
     onSubmit: (data: RegisterData) => Promise<UserData>;
+    onRegistedSuccess?: () => void;
     t: CallableFunction;
 }
 
-const RegisterForm = ({ onSubmit, t }: RegisterFormProps) => {
+const RegisterForm = ({ onSubmit, t, onRegistedSuccess }: RegisterFormProps) => {
     const validator = useValidation();
     const form = useForm<RegisterData>({
         initialValues: {
@@ -50,9 +51,10 @@ const RegisterForm = ({ onSubmit, t }: RegisterFormProps) => {
                     return this.parent.password === value;
                 }),
         }),
-        onSubmit: async (values, { setSubmitting }) => {
-            await onSubmit(values);
-            setSubmitting(false);
+        onSubmit: (values, { setSubmitting }) => {
+            onSubmit(values)
+                .then(() => onRegistedSuccess?.())
+                .finally(() => setSubmitting(false));
         },
     });
 

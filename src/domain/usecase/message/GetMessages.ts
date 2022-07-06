@@ -14,8 +14,12 @@ export interface GetMessageUseCase {
 
 export class GetMessages implements GetMessageUseCase {
     private messageRepo: MessageRepository;
-    constructor() {
-        this.messageRepo = messageRepository;
+    constructor(_messageRepo?: MessageRepository) {
+        if (!_messageRepo) {
+            this.messageRepo = messageRepository;
+        } else {
+            this.messageRepo = _messageRepo;
+        }
     }
 
     async invoke(conversationId: string, fromSendTime?: number, limit?: number, later?: boolean) {

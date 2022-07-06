@@ -1,16 +1,16 @@
-import { ContactRepositoryImpl } from '../../../data/repository/ContactRepositoryImpl';
-import { Friend } from '../../model/Friend';
+import { contactRepository } from '../../../data/repository/ContactRepositoryImpl';
+import { FriendRequest } from '../../model/FriendRequest';
 import { ContactRepository } from '../../repository/ContactRepository';
 
 export interface GetInvitationsUseCase {
-    invoke: () => Promise<Friend[]>;
+    invoke: () => Promise<FriendRequest[]>;
 }
 
 export class GetInvitations implements GetInvitationsUseCase {
     private contactRepo: ContactRepository;
     constructor(_contactRepo?: ContactRepository) {
         if (!_contactRepo) {
-            this.contactRepo = new ContactRepositoryImpl();
+            this.contactRepo = contactRepository;
         } else {
             this.contactRepo = _contactRepo;
         }
