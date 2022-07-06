@@ -141,7 +141,7 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
         element.value = '';
     };
 
-    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
         if (!e.clipboardData.items[0].type.startsWith('text/')) {
             const promises: Promise<FileData>[] = [];
             for (let index = 0; index < e.clipboardData.items.length; index++) {
@@ -181,7 +181,7 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
                 <MessageInput
                     id="content"
                     name="content"
-                    className="chat-input-text"
+                    className="chat-input-text custom-scroll scrolling"
                     placeholder={t('typeMessage')}
                     onChange={form.handleChange}
                     onBlur={form.handleBlur}

@@ -1,7 +1,8 @@
 import React from 'react';
 import _debounce from 'lodash-es/debounce';
+import TextareaAutosize from 'react-textarea-autosize';
 
-interface MessageInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface MessageInputProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
     onBeginEditing?: () => void;
     onEndEditing?: () => void;
 }
@@ -20,7 +21,7 @@ class MessageInput extends React.Component<MessageInputProps, MessageInputStates
         this.handleTyping = this.handleTyping.bind(this);
     }
 
-    handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         this.props.onChange?.(e);
         if (!this.state.isTyping) {
             this.props.onBeginEditing?.();
@@ -39,7 +40,7 @@ class MessageInput extends React.Component<MessageInputProps, MessageInputStates
 
     render() {
         return (
-            <input
+            <TextareaAutosize
                 id={this.props.id}
                 name={this.props.name}
                 className={this.props.className}
@@ -48,6 +49,8 @@ class MessageInput extends React.Component<MessageInputProps, MessageInputStates
                 value={this.props.value}
                 onChange={this.handleChange}
                 onPaste={this.props.onPaste}
+                minRows={1}
+                maxRows={5}
             />
         );
     }
