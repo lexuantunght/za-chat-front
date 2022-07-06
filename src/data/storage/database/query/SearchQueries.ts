@@ -2,7 +2,7 @@ import { PagingData } from '../../../../common/types/PagingData';
 import { MessageAPIEntity } from '../../../dataSource/API/entity/MessageAPIEntity';
 import { MessageEntity } from '../entity/MessageEntity';
 
-class SearchQueries {
+export class SearchQueries {
     private worker;
     public constructor() {
         this.worker = new Worker('worker/search.worker.js');
@@ -24,5 +24,3 @@ class SearchQueries {
         };
     }
 }
-
-export default SearchQueries;
