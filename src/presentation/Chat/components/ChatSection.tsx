@@ -57,6 +57,7 @@ const ChatSection = (
     const [highlightMsgId, setHighlightMsgId] = React.useState<string | undefined>();
     const [scrolledSearch, setScrolledSearch] = React.useState<string | undefined>();
     const listMsgRef = React.useRef<VirtualizedListRef>(null);
+    const [showUnobtrusive, setShowUnobtrusive] = React.useState(false);
 
     const handleClickMessage = (data: SenderViewerData) => {
         openFileViewer(data);
@@ -137,6 +138,14 @@ const ChatSection = (
             true,
             isBottom
         );
+    };
+
+    const handleScrollToEnd = () => {
+        listMsgRef.current?.scrollToIndex({
+            index: 'LAST',
+            behavior: 'smooth',
+            align: 'end',
+        });
     };
 
     return (
@@ -235,6 +244,12 @@ const ChatSection = (
                     isEndBottom={isEndBottomMsgList}
                     isEndTop={isEndTopMsgList}
                     onLoadMore={handleLoadMore}
+                    onScrolledDistanceCb={(isOver) => {
+                        if (isOver !== showUnobtrusive) {
+                            setShowUnobtrusive(isOver);
+                        }
+                    }}
+                    fromScrolledDistance={600}
                     rowRenderer={(item, index) => (
                         <MessageItem
                             index={index}
@@ -262,6 +277,11 @@ const ChatSection = (
                         />
                     )}
                 />
+                {showUnobtrusive && (
+                    <div className="chat-section-scroll-end" onClick={handleScrollToEnd}>
+                        <Icon name="chevron-down" width={24} height={24} color="#555555" />
+                    </div>
+                )}
             </div>
             <ChatTyping
                 onSend={onSendMessage}

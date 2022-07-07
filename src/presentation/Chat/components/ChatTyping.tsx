@@ -131,7 +131,8 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
                 promises.push(handleReadFile(file));
             }
             Promise.all(promises).then((files) => {
-                onSend?.('', files);
+                const pasted = [...form.values.files, ...files];
+                form.setFieldValue('files', pasted);
             });
         }
     };
@@ -159,6 +160,12 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
     const handleRemovePasted = (index: number) => {
         const pasted = [...form.values.files];
         pasted.splice(index, 1);
+        form.setFieldValue('files', pasted);
+    };
+
+    const handleChangePasted = (index: number, item: FileData) => {
+        const pasted = [...form.values.files];
+        pasted[index] = item;
         form.setFieldValue('files', pasted);
     };
 
@@ -208,6 +215,8 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
                             <PastedFileItem
                                 key={index}
                                 file={file}
+                                onEdited={(file) => handleChangePasted(index, file)}
+                                t={t}
                                 onRemove={() => handleRemovePasted(index)}
                             />
                         ))}

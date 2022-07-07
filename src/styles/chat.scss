@@ -120,6 +120,20 @@
 .chat-section-body {
     flex: 1;
     overflow-x: hidden;
+    position: relative;
+}
+.chat-section-scroll-end {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    background-color: #ffffff;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
 
 #chat-side-tab-container {
@@ -327,6 +341,14 @@
     top: 0.25rem;
     right: 0.25rem;
 }
+.chat-pasted-edit {
+    position: absolute;
+    top: calc(50% - 1.5rem);
+    left: calc(50% - 1.5rem);
+    border: 1px solid var(--primary);
+    border-radius: 50%;
+    padding: 0.5rem;
+}
 
 .chat-message-item {
     display: flex;
@@ -392,4 +414,33 @@
 
 .chat-message-time + small {
     margin-left: 0.75rem;
+}
+
+.chat-image-editor {
+    width: 70vw;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+.chat-image-editor > .chat-image-editor-wrapper {
+    flex: 1;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+.chat-image-editor > .chat-image-editor-buttons {
+    display: flex;
+    padding-top: 0.5rem;
+    justify-content: flex-end;
+}
+.chat-image-editor > .chat-image-editor-buttons > .chat-image-editor-done {
+    margin-left: 0.5rem;
+}
+.chat-image-editor > .chat-image-editor-buttons > button > span {
+    margin-left: 0.25rem;
+}
+.chat-image-editor-wrapper .tui-image-editor-controls-buttons {
+    display: none !important;
+}
+.chat-image-editor-wrapper .tui-image-editor-menu {
+    text-align: center !important;
 }

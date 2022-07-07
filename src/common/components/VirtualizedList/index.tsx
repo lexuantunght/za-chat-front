@@ -12,10 +12,12 @@ interface VirtualizedListProps<T> {
     spaceTop?: number;
     spaceBottom?: number;
     startIndex?: number;
+    fromScrolledDistance?: number;
+    onScrolledDistanceCb?: (isOver: boolean) => void;
 }
 
 export interface VirtualizedListRef extends VirtuosoHandle {
-    loadEndReach: (page: number) => void;
+    scrolledDistance: number;
 }
 
 const MAX_FIRST_INDEX = 999999999;
@@ -28,9 +30,11 @@ function VirtualizedList<T>(
         onLoadMore,
         isEndTop,
         isEndBottom,
+        onScrolledDistanceCb,
         initItemCount = 30,
         spaceTop = 10,
         spaceBottom = 10,
+        fromScrolledDistance = 100,
     }: VirtualizedListProps<T>,
     ref: React.Ref<VirtualizedListRef>
 ) {
@@ -51,6 +55,25 @@ function VirtualizedList<T>(
         }
     };
 
+    const handleScroll = (e: React.UIEvent<'div', UIEvent>) => {
+        const target = e.target as HTMLDivElement;
+        if (onScrolledDistanceCb) {
+            if (
+                target.scrollTop + target.clientHeight + fromScrolledDistance >=
+                target.scrollHeight
+            ) {
+                onScrolledDistanceCb(false);
+                return;
+            }
+            if (
+                target.scrollHeight >=
+                fromScrolledDistance + target.scrollTop + target.clientHeight
+            ) {
+                onScrolledDistanceCb(true);
+            }
+        }
+    };
+
     React.useEffect(() => {
         if (data.length !== oldDataLength && isPrepend) {
             setFirstItemIndex(Math.max(firstItemIndex - (data.length - oldDataLength), 0));
@@ -61,6 +84,7 @@ function VirtualizedList<T>(
     return (
         <Virtuoso
             ref={ref}
+            onScroll={handleScroll}
             style={{ height: '100%', width: '100%' }}
             data={data}
             firstItemIndex={firstItemIndex}
