@@ -62,6 +62,8 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
                             type: f.type,
                             width: f.width,
                             height: f.height,
+                            name: f.name,
+                            size: f.size,
                         })),
                     });
             }

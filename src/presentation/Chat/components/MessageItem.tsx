@@ -1,11 +1,15 @@
 import React from 'react';
 import moment from 'moment';
+import Highlighter from 'react-highlight-words';
 import { Message } from '../../../domain/model/Message';
 import { UserData } from '../../../domain/model/UserData';
 import Image from '../../../common/components/Image';
 import { FileData } from '../../../domain/model/FileData';
 import Video from '../../../common/components/Video';
-import Highlighter from 'react-highlight-words';
+import fileHolder from '../../../common/resources/file-holder.png';
+import Button from '../../../common/components/Button';
+import Icon from '../../../common/components/Icon';
+import { openSaveDialog } from '../../../utils/app/eventHandler';
 
 type MessageItemProps = {
     message: Message;
@@ -29,6 +33,25 @@ type FileMessageItemProp = {
     inGrid?: boolean;
 };
 
+const getFileSizeDisplay = (fileSize?: number) => {
+    if (!fileSize) {
+        return null;
+    }
+    const gbUnit = 1024 * 1024 * 1024;
+    const mbUnit = 1024 * 1024;
+    const kbUnit = 1024;
+    if (fileSize >= gbUnit) {
+        return `${(fileSize / gbUnit).toFixed(2)} GB`;
+    }
+    if (fileSize >= mbUnit) {
+        return `${(fileSize / mbUnit).toFixed(2)} MB`;
+    }
+    if (fileSize >= kbUnit) {
+        return `${(fileSize / kbUnit).toFixed(2)} KB`;
+    }
+    return `${fileSize} B`;
+};
+
 const FileMessageItem = ({
     file,
     style,
@@ -37,6 +60,14 @@ const FileMessageItem = ({
     inGrid,
     showControllers = true,
 }: FileMessageItemProp) => {
+    const handleDownload = () => {
+        openSaveDialog({
+            url: file.url,
+            name: file.name,
+            type: file.name?.substring(file.name.lastIndexOf('.') + 1),
+        });
+    };
+
     if (file.type?.startsWith('video/')) {
         return (
             <Video
@@ -52,17 +83,36 @@ const FileMessageItem = ({
             />
         );
     }
+    if (file.type?.startsWith('image/')) {
+        return (
+            <Image
+                src={file.url}
+                style={{ ...style, cursor: 'pointer' }}
+                originHeight={inGrid ? 400 : file.height}
+                originWidth={inGrid ? 400 : file.width}
+                maxHeight={inGrid ? undefined : 400}
+                onLoad={onLoad}
+                onClick={() => onClick?.(file)}
+                className="message-image"
+            />
+        );
+    }
     return (
-        <Image
-            src={file.url}
-            style={{ ...style, cursor: 'pointer' }}
-            originHeight={inGrid ? 400 : file.height}
-            originWidth={inGrid ? 400 : file.width}
-            maxHeight={inGrid ? undefined : 400}
-            onLoad={onLoad}
-            onClick={() => onClick?.(file)}
-            className="message-image"
-        />
+        <div className="message-other-file">
+            <div className="message-other-file-logo">
+                <img src={fileHolder} />
+                <div>{file.name?.substring(file.name?.lastIndexOf('.') + 1).substring(0, 3)}</div>
+            </div>
+            <div className="message-other-file-info">
+                <div className="message-other-file-name">{file.name}</div>
+                <div className="message-other-file-size">{getFileSizeDisplay(file.size)}</div>
+            </div>
+            <div>
+                <Button variant="text" onClick={handleDownload}>
+                    <Icon name="download" />
+                </Button>
+            </div>
+        </div>
     );
 };
 

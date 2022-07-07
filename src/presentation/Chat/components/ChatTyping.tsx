@@ -89,6 +89,7 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
                         url: fileReader.result,
                         name: file.name,
                         type: file.type,
+                        size: file.size,
                     };
 
                     if (file.type.startsWith('image/')) {
@@ -196,6 +197,7 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
                     onBeginEditing={onBeginEditing}
                     onEndEditing={onEndEditing}
                     onPaste={handlePaste}
+                    handleSubmit={form.handleSubmit}
                 />
                 <>
                     <Button

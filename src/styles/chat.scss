@@ -328,12 +328,44 @@
     position: relative;
     overflow: hidden;
 }
-.chat-pasted-file-item > img {
-    aspect-ratio: 1/1;
+.chat-pasted-file-item > img,
+.chat-pasted-file-item > .file-placeholder {
     width: calc(100% - 2px);
+    aspect-ratio: 1/1;
     object-fit: cover;
     border: 1px solid #dddddd;
     border-radius: var(--border-radius);
+    position: relative;
+}
+.file-placeholder-name {
+    position: absolute;
+    bottom: 4px;
+    background-color: #00000050;
+    font-size: smaller;
+    width: 100%;
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    display: flex;
+    justify-content: center;
+}
+.file-placeholder-name > div {
+    width: calc(100% - 1rem);
+    margin: 0.2rem 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: #ffffff;
+    white-space: nowrap;
+}
+.file-placeholder-type {
+    position: absolute;
+    width: 100%;
+    top: calc(50% - 1rem);
+    text-align: center;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.2rem;
 }
 
 .chat-pasted-cancel {
@@ -398,6 +430,41 @@
     max-height: 28rem;
     min-height: 100%;
     overflow: hidden;
+}
+.message-other-file {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 0 0.5rem;
+}
+.message-other-file-logo {
+    position: relative;
+}
+.message-other-file-logo > img {
+    height: 3rem;
+    width: 3rem;
+    object-fit: contain;
+}
+.message-other-file-logo > div {
+    position: absolute;
+    top: calc(50% - 0.5rem);
+    width: 3rem;
+    text-align: center;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: small;
+}
+.message-other-file-info {
+    max-width: 100%;
+    overflow: hidden;
+}
+.message-other-file-name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.message-other-file-size {
+    font-size: smaller;
+    margin-top: 0.5rem;
 }
 
 .chat-message-content {
