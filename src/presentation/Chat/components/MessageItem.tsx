@@ -20,7 +20,7 @@ type MessageItemProps = {
     messagesLength: number;
     showAvatar?: boolean;
     onLoad?: () => void;
-    onClick?: (file: FileData) => void;
+    onClick?: (file: FileData, index: number) => void;
     highlightWords?: string[];
 };
 
@@ -167,7 +167,7 @@ const MessageItem = ({
                             inGrid={getNumOfCols > 1}
                             style={{ objectFit: getNumOfCols > 1 ? 'cover' : 'contain' }}
                             onLoad={onLoad}
-                            onClick={onClick}
+                            onClick={(f) => onClick?.(f, index)}
                         />
                     ))}
 
@@ -204,7 +204,7 @@ const MessageItem = ({
                                             objectFit: getNumOfCols > 1 ? 'cover' : 'contain',
                                         }}
                                         onLoad={onLoad}
-                                        onClick={onClick}
+                                        onClick={(f) => onClick?.(f, index)}
                                     />
                                 ))}
                             </div>

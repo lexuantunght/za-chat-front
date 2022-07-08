@@ -1,7 +1,7 @@
 import { FileData } from './FileData';
 
 export interface Message {
-    _id?: string;
+    _id: string;
     content: string;
     files?: FileData[];
     sendTime: number;

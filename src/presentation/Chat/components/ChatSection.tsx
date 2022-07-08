@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { ObjectID } from 'bson';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import ChatTyping from './ChatTyping';
@@ -112,6 +113,7 @@ const ChatSection = (
 
     const onSendMessage = (content: string, files?: FileData[]) => {
         const msg: Message = {
+            _id: new ObjectID().toString(),
             content,
             files,
             toUid: conversation._id,

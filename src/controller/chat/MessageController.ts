@@ -124,6 +124,10 @@ class MessageController extends BaseController {
             });
         }
     };
+
+    public getMessage(msgId: string) {
+        return this.getState().chat.messages.find((m) => m._id === msgId);
+    }
 }
 
 export default MessageController;

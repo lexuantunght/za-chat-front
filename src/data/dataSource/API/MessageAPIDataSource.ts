@@ -53,23 +53,28 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
                 { Accept: 'application/json' }
             );
             if (response.status === 'success') {
-                Socket.getInstance()
-                    .getSocket()
-                    .emit('send-message', {
-                        ...message,
-                        files: message.files.map((f, index) => ({
-                            url: response.data[index].url,
-                            type: f.type,
-                            width: f.width,
-                            height: f.height,
-                            name: f.name,
-                            size: f.size,
-                        })),
-                    });
+                const messageEntity = {
+                    ...message,
+                    files: message.files.map((f, index) => ({
+                        url: response.data[index].url,
+                        type: f.type,
+                        width: f.width,
+                        height: f.height,
+                        name: f.name,
+                        size: f.size,
+                    })),
+                };
+                Socket.getInstance().getSocket().emit('send-message', messageEntity);
+                // add to localdb
+                this.clientQuery.addMessage(messageEntity);
+                this.searchQuery.addMessages([messageEntity]);
             }
             return;
         }
         Socket.getInstance().getSocket().emit('send-message', message);
+        // add to localdb
+        this.clientQuery.addMessage(message);
+        this.searchQuery.addMessages([message]);
     }
 
     searchMessages(
