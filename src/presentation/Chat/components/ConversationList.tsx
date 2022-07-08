@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import Highlighter from 'react-highlight-words';
 import { Virtuoso } from 'react-virtuoso';
+import { ObjectID } from 'bson';
 import { Conversation } from '../../../domain/model/Conversation';
 import { UserData } from '../../../domain/model/UserData';
 import SearchBox from '../../App/components/SearchBox';
@@ -55,7 +56,7 @@ const ConversationList = ({
             onSelectedItem?.(conversation);
         } else {
             onSelectedItem?.({
-                _id: '',
+                _id: new ObjectID().toString(),
                 userId: contact._id,
                 user: contact,
                 isGroup: false,
