@@ -157,7 +157,12 @@ const MessageItem = ({
 
             {message.files && message.files.length > 0 && !message.content ? (
                 <div
-                    className="chat-message-image-only"
+                    className={
+                        message.files[0].type?.startsWith('image/') ||
+                        message.files[0].type?.startsWith('video/')
+                            ? 'chat-message-image-only'
+                            : 'chat-message-other-file-only'
+                    }
                     style={{ gridTemplateColumns: `repeat(${getNumOfCols}, minmax(0, 1fr))` }}>
                     {message.files.map((file, index) => (
                         <FileMessageItem
