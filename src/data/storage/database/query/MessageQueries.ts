@@ -48,11 +48,11 @@ export class MessageQueries {
         return { data: messages as Array<MessageAPIEntity>, total };
     }
 
-    public addMessage(message: MessageEntity) {
+    public putMessage(message: MessageEntity) {
         this.adapter.put('messages', message);
     }
 
-    public addMessages(messages: MessageEntity[]) {
+    public putMessages(messages: MessageEntity[]) {
         this.adapter.putMany('messages', messages);
     }
 }

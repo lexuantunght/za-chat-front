@@ -5,4 +5,5 @@ export interface FileDataAPIEntity {
     width?: number;
     height?: number;
     size?: number;
+    textContent?: string;
 }

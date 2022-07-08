@@ -6,4 +6,5 @@ export interface FileData {
     width?: number;
     height?: number;
     size?: number;
+    textContent?: string;
 }

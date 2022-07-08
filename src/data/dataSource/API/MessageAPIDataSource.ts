@@ -2,6 +2,7 @@ import { PagingData } from '../../../common/types/PagingData';
 import { Message } from '../../../domain/model/Message';
 import appConfig from '../../../utils/app/appConfig';
 import objectToFormData from '../../../utils/helpers/objectToFormData';
+import TextRecognization from '../../../utils/ocr';
 import Network from '../../networking/Network';
 import Socket from '../../networking/Socket';
 import { MessageQueries } from '../../storage/database/query/MessageQueries';
@@ -31,7 +32,7 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
         const response = await Network.getInstance().getHelper<PagingData<MessageAPIEntity>>(
             `${appConfig.baseUrl}/chat/messages?conversationId=${conversationId}&fromSendTime=${fromSendTime}&limit=${limit}&later=${later}`
         );
-        this.clientQuery.addMessages(response.data.data);
+        this.clientQuery.putMessages(response.data.data);
         this.searchQuery.addMessages(response.data.data);
         return response.data || {};
     }
@@ -62,18 +63,32 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
                         height: f.height,
                         name: f.name,
                         size: f.size,
+                        textContent: f.textContent,
                     })),
                 };
                 Socket.getInstance().getSocket().emit('send-message', messageEntity);
                 // add to localdb
-                this.clientQuery.addMessage(messageEntity);
-                this.searchQuery.addMessages([messageEntity]);
+                this.clientQuery.putMessage(messageEntity);
+                // recognize text
+                messageEntity.files
+                    .filter((file) => file.type?.startsWith('image/'))
+                    .forEach((file, index, list) => {
+                        if (file.url) {
+                            TextRecognization.getInstance().recognize(file.url, (text) => {
+                                file.textContent = text;
+                                this.clientQuery.putMessage(messageEntity);
+                                if (index === list.length - 1) {
+                                    this.searchQuery.addMessages([messageEntity]);
+                                }
+                            });
+                        }
+                    });
             }
             return;
         }
         Socket.getInstance().getSocket().emit('send-message', message);
         // add to localdb
-        this.clientQuery.addMessage(message);
+        this.clientQuery.putMessage(message);
         this.searchQuery.addMessages([message]);
     }
 

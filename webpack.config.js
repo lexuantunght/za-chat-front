@@ -14,7 +14,10 @@ module.exports = {
         register: ['./src/window/register.tsx', './src/styles/register.scss'],
         'file-viewer': ['./src/window/file-viewer.tsx', './src/styles/file-viewer.scss'],
     },
-    output: { path: path.join(__dirname, 'build'), filename: '[name].bundle.js' },
+    output: {
+        path: path.join(__dirname, 'build'),
+        filename: '[name].bundle.js',
+    },
     mode: process.env.NODE_ENV || 'development',
     target: 'electron-renderer',
     resolve: {
