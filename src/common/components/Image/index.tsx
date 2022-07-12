@@ -12,6 +12,10 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 
 export type ImageRef = {
     setSrc: (usrc: string) => void;
+    getSize: () => {
+        width: number;
+        height: number;
+    } | null;
 };
 
 const Image = (
@@ -49,6 +53,12 @@ const Image = (
             if (imageRef?.current) {
                 imageRef.current.src = src;
             }
+        },
+        getSize: () => {
+            if (imageRef.current) {
+                return { width: imageRef.current.width, height: imageRef.current.height };
+            }
+            return null;
         },
     }));
 

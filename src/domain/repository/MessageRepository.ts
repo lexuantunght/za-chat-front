@@ -14,7 +14,7 @@ export interface MessageRepository {
         msgId: string,
         limit?: number
     ): Promise<PagingData<Message>>;
-    sendMessage(message: Message): Promise<void>;
+    sendMessage(message: Message, updateCb?: (msg: Message) => void): Promise<void>;
     searchMessages(
         keyword: string,
         conversationId?: string,

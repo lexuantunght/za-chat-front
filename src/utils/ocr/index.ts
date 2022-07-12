@@ -1,21 +1,20 @@
+import { createWorker } from 'tesseract.js';
+import { WordRecognized } from '../../domain/model/FileData';
 import { OCRAdapter } from './adapter';
-import worker from './ocr-create-worker';
 
-class TextRecognization {
-    private static instance: TextRecognization | null = null;
+export class TextRecognization {
     private adapter: OCRAdapter;
-    private constructor() {
-        this.adapter = new OCRAdapter(worker, 'eng');
+    constructor() {
+        this.adapter = new OCRAdapter(
+            createWorker({
+                logger: (m) => console.log(m),
+            }),
+            'eng',
+            10
+        );
     }
 
-    public static getInstance() {
-        if (!this.instance) {
-            this.instance = new TextRecognization();
-        }
-        return this.instance;
-    }
-
-    public recognize(imageUrl: string, callback?: (text: string) => void) {
+    public recognize(imageUrl: string, callback?: (words: Array<WordRecognized>) => void) {
         this.adapter.recognize(imageUrl, callback);
     }
 
@@ -24,4 +23,4 @@ class TextRecognization {
     }
 }
 
-export default TextRecognization;
+export const recognization = new TextRecognization();

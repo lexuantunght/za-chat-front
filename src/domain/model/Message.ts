@@ -7,8 +7,9 @@ export interface Message {
     sendTime: number;
     fromUid: string;
     toUid: string;
+    conversationId: string;
     userId?: string;
-    seen?: string[];
+    seen: string[];
     status: 'sent' | 'received' | 'seen' | 'failed' | 'sending';
     type: 'text' | 'image' | 'file';
 }

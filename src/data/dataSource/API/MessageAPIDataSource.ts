@@ -1,8 +1,9 @@
+import _unionBy from 'lodash-es/unionBy';
 import { PagingData } from '../../../common/types/PagingData';
 import { Message } from '../../../domain/model/Message';
 import appConfig from '../../../utils/app/appConfig';
 import objectToFormData from '../../../utils/helpers/objectToFormData';
-import TextRecognization from '../../../utils/ocr';
+import { recognization } from '../../../utils/ocr';
 import Network from '../../networking/Network';
 import Socket from '../../networking/Socket';
 import { MessageQueries } from '../../storage/database/query/MessageQueries';
@@ -26,15 +27,20 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
         limit?: number,
         later?: boolean
     ) {
-        if (Network.getInstance().getIsErrorConnection()) {
-            return this.clientQuery.getMessages(conversationId, fromSendTime, limit);
+        const data = await this.clientQuery.getMessages(conversationId, fromSendTime, limit);
+        if (!Network.getInstance().getIsErrorConnection()) {
+            const response = await Network.getInstance().getHelper<PagingData<MessageAPIEntity>>(
+                `${appConfig.baseUrl}/chat/messages?conversationId=${conversationId}&fromSendTime=${fromSendTime}&limit=${limit}&later=${later}`
+            );
+            const fetchedData = response.data;
+            if (fetchedData.total > data.total) {
+                const unionData = _unionBy(data.data, fetchedData.data, '_id');
+                this.clientQuery.putMessages(unionData);
+                this.searchQuery.addMessages(unionData);
+                return { data: unionData, total: fetchedData.total };
+            }
         }
-        const response = await Network.getInstance().getHelper<PagingData<MessageAPIEntity>>(
-            `${appConfig.baseUrl}/chat/messages?conversationId=${conversationId}&fromSendTime=${fromSendTime}&limit=${limit}&later=${later}`
-        );
-        this.clientQuery.putMessages(response.data.data);
-        this.searchQuery.addMessages(response.data.data);
-        return response.data || {};
+        return data;
     }
 
     async navigateMessage(
@@ -46,7 +52,7 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
         return this.clientQuery.navigateMessage(conversationId, fromSendTime, msgId, limit);
     }
 
-    async sendMessage(message: Message) {
+    async sendMessage(message: Message, updateCb?: (msg: MessageAPIEntity) => void) {
         if (message.files && message.files.length > 0) {
             const response = await Network.getInstance().postHelper<FileDataAPIEntity[]>(
                 `${appConfig.baseUrl}/chat/send-files`,
@@ -54,7 +60,7 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
                 { Accept: 'application/json' }
             );
             if (response.status === 'success') {
-                const messageEntity = {
+                const messageEntity: MessageAPIEntity = {
                     ...message,
                     files: message.files.map((f, index) => ({
                         url: response.data[index].url,
@@ -74,11 +80,12 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
                     .filter((file) => file.type?.startsWith('image/'))
                     .forEach((file, index, list) => {
                         if (file.url) {
-                            TextRecognization.getInstance().recognize(file.url, (text) => {
-                                file.textContent = text;
+                            recognization.recognize(file.url, (words) => {
+                                file.textContent = words;
                                 this.clientQuery.putMessage(messageEntity);
                                 if (index === list.length - 1) {
                                     this.searchQuery.addMessages([messageEntity]);
+                                    updateCb?.(messageEntity);
                                 }
                             });
                         }

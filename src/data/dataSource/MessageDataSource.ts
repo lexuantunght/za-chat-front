@@ -15,7 +15,7 @@ export default interface MessageDataSource {
         msgId: string,
         limit?: number
     ): Promise<PagingData<MessageAPIEntity>>;
-    sendMessage(message: Message): Promise<void>;
+    sendMessage(message: Message, updateCb?: (msg: MessageAPIEntity) => void): Promise<void>;
     searchMessages(
         keyword: string,
         conversationId?: string,

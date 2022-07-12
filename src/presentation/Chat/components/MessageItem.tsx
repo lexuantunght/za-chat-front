@@ -3,8 +3,8 @@ import moment from 'moment';
 import Highlighter from 'react-highlight-words';
 import { Message } from '../../../domain/model/Message';
 import { UserData } from '../../../domain/model/UserData';
-import Image from '../../../common/components/Image';
-import { FileData } from '../../../domain/model/FileData';
+import Image, { ImageRef } from '../../../common/components/Image';
+import { FileData, WordRecognized } from '../../../domain/model/FileData';
 import Video from '../../../common/components/Video';
 import fileHolder from '../../../common/resources/file-holder.png';
 import Button from '../../../common/components/Button';
@@ -31,6 +31,7 @@ type FileMessageItemProp = {
     onClick?: (file: FileData) => void;
     showControllers?: boolean;
     inGrid?: boolean;
+    highlightWords?: string[];
 };
 
 const getFileSizeDisplay = (fileSize?: number) => {
@@ -59,13 +60,32 @@ const FileMessageItem = ({
     onClick,
     inGrid,
     showControllers = true,
+    highlightWords = [],
 }: FileMessageItemProp) => {
+    const imageRef = React.useRef<ImageRef>(null);
+    const [showTextMask, setShowTextMask] = React.useState(false);
     const handleDownload = () => {
         openSaveDialog({
             url: file.url,
             name: file.name,
             type: file.name?.substring(file.name.lastIndexOf('.') + 1),
         });
+    };
+
+    const getWordMask = (word: WordRecognized) => {
+        let ratio = 0;
+        if (imageRef.current) {
+            const w = imageRef.current.getSize()?.width;
+            if (w && file.width) {
+                ratio = w / file.width;
+            }
+        }
+        return {
+            height: (word.bbox.y1 - word.bbox.y0) * ratio,
+            width: (word.bbox.x1 - word.bbox.x0) * ratio,
+            top: word.bbox.y0 * ratio,
+            left: word.bbox.x0 * ratio,
+        };
     };
 
     if (file.type?.startsWith('video/')) {
@@ -85,16 +105,46 @@ const FileMessageItem = ({
     }
     if (file.type?.startsWith('image/')) {
         return (
-            <Image
-                src={file.url}
-                style={{ ...style, cursor: 'pointer' }}
-                originHeight={inGrid ? 400 : file.height}
-                originWidth={inGrid ? 400 : file.width}
-                maxHeight={inGrid ? undefined : 400}
-                onLoad={onLoad}
-                onClick={() => onClick?.(file)}
-                className="message-image"
-            />
+            <>
+                <Image
+                    src={file.url}
+                    ref={imageRef}
+                    style={{ ...style, cursor: 'pointer' }}
+                    originHeight={inGrid ? 400 : file.height}
+                    originWidth={inGrid ? 400 : file.width}
+                    maxHeight={inGrid ? undefined : 400}
+                    onLoad={() => {
+                        onLoad?.();
+                        setShowTextMask(true);
+                    }}
+                    onClick={() => onClick?.(file)}
+                    className="message-image"
+                />
+                {!inGrid &&
+                    showTextMask &&
+                    file.textContent &&
+                    file.textContent.map((word, index) => {
+                        const wordMask = getWordMask(word);
+                        return (
+                            <div
+                                key={index}
+                                className="message-image-word"
+                                style={{
+                                    height: wordMask.height,
+                                    width: wordMask.width,
+                                    top: wordMask.top,
+                                    left: wordMask.left,
+                                    backgroundColor: highlightWords.some((wd) =>
+                                        word.text.toLowerCase().startsWith(wd)
+                                    )
+                                        ? '#faea4850'
+                                        : 'transparent',
+                                }}>
+                                <span>{word.text}</span>
+                            </div>
+                        );
+                    })}
+            </>
         );
     }
     return (
@@ -173,6 +223,7 @@ const MessageItem = ({
                             style={{ objectFit: getNumOfCols > 1 ? 'cover' : 'contain' }}
                             onLoad={onLoad}
                             onClick={(f) => onClick?.(f, index)}
+                            highlightWords={highlightWords}
                         />
                     ))}
 
@@ -210,6 +261,7 @@ const MessageItem = ({
                                         }}
                                         onLoad={onLoad}
                                         onClick={(f) => onClick?.(f, index)}
+                                        highlightWords={highlightWords}
                                     />
                                 ))}
                             </div>

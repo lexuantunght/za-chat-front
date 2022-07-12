@@ -92,19 +92,15 @@ onmessage = async (e) => {
             let fileContentSplitted = [];
             if (message.files) {
                 const imageFiles = message.files
-                    .filter((file) => file.type?.startsWith('image/') && file.textContent)
+                    .filter(
+                        (file) =>
+                            file.type?.startsWith('image/') &&
+                            file.textContent &&
+                            file.textContent.length > 0
+                    )
                     .map((file) => file.textContent);
-                imageFiles.forEach((text) => {
-                    fileContentSplitted.push(
-                        Array.from(segmenter.segment(text)[Symbol.iterator]())
-                            .filter((kw) => kw.isWordLike)
-                            .map((kw) =>
-                                kw.segment
-                                    .normalize('NFD')
-                                    .replace(/[\u0300-\u036f]/g, '')
-                                    .toLowerCase()
-                            )
-                    );
+                imageFiles.forEach((words) => {
+                    fileContentSplitted.push(words.map((word) => word.text.toLowerCase()));
                 });
             }
 

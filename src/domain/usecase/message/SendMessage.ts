@@ -3,7 +3,7 @@ import { Message } from '../../model/Message';
 import { MessageRepository } from '../../repository/MessageRepository';
 
 export interface SendMessageUseCase {
-    invoke: (message: Message) => Promise<void>;
+    invoke: (message: Message, updateCb?: (msg: Message) => void) => Promise<void>;
 }
 
 export class SendMessage implements SendMessageUseCase {
@@ -16,7 +16,7 @@ export class SendMessage implements SendMessageUseCase {
         }
     }
 
-    async invoke(message: Message) {
-        return this.messageRepo.sendMessage(message);
+    async invoke(message: Message, updateCb?: (msg: Message) => void) {
+        return this.messageRepo.sendMessage(message, updateCb);
     }
 }

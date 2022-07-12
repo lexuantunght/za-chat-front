@@ -119,6 +119,7 @@ const ChatSection = (
             toUid: conversation._id,
             fromUid: user?._id || '',
             userId: partnerId || conversation.userId,
+            conversationId: conversation._id,
             seen: user?._id ? [user?._id] : [],
             status: 'sending',
             sendTime: Date.now(),
@@ -272,7 +273,10 @@ const ChatSection = (
                             onClick={(file) =>
                                 handleClickMessage({
                                     file,
-                                    from: conversation.user.name,
+                                    from:
+                                        item.fromUid === user._id
+                                            ? user.name
+                                            : conversation.user.name,
                                     time: item.sendTime,
                                 })
                             }

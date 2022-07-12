@@ -413,6 +413,7 @@
     height: max-content;
     display: grid;
     gap: 0.25rem;
+    position: relative;
 }
 .chat-message-image-only > .message-image,
 .chat-message-text-image > .message-image {
@@ -431,6 +432,26 @@
     min-height: 100%;
     overflow: hidden;
 }
+.chat-message-image-only > .message-image-word {
+    position: absolute;
+    top: 0;
+    left: 0;
+    span {
+        display: none;
+        position: absolute;
+        top: -2rem;
+        background-color: #000000;
+        padding: var(--padding-y);
+        color: #ffffff;
+        border-radius: var(--border-radius);
+    }
+    &:hover {
+        span {
+            display: flex;
+        }
+    }
+}
+
 .message-other-file {
     display: grid;
     grid-template-columns: repeat(3, auto);

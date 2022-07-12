@@ -10,6 +10,7 @@ import {
     setSearchKeyword,
     setSearchMsgResult,
     setTotalMessages,
+    updateFilesMessage,
     updateNewMessageToConversation,
     updateStatusMessage,
 } from '../../presentation/Chat/reducer';
@@ -34,7 +35,11 @@ class MessageController extends BaseController {
         this.dispatch(setMessages([...this.getState().chat.messages, message]));
         this.dispatch(setTotalMessages(this.getState().chat.totalMessages + 1));
         this.dispatch(updateNewMessageToConversation(message));
-        this.sendMessageUseCase.invoke(message).catch(this.handleError);
+        this.sendMessageUseCase
+            .invoke(message, (msg) => {
+                this.dispatch(updateFilesMessage(msg));
+            })
+            .catch(this.handleError);
     };
 
     public getMessages = (
@@ -98,6 +103,12 @@ class MessageController extends BaseController {
     public updateStatusMessage = (message: Message) => {
         if (message.fromUid === this.getState().app.userData?._id) {
             this.dispatch(updateStatusMessage(message));
+        }
+    };
+
+    public updateFilesMessage = (message: Message) => {
+        if (message.fromUid === this.getState().app.userData?._id) {
+            this.dispatch(updateFilesMessage(message));
         }
     };
 
