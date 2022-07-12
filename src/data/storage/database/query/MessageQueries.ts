@@ -26,6 +26,7 @@ export class MessageQueries {
         msgId: string,
         limit?: number
     ) {
+        console.log(fromSendTime);
         const total = await this.adapter.count('messages', {
             where: 'toUid',
             equals: conversationId,

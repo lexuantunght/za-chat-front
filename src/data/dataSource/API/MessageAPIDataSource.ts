@@ -1,4 +1,3 @@
-import _unionBy from 'lodash-es/unionBy';
 import { PagingData } from '../../../common/types/PagingData';
 import { Message } from '../../../domain/model/Message';
 import appConfig from '../../../utils/app/appConfig';
@@ -27,20 +26,15 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
         limit?: number,
         later?: boolean
     ) {
-        const data = await this.clientQuery.getMessages(conversationId, fromSendTime, limit);
-        if (!Network.getInstance().getIsErrorConnection()) {
-            const response = await Network.getInstance().getHelper<PagingData<MessageAPIEntity>>(
-                `${appConfig.baseUrl}/chat/messages?conversationId=${conversationId}&fromSendTime=${fromSendTime}&limit=${limit}&later=${later}`
-            );
-            const fetchedData = response.data;
-            if (fetchedData.total > data.total) {
-                const unionData = _unionBy(data.data, fetchedData.data, '_id');
-                this.clientQuery.putMessages(unionData);
-                this.searchQuery.addMessages(unionData);
-                return { data: unionData, total: fetchedData.total };
-            }
+        if (Network.getInstance().getIsErrorConnection()) {
+            return this.clientQuery.getMessages(conversationId, fromSendTime, limit);
         }
-        return data;
+        const response = await Network.getInstance().getHelper<PagingData<MessageAPIEntity>>(
+            `${appConfig.baseUrl}/chat/messages?conversationId=${conversationId}&fromSendTime=${fromSendTime}&limit=${limit}&later=${later}`
+        );
+        this.clientQuery.putMessages(response.data.data);
+        this.searchQuery.addMessages(response.data.data);
+        return response.data || {};
     }
 
     async navigateMessage(
@@ -73,9 +67,14 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
                     })),
                 };
                 Socket.getInstance().getSocket().emit('send-message', messageEntity);
-                // add to localdb
                 this.clientQuery.putMessage(messageEntity);
                 // recognize text
+                const imageFiles = messageEntity.files.filter((file) =>
+                    file.type?.startsWith('image/')
+                );
+                if (imageFiles.length === 0) {
+                    this.searchQuery.addMessages([messageEntity]);
+                }
                 messageEntity.files
                     .filter((file) => file.type?.startsWith('image/'))
                     .forEach((file, index, list) => {
@@ -86,6 +85,12 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
                                 if (index === list.length - 1) {
                                     this.searchQuery.addMessages([messageEntity]);
                                     updateCb?.(messageEntity);
+                                    Network.getInstance().putHelper<
+                                        MessageAPIEntity,
+                                        MessageAPIEntity
+                                    >(`${appConfig.baseUrl}/chat/message-files`, {
+                                        message: messageEntity,
+                                    });
                                 }
                             });
                         }
@@ -105,6 +110,10 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
         callback?: (result: PagingData<MessageAPIEntity>, subkeys?: string[]) => void
     ) {
         this.searchQuery.searchMessages(keyword, conversationId, callback);
+    }
+
+    updateMessage(message: Message) {
+        this.clientQuery.putMessage(message);
     }
 }
 

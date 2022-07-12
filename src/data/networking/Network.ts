@@ -18,9 +18,9 @@ interface NetworkProvider {
         config?: NetworkConfigs
     ): Promise<DataResponse<T>>;
     get<T>(url: string, config?: NetworkConfigs): Promise<DataResponse<T>>;
-    put<T>(
+    put<T, R>(
         url: string,
-        data?: Record<string, string> | FormData,
+        data?: Record<string, R> | FormData,
         config?: NetworkConfigs
     ): Promise<DataResponse<T>>;
     delete<T>(url: string, config?: NetworkConfigs): Promise<DataResponse<T>>;
@@ -74,9 +74,9 @@ class Network {
         return data as DataResponse<T>;
     }
 
-    public async putHelper<T>(
+    public async putHelper<T, R>(
         api: string,
-        body: Record<string, string> | FormData,
+        body: Record<string, R> | FormData,
         headers: Record<string, string> = this.defaultHeader
     ) {
         const data = await this.networkProvider

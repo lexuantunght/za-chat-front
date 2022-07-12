@@ -21,4 +21,5 @@ export default interface MessageDataSource {
         conversationId?: string,
         callback?: (result: PagingData<MessageAPIEntity>, subkeys?: string[]) => void
     ): void;
+    updateMessage(message: Message): void;
 }

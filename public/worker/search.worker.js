@@ -100,11 +100,14 @@ onmessage = async (e) => {
                     )
                     .map((file) => file.textContent);
                 imageFiles.forEach((words) => {
-                    fileContentSplitted.push(words.map((word) => word.text.toLowerCase()));
+                    fileContentSplitted = [
+                        ...fileContentSplitted,
+                        ...words.map((word) => word.text.toLowerCase()),
+                    ];
                 });
             }
 
-            const keywords = new Set(...contentSplitted, ...fileContentSplitted);
+            const keywords = new Set([...contentSplitted, ...fileContentSplitted]);
 
             for (const keyword of keywords) {
                 let keywordId = (

@@ -16,12 +16,14 @@ import {
 } from '../../presentation/Chat/reducer';
 import { SearchMessages } from '../../domain/usecase/message/SearchMessages';
 import { NavigateMessage } from '../../domain/usecase/message/NavigateMessage';
+import { UpdateMessage } from '../../domain/usecase/message/UpdateMessage';
 
 class MessageController extends BaseController {
     private sendMessageUseCase;
     private getMessagesUseCase;
     private searchMessagesUseCase;
     private navigateMessageUseCase;
+    private updateMessageUseCase;
 
     constructor() {
         super();
@@ -29,6 +31,7 @@ class MessageController extends BaseController {
         this.getMessagesUseCase = new GetMessages();
         this.searchMessagesUseCase = new SearchMessages();
         this.navigateMessageUseCase = new NavigateMessage();
+        this.updateMessageUseCase = new UpdateMessage();
     }
 
     public sendMessage = (message: Message) => {
@@ -103,6 +106,7 @@ class MessageController extends BaseController {
     public updateStatusMessage = (message: Message) => {
         if (message.fromUid === this.getState().app.userData?._id) {
             this.dispatch(updateStatusMessage(message));
+            this.updateMessageUseCase.invoke(message);
         }
     };
 

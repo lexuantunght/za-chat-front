@@ -20,4 +20,5 @@ export interface MessageRepository {
         conversationId?: string,
         callback?: (result: PagingData<Message>, subkeys?: string[]) => void
     ): void;
+    updateMessage(message: Message): void;
 }

@@ -41,7 +41,7 @@ export class IndexedDBAdapter {
         if (where && inRange) {
             return table
                 .where(where)
-                .inAnyRange(inRange.map((range) => [range.upper, range.lower]))
+                .inAnyRange(inRange.map((range) => [range.lower, range.upper]))
                 .offset(offset)
                 .toArray();
         }

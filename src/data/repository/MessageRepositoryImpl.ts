@@ -44,6 +44,10 @@ export class MessageRepositoryImpl implements MessageRepository {
     ) {
         this.dataSource.searchMessages(keyword, conversationId, callback);
     }
+
+    updateMessage(message: Message) {
+        this.dataSource.updateMessage(message);
+    }
 }
 
 export const messageRepository = new MessageRepositoryImpl();

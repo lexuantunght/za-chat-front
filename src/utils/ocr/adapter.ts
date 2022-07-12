@@ -41,7 +41,15 @@ export class OCRAdapter {
 
     public recognize(imageUrl: string, callback?: (words: Array<WordRecognized>) => void) {
         this.worker.recognize(imageUrl).then((data: TextRecognizationResult) => {
-            callback?.(data.data.words.filter((word) => word.confidence >= this.targetConfidence));
+            callback?.(
+                data.data.words
+                    .filter((word) => word.confidence >= this.targetConfidence)
+                    .map((word) => ({
+                        text: word.text,
+                        bbox: word.bbox,
+                        confidence: word.confidence,
+                    }))
+            );
         });
     }
 
