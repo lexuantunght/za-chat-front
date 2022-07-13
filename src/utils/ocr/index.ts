@@ -10,7 +10,7 @@ export class TextRecognization {
                 logger: (m) => console.log(m),
             }),
             'eng',
-            10
+            80
         );
     }
 

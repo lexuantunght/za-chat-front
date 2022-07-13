@@ -309,7 +309,7 @@
 }
 
 .chat-pasted-files-container {
-    height: 11rem;
+    max-height: 11rem;
 }
 .chat-pasted-files {
     display: grid;
@@ -425,6 +425,9 @@
     gap: 0.25rem;
     position: relative;
 }
+.chat-message-text-image {
+    position: relative;
+}
 .chat-message-image-only > .message-image,
 .chat-message-text-image > .message-image {
     border: 1px solid #ffffff;
@@ -442,7 +445,8 @@
     min-height: 100%;
     overflow: hidden;
 }
-.chat-message-image-only > .message-image-word {
+.chat-message-image-only > .message-image-word,
+.chat-message-text-image > .message-image-word {
     position: absolute;
     top: 0;
     left: 0;

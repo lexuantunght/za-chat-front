@@ -33,8 +33,8 @@ const Image = (
     ref: React.ForwardedRef<ImageRef>
 ) => {
     const [isError, setIsError] = React.useState(false);
-    const [currentSrc, setCurrentSrc] = React.useState(src);
     const imageRef = React.useRef<HTMLImageElement>(null);
+    let retry = false;
 
     const size = React.useMemo(
         () => computeMediaSize(originHeight, originWidth, maxHeight, maxWidth),
@@ -42,9 +42,14 @@ const Image = (
     );
 
     const handleError = () => {
-        if (!isError) {
-            setIsError(true);
-            setCurrentSrc(fallbackSrc);
+        if (!isError && imageRef.current) {
+            if (src && !retry) {
+                imageRef.current.src = src;
+                retry = true;
+            } else {
+                setIsError(true);
+                imageRef.current.src = fallbackSrc;
+            }
         }
     };
 
@@ -71,7 +76,7 @@ const Image = (
                 width: size?.width,
                 aspectRatio: `${size?.width}/${size?.height}`,
             }}
-            src={currentSrc}
+            src={src}
             ref={imageRef}
             onError={handleError}
             className={className ? `za-image ${className}` : 'za-image'}

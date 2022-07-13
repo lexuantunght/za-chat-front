@@ -207,6 +207,12 @@
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 0 1rem;
     }
+    @media (max-width: 768px) {
+        .app-list-theme {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+    }
     .theme-selector {
         margin-top: 1rem;
         display: flex;
@@ -214,7 +220,7 @@
         cursor: pointer;
 
         img {
-            width: 5rem;
+            width: 6rem;
             height: 4rem;
             object-fit: cover;
             border-radius: var(--border-radius);

@@ -63,6 +63,9 @@ const chatSlice = createSlice({
                 state.conversations[indexOfItem].lastMessageTime = action.payload.sendTime;
                 state.conversations[indexOfItem].lastMessageStatus = action.payload.status;
                 state.conversations[indexOfItem].lastMessageFromUid = action.payload.fromUid;
+                if (state.selectedConversation?._id === state.conversations[indexOfItem]._id) {
+                    state.selectedConversation = state.conversations[indexOfItem];
+                }
             }
 
             state.conversations = _orderBy(
@@ -70,6 +73,14 @@ const chatSlice = createSlice({
                 (conv) => moment(conv.lastMessageTime).toDate(),
                 'desc'
             );
+        },
+        updateConversation: (state: ChatState, action: PayloadAction<Conversation>) => {
+            const indexOfItem = (state.conversations || []).findIndex(
+                (item) => item._id === action.payload._id
+            );
+            if (indexOfItem >= 0) {
+                state.conversations[indexOfItem] = action.payload;
+            }
         },
         updateFriendStatus: (
             state: ChatState,
@@ -108,6 +119,7 @@ export const {
     updateFilesMessage,
     updateNewMessageToConversation,
     updateFriendStatus,
+    updateConversation,
     setTotalMessages,
     setIsEndTopMsgList,
     setIsEndBottomMsgList,
