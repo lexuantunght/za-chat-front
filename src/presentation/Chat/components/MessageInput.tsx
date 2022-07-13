@@ -5,6 +5,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 interface MessageInputProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
     onBeginEditing?: () => void;
     onEndEditing?: () => void;
+    handleSubmit?: () => void;
 }
 
 type MessageInputStates = {
@@ -31,6 +32,13 @@ class MessageInput extends React.Component<MessageInputProps, MessageInputStates
         });
     };
 
+    onEnterPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && e.shiftKey == false) {
+            e.preventDefault();
+            this.props.handleSubmit?.();
+        }
+    };
+
     handleTyping = _debounce(() => {
         if (this.state.isTyping) {
             this.props.onEndEditing?.();
@@ -48,6 +56,7 @@ class MessageInput extends React.Component<MessageInputProps, MessageInputStates
                 onBlur={this.props.onBlur}
                 value={this.props.value}
                 onChange={this.handleChange}
+                onKeyDown={this.onEnterPress}
                 onPaste={this.props.onPaste}
                 minRows={1}
                 maxRows={5}

@@ -2,11 +2,11 @@ import { messageRepository } from '../../../data/repository/MessageRepositoryImp
 import { Message } from '../../model/Message';
 import { MessageRepository } from '../../repository/MessageRepository';
 
-export interface SendMessageUseCase {
-    invoke: (message: Message, updateCb?: (msg: Message) => void) => Promise<void>;
+export interface UpdateMessageUseCase {
+    invoke: (message: Message) => void;
 }
 
-export class SendMessage implements SendMessageUseCase {
+export class UpdateMessage implements UpdateMessageUseCase {
     private messageRepo: MessageRepository;
     constructor(_messageRepo?: MessageRepository) {
         if (!_messageRepo) {
@@ -16,7 +16,7 @@ export class SendMessage implements SendMessageUseCase {
         }
     }
 
-    async invoke(message: Message, updateCb?: (msg: Message) => void) {
-        return this.messageRepo.sendMessage(message, updateCb);
+    invoke(message: Message) {
+        return this.messageRepo.updateMessage(message);
     }
 }

@@ -33,8 +33,8 @@ export class MessageRepositoryImpl implements MessageRepository {
         return this.dataSource.navigateMessage(conversationId, fromSendTime, msgId, limit);
     }
 
-    async sendMessage(message: Message) {
-        return this.dataSource.sendMessage(message);
+    async sendMessage(message: Message, updateCb?: (msg: Message) => void) {
+        return this.dataSource.sendMessage(message, updateCb);
     }
 
     searchMessages(
@@ -43,6 +43,10 @@ export class MessageRepositoryImpl implements MessageRepository {
         callback?: (result: PagingData<Message>, subkeys?: string[]) => void
     ) {
         this.dataSource.searchMessages(keyword, conversationId, callback);
+    }
+
+    updateMessage(message: Message) {
+        this.dataSource.updateMessage(message);
     }
 }
 

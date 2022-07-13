@@ -2,6 +2,7 @@ import { PagingData } from '../../../common/types/PagingData';
 import { Message } from '../../../domain/model/Message';
 import appConfig from '../../../utils/app/appConfig';
 import objectToFormData from '../../../utils/helpers/objectToFormData';
+import { recognization } from '../../../utils/ocr';
 import Network from '../../networking/Network';
 import Socket from '../../networking/Socket';
 import { MessageQueries } from '../../storage/database/query/MessageQueries';
@@ -31,7 +32,7 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
         const response = await Network.getInstance().getHelper<PagingData<MessageAPIEntity>>(
             `${appConfig.baseUrl}/chat/messages?conversationId=${conversationId}&fromSendTime=${fromSendTime}&limit=${limit}&later=${later}`
         );
-        this.clientQuery.addMessages(response.data.data);
+        this.clientQuery.putMessages(response.data.data);
         this.searchQuery.addMessages(response.data.data);
         return response.data || {};
     }
@@ -45,7 +46,7 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
         return this.clientQuery.navigateMessage(conversationId, fromSendTime, msgId, limit);
     }
 
-    async sendMessage(message: Message) {
+    async sendMessage(message: Message, updateCb?: (msg: MessageAPIEntity) => void) {
         if (message.files && message.files.length > 0) {
             const response = await Network.getInstance().postHelper<FileDataAPIEntity[]>(
                 `${appConfig.baseUrl}/chat/send-files`,
@@ -53,21 +54,54 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
                 { Accept: 'application/json' }
             );
             if (response.status === 'success') {
-                Socket.getInstance()
-                    .getSocket()
-                    .emit('send-message', {
-                        ...message,
-                        files: message.files.map((f, index) => ({
-                            url: response.data[index].url,
-                            type: f.type,
-                            width: f.width,
-                            height: f.height,
-                        })),
+                const messageEntity: MessageAPIEntity = {
+                    ...message,
+                    files: message.files.map((f, index) => ({
+                        url: response.data[index].url,
+                        type: f.type,
+                        width: f.width,
+                        height: f.height,
+                        name: f.name,
+                        size: f.size,
+                        textContent: f.textContent,
+                    })),
+                };
+                Socket.getInstance().getSocket().emit('send-message', messageEntity);
+                this.clientQuery.putMessage(messageEntity);
+                // recognize text
+                const imageFiles = messageEntity.files.filter((file) =>
+                    file.type?.startsWith('image/')
+                );
+                if (imageFiles.length === 0) {
+                    this.searchQuery.addMessages([messageEntity]);
+                }
+                messageEntity.files
+                    .filter((file) => file.type?.startsWith('image/'))
+                    .forEach((file, index, list) => {
+                        if (file.url) {
+                            recognization.recognize(file.url, (words) => {
+                                file.textContent = words;
+                                this.clientQuery.putMessage(messageEntity);
+                                if (index === list.length - 1) {
+                                    this.searchQuery.addMessages([messageEntity]);
+                                    updateCb?.(messageEntity);
+                                    Network.getInstance().putHelper<
+                                        MessageAPIEntity,
+                                        MessageAPIEntity
+                                    >(`${appConfig.baseUrl}/chat/message-files`, {
+                                        message: messageEntity,
+                                    });
+                                }
+                            });
+                        }
                     });
             }
             return;
         }
         Socket.getInstance().getSocket().emit('send-message', message);
+        // add to localdb
+        this.clientQuery.putMessage(message);
+        this.searchQuery.addMessages([message]);
     }
 
     searchMessages(
@@ -76,6 +110,10 @@ export class MessageAPIDataSourceImpl implements MessageDataSource {
         callback?: (result: PagingData<MessageAPIEntity>, subkeys?: string[]) => void
     ) {
         this.searchQuery.searchMessages(keyword, conversationId, callback);
+    }
+
+    updateMessage(message: Message) {
+        this.clientQuery.putMessage(message);
     }
 }
 

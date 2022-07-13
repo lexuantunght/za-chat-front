@@ -13,7 +13,8 @@ import { Conversation } from '../../domain/model/Conversation';
 
 const ChatScreen = () => {
     const { getConversations, selectConversation } = useController(ConversationController);
-    const { getMessages, updateStatusMessage, appendMessage } = useController(MessageController);
+    const { getMessages, updateStatusMessage, updateFilesMessage, appendMessage } =
+        useController(MessageController);
     const { useGetState, addSocketListener, emitSocket, removeAllSocketListeners } =
         useController(AppController);
     const userData = useGetState((state) => state.app.userData);
@@ -62,6 +63,7 @@ const ChatScreen = () => {
             emitSocket('action-message', msg, 'received');
         });
         addSocketListener('status-message', (msg: Message) => {
+            updateFilesMessage(msg);
             updateStatusMessage(msg);
         });
         return () => {

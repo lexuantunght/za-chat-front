@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { ObjectID } from 'bson';
 import Button from '../../../common/components/Button';
 import Icon from '../../../common/components/Icon';
 import ChatTyping from './ChatTyping';
@@ -57,6 +58,7 @@ const ChatSection = (
     const [highlightMsgId, setHighlightMsgId] = React.useState<string | undefined>();
     const [scrolledSearch, setScrolledSearch] = React.useState<string | undefined>();
     const listMsgRef = React.useRef<VirtualizedListRef>(null);
+    const [showUnobtrusive, setShowUnobtrusive] = React.useState(false);
 
     const handleClickMessage = (data: SenderViewerData) => {
         openFileViewer(data);
@@ -111,11 +113,13 @@ const ChatSection = (
 
     const onSendMessage = (content: string, files?: FileData[]) => {
         const msg: Message = {
+            _id: new ObjectID().toString(),
             content,
             files,
             toUid: conversation._id,
             fromUid: user?._id || '',
             userId: partnerId || conversation.userId,
+            conversationId: conversation._id,
             seen: user?._id ? [user?._id] : [],
             status: 'sending',
             sendTime: Date.now(),
@@ -137,6 +141,14 @@ const ChatSection = (
             true,
             isBottom
         );
+    };
+
+    const handleScrollToEnd = () => {
+        listMsgRef.current?.scrollToIndex({
+            index: 'LAST',
+            behavior: 'smooth',
+            align: 'end',
+        });
     };
 
     return (
@@ -235,6 +247,12 @@ const ChatSection = (
                     isEndBottom={isEndBottomMsgList}
                     isEndTop={isEndTopMsgList}
                     onLoadMore={handleLoadMore}
+                    onScrolledDistanceCb={(isOver) => {
+                        if (isOver !== showUnobtrusive) {
+                            setShowUnobtrusive(isOver);
+                        }
+                    }}
+                    fromScrolledDistance={600}
                     rowRenderer={(item, index) => (
                         <MessageItem
                             index={index}
@@ -255,13 +273,21 @@ const ChatSection = (
                             onClick={(file) =>
                                 handleClickMessage({
                                     file,
-                                    from: conversation.user.name,
+                                    from:
+                                        item.fromUid === user._id
+                                            ? user.name
+                                            : conversation.user.name,
                                     time: item.sendTime,
                                 })
                             }
                         />
                     )}
                 />
+                {showUnobtrusive && (
+                    <div className="chat-section-scroll-end" onClick={handleScrollToEnd}>
+                        <Icon name="chevron-down" width={24} height={24} color="#555555" />
+                    </div>
+                )}
             </div>
             <ChatTyping
                 onSend={onSendMessage}

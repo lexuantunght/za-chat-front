@@ -10,17 +10,20 @@ import {
     setSearchKeyword,
     setSearchMsgResult,
     setTotalMessages,
+    updateFilesMessage,
     updateNewMessageToConversation,
     updateStatusMessage,
 } from '../../presentation/Chat/reducer';
 import { SearchMessages } from '../../domain/usecase/message/SearchMessages';
 import { NavigateMessage } from '../../domain/usecase/message/NavigateMessage';
+import { UpdateMessage } from '../../domain/usecase/message/UpdateMessage';
 
 class MessageController extends BaseController {
     private sendMessageUseCase;
     private getMessagesUseCase;
     private searchMessagesUseCase;
     private navigateMessageUseCase;
+    private updateMessageUseCase;
 
     constructor() {
         super();
@@ -28,13 +31,18 @@ class MessageController extends BaseController {
         this.getMessagesUseCase = new GetMessages();
         this.searchMessagesUseCase = new SearchMessages();
         this.navigateMessageUseCase = new NavigateMessage();
+        this.updateMessageUseCase = new UpdateMessage();
     }
 
     public sendMessage = (message: Message) => {
         this.dispatch(setMessages([...this.getState().chat.messages, message]));
         this.dispatch(setTotalMessages(this.getState().chat.totalMessages + 1));
         this.dispatch(updateNewMessageToConversation(message));
-        this.sendMessageUseCase.invoke(message).catch(this.handleError);
+        this.sendMessageUseCase
+            .invoke(message, (msg) => {
+                this.dispatch(updateFilesMessage(msg));
+            })
+            .catch(this.handleError);
     };
 
     public getMessages = (
@@ -44,18 +52,11 @@ class MessageController extends BaseController {
         isPrepend = false,
         later = false
     ) => {
-        if (!conversationId) {
-            this.dispatch(setIsEndBottomMsgList(true));
-            this.dispatch(setIsEndTopMsgList(true));
-            this.dispatch(setMessages([]));
-            this.dispatch(setTotalMessages(0));
-            return;
-        }
         this.dispatch(setIsEndTopMsgList(false));
         this.getMessagesUseCase
             .invoke(conversationId, fromSendTime, limit, later)
             .then(({ data, total }) => {
-                if (data.length === 0) {
+                if (isPrepend && data.length === 0) {
                     if (later) {
                         this.dispatch(setIsEndBottomMsgList(true));
                     } else {
@@ -105,6 +106,13 @@ class MessageController extends BaseController {
     public updateStatusMessage = (message: Message) => {
         if (message.fromUid === this.getState().app.userData?._id) {
             this.dispatch(updateStatusMessage(message));
+            this.updateMessageUseCase.invoke(message);
+        }
+    };
+
+    public updateFilesMessage = (message: Message) => {
+        if (message.fromUid === this.getState().app.userData?._id) {
+            this.dispatch(updateFilesMessage(message));
         }
     };
 
@@ -124,6 +132,10 @@ class MessageController extends BaseController {
             });
         }
     };
+
+    public getMessage(msgId: string) {
+        return this.getState().chat.messages.find((m) => m._id === msgId);
+    }
 }
 
 export default MessageController;

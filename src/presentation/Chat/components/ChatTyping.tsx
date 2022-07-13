@@ -89,6 +89,7 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
                         url: fileReader.result,
                         name: file.name,
                         type: file.type,
+                        size: file.size,
                     };
 
                     if (file.type.startsWith('image/')) {
@@ -131,7 +132,8 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
                 promises.push(handleReadFile(file));
             }
             Promise.all(promises).then((files) => {
-                onSend?.('', files);
+                const pasted = [...form.values.files, ...files];
+                form.setFieldValue('files', pasted);
             });
         }
     };
@@ -162,6 +164,12 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
         form.setFieldValue('files', pasted);
     };
 
+    const handleChangePasted = (index: number, item: FileData) => {
+        const pasted = [...form.values.files];
+        pasted[index] = item;
+        form.setFieldValue('files', pasted);
+    };
+
     return (
         <>
             <div className="chat-attachment">
@@ -189,6 +197,7 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
                     onBeginEditing={onBeginEditing}
                     onEndEditing={onEndEditing}
                     onPaste={handlePaste}
+                    handleSubmit={form.handleSubmit}
                 />
                 <>
                     <Button
@@ -208,6 +217,8 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
                             <PastedFileItem
                                 key={index}
                                 file={file}
+                                onEdited={(file) => handleChangePasted(index, file)}
+                                t={t}
                                 onRemove={() => handleRemovePasted(index)}
                             />
                         ))}

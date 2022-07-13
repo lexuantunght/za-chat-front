@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Conversation } from '../../domain/model/Conversation';
 import { Message } from '../../domain/model/Message';
-import _update from 'lodash-es/update';
 import _orderBy from 'lodash-es/orderBy';
 import moment from 'moment';
 
@@ -49,11 +48,10 @@ const chatSlice = createSlice({
             state.totalMessages = action.payload;
         },
         updateStatusMessage: (state: ChatState, action: PayloadAction<Message>) => {
-            _update(
-                state.messages,
-                `[${state.messages.length - 1}].status`,
-                () => action.payload.status
-            );
+            state.messages[state.messages.length - 1].status = action.payload.status;
+        },
+        updateFilesMessage: (state: ChatState, action: PayloadAction<Message>) => {
+            state.messages[state.messages.length - 1].files = action.payload.files;
         },
         updateNewMessageToConversation: (state: ChatState, action: PayloadAction<Message>) => {
             const indexOfItem = (state.conversations || []).findIndex(
@@ -107,6 +105,7 @@ export const {
     setConversations,
     setMessages,
     updateStatusMessage,
+    updateFilesMessage,
     updateNewMessageToConversation,
     updateFriendStatus,
     setTotalMessages,

@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import Highlighter from 'react-highlight-words';
 import { Virtuoso } from 'react-virtuoso';
+import { ObjectID } from 'bson';
 import { Conversation } from '../../../domain/model/Conversation';
 import { UserData } from '../../../domain/model/UserData';
 import SearchBox from '../../App/components/SearchBox';
@@ -55,7 +56,7 @@ const ConversationList = ({
             onSelectedItem?.(conversation);
         } else {
             onSelectedItem?.({
-                _id: '',
+                _id: new ObjectID().toString(),
                 userId: contact._id,
                 user: contact,
                 isGroup: false,
@@ -106,16 +107,20 @@ const ConversationList = ({
                                                 {getSearchUserData(item)?.name}
                                             </div>
                                             <div className="chat-message">
-                                                <Highlighter
-                                                    searchWords={searchKeyword}
-                                                    textToHighlight={item.content}
-                                                    sanitize={(text) =>
-                                                        text
-                                                            .normalize('NFD')
-                                                            .replace(/[\u0300-\u036f]/g, '')
-                                                    }
-                                                    autoEscape
-                                                />
+                                                {item.content ? (
+                                                    <Highlighter
+                                                        searchWords={searchKeyword}
+                                                        textToHighlight={item.content}
+                                                        sanitize={(text) =>
+                                                            text
+                                                                .normalize('NFD')
+                                                                .replace(/[\u0300-\u036f]/g, '')
+                                                        }
+                                                        autoEscape
+                                                    />
+                                                ) : (
+                                                    t('image')
+                                                )}
                                             </div>
                                         </div>
                                     </div>

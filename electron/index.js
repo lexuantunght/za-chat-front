@@ -33,6 +33,7 @@ function createBaseWindow() {
             contextIsolation: false,
             devTools: isDev,
             webSecurity: false,
+            webgl: true,
             partition: 'persist:app',
         },
         maximizable: false,

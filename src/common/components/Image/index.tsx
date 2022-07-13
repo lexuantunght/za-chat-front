@@ -10,19 +10,31 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
     maxWidth?: number;
 }
 
-const Image = ({
-    fallbackSrc = errorImage,
-    src,
-    className,
-    originHeight,
-    originWidth,
-    maxHeight,
-    maxWidth,
-    style,
-    ...rest
-}: ImageProps) => {
+export type ImageRef = {
+    setSrc: (usrc: string) => void;
+    getSize: () => {
+        width: number;
+        height: number;
+    } | null;
+};
+
+const Image = (
+    {
+        fallbackSrc = errorImage,
+        src,
+        className,
+        originHeight,
+        originWidth,
+        maxHeight,
+        maxWidth,
+        style,
+        ...rest
+    }: ImageProps,
+    ref: React.ForwardedRef<ImageRef>
+) => {
     const [isError, setIsError] = React.useState(false);
     const [currentSrc, setCurrentSrc] = React.useState(src);
+    const imageRef = React.useRef<HTMLImageElement>(null);
 
     const size = React.useMemo(
         () => computeMediaSize(originHeight, originWidth, maxHeight, maxWidth),
@@ -36,6 +48,20 @@ const Image = ({
         }
     };
 
+    React.useImperativeHandle(ref, () => ({
+        setSrc: (src: string) => {
+            if (imageRef?.current) {
+                imageRef.current.src = src;
+            }
+        },
+        getSize: () => {
+            if (imageRef.current) {
+                return { width: imageRef.current.width, height: imageRef.current.height };
+            }
+            return null;
+        },
+    }));
+
     return (
         <img
             {...rest}
@@ -46,10 +72,11 @@ const Image = ({
                 aspectRatio: `${size?.width}/${size?.height}`,
             }}
             src={currentSrc}
+            ref={imageRef}
             onError={handleError}
             className={className ? `za-image ${className}` : 'za-image'}
         />
     );
 };
 
-export default Image;
+export default React.forwardRef(Image);

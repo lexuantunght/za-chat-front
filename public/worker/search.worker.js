@@ -71,21 +71,44 @@ onmessage = async (e) => {
             ) {
                 continue;
             }
+
             const contextId = await search_db.table('stcont').add({
                 messageId: message._id,
                 conversationId: message.toUid,
                 messageType: message.type,
             });
-            const keywords = new Set(
-                Array.from(segmenter.segment(message.content)[Symbol.iterator]())
-                    .filter((kw) => kw.isWordLike)
-                    .map((kw) =>
-                        kw.segment
-                            .normalize('NFD')
-                            .replace(/[\u0300-\u036f]/g, '')
-                            .toLowerCase()
+
+            const contentSplitted = Array.from(
+                segmenter.segment(message.content)[Symbol.iterator]()
+            )
+                .filter((kw) => kw.isWordLike)
+                .map((kw) =>
+                    kw.segment
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .toLowerCase()
+                );
+
+            let fileContentSplitted = [];
+            if (message.files) {
+                const imageFiles = message.files
+                    .filter(
+                        (file) =>
+                            file.type?.startsWith('image/') &&
+                            file.textContent &&
+                            file.textContent.length > 0
                     )
-            );
+                    .map((file) => file.textContent);
+                imageFiles.forEach((words) => {
+                    fileContentSplitted = [
+                        ...fileContentSplitted,
+                        ...words.map((word) => word.text.toLowerCase()),
+                    ];
+                });
+            }
+
+            const keywords = new Set([...contentSplitted, ...fileContentSplitted]);
+
             for (const keyword of keywords) {
                 let keywordId = (
                     await search_db.table('stkw').where('keyword').equals(keyword).primaryKeys()
