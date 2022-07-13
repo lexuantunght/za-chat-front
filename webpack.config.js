@@ -17,6 +17,7 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'build'),
         filename: '[name].bundle.js',
+        clean: true,
     },
     mode: process.env.NODE_ENV || 'development',
     target: 'electron-renderer',
@@ -81,5 +82,10 @@ module.exports = {
             }),
             new CssMinimizerPlugin(),
         ],
+        removeAvailableModules: true,
+        removeEmptyChunks: true,
+        mergeDuplicateChunks: true,
+        emitOnErrors: false,
+        concatenateModules: true,
     },
 };
