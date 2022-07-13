@@ -505,7 +505,7 @@
 }
 
 .chat-image-editor {
-    width: 70vw;
+    width: 75vw;
     height: 80vh;
     display: flex;
     flex-direction: column;
@@ -515,20 +515,6 @@
     border-radius: var(--border-radius);
     overflow: hidden;
 }
-.chat-image-editor > .chat-image-editor-buttons {
-    display: flex;
-    padding-top: 0.5rem;
-    justify-content: flex-end;
-}
-.chat-image-editor > .chat-image-editor-buttons > .chat-image-editor-done {
-    margin-left: 0.5rem;
-}
-.chat-image-editor > .chat-image-editor-buttons > button > span {
-    margin-left: 0.25rem;
-}
-.chat-image-editor-wrapper .tui-image-editor-controls-buttons {
+.chat-image-editor-wrapper .FIE_topbar-close-button {
     display: none !important;
-}
-.chat-image-editor-wrapper .tui-image-editor-menu {
-    text-align: center !important;
 }
