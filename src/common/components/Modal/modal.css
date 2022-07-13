@@ -30,10 +30,11 @@
 
 .za-modal-content {
     max-width: 80%;
-    background-color: white;
+    background-color: var(--background);
     padding: 1rem;
     box-sizing: border-box;
     border-radius: var(--border-radius);
+    border: 1px solid var(--separate-line);
 }
 
 .za-modal-header {
@@ -45,6 +46,7 @@
 .za-modal-title {
     font-weight: 600;
     font-size: large;
+    color: var(--text-color);
 }
 
 .za-modal-body {

@@ -35,3 +35,7 @@ export const addListener = (
 export const removeAllListeners = (key: string) => {
     ipcRenderer.removeAllListeners(key);
 };
+
+export const darkModeToggle = () => {
+    ipcRenderer.invoke('dark-mode:toggle');
+};

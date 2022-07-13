@@ -1,5 +1,5 @@
 .app-sidebar {
-    background-color: var(--primary);
+    background-color: var(--primary-background);
     width: 4rem;
     display: flex;
     flex-direction: column;
@@ -25,7 +25,7 @@
     width: 100%;
     height: 4rem;
     background-color: transparent;
-    color: #ffffff;
+    color: #eeeeee;
     padding: 1rem;
 }
 .app-sidebar-item.app-sidebar-selected {
@@ -38,6 +38,7 @@
 
 .app-setting-content {
     min-height: 10rem;
+    color: var(--text-color);
 }
 .app-sidebar-setting-content {
     display: flex;
@@ -58,15 +59,16 @@
     align-items: center;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+    color: var(--text-color);
 }
 .app-sidebar-setting-content > button:hover {
-    background-color: #eeeeee;
+    background-color: var(--little-background);
 }
 .app-sidebar-setting-content > button > span {
     margin-left: 0.25rem;
 }
 .app-sidebar-setting-content > .app-sidebar-logout {
-    color: #f32424;
+    color: var(--error-color);
     padding-left: 2.2rem;
 }
 .app-sidebar-setting-content > .app-sidebar-logout + button {
@@ -84,6 +86,25 @@
 
 .app-sidebar-buttons {
     flex: 1;
+}
+
+.account-info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 16rem;
+    color: var(--text-color);
+    .account-info-title {
+        width: 100%;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    .account-info-base {
+        width: 100%;
+        div {
+            margin: 0.25rem 0;
+        }
+    }
 }
 
 .app-content {
@@ -104,7 +125,7 @@
 
 .app-search-result {
     position: absolute;
-    background-color: #ffffff;
+    background-color: var(--background);
     top: 4.25rem;
     left: 0;
     width: 100%;
@@ -113,7 +134,7 @@
 
 .app-search-result-title {
     font-weight: 500;
-    color: #555555;
+    color: var(--little-text-color);
     margin: 0 1rem 1rem 1rem;
 }
 
@@ -122,7 +143,7 @@
     cursor: pointer;
 }
 .app-search-result-list > div:hover {
-    background-color: #eeeeee;
+    background-color: var(--little-background);
 }
 
 .app-search-close {
@@ -134,7 +155,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #555555;
+    color: var(--little-text-color);
 }
 .app-search-no-result > img {
     width: 50%;
@@ -171,10 +192,39 @@
     top: 4.5rem;
     left: 0;
     width: 100%;
-    border-top: 1px solid #dddddd;
+    border-top: 1px solid var(--separate-line);
     height: 3.4rem;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 3;
+}
+
+.app-setting-theme {
+    margin-top: 1.5rem;
+    .app-list-theme {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0 1rem;
+    }
+    .theme-selector {
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+
+        img {
+            width: 5rem;
+            height: 4rem;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--separate-line);
+        }
+    }
+    .preference-title {
+        margin-right: 1rem;
+        font-weight: 600;
+        min-width: 5rem;
+        display: block;
+    }
 }

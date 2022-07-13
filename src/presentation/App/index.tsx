@@ -14,6 +14,8 @@ const AppScreen = () => {
     const { t, language, languages, changeLanguage } = useMultilingual();
     const { useGetState, authorize, addSocketListener, emitSocket } = useController(AppController);
     const userData = useGetState((state) => state.app.userData);
+    const theme = useGetState((state) => state.app.theme);
+    const accent = useGetState((state) => state.app.accent);
 
     const getMessageContent = (latestMessage?: Message) => {
         if (!latestMessage) {
@@ -29,6 +31,8 @@ const AppScreen = () => {
     };
 
     React.useEffect(() => {
+        document.body.setAttribute('data-accent', accent);
+        document.body.setAttribute('data-theme', theme);
         authorize();
         addSocketListener('receive-message', (msg: Message, user: UserData) => {
             new Notification(user.name, { body: getMessageContent(msg), icon: user.avatar });
@@ -46,8 +50,7 @@ const AppScreen = () => {
                     onChangeLanguage={changeLanguage}
                     onLogout={logout}
                     onQuitApp={quitApp}
-                    avatarUrl={userData?.avatar}
-                    name={userData?.name}
+                    userData={userData}
                 />
                 <Switch>
                     <Route path="/contacts" component={ContactScreen} />

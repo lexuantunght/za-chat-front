@@ -83,5 +83,8 @@
     "addFriendByPhone": "Add friend by phone number",
     "friendRequestList": "Friend request list",
     "friendRequests": "Friend requests",
-    "imageEditor": "Image editor"
+    "imageEditor": "Image editor",
+    "accountInfo": "Account information",
+    "baseInfo": "Base information",
+    "preferences": "Preferences"
 }

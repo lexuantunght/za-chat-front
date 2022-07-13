@@ -12,6 +12,8 @@ export type AppState = {
         users?: UserData[];
     };
     errorConnection?: boolean;
+    theme: 'light' | 'dark';
+    accent: 'green' | 'blue' | 'red';
 };
 
 const defaultAppState: AppState = {
@@ -22,6 +24,8 @@ const defaultAppState: AppState = {
         users: undefined,
     },
     errorConnection: false,
+    theme: 'light',
+    accent: 'blue',
 };
 
 const appSlice = createSlice({
@@ -52,6 +56,12 @@ const appSlice = createSlice({
         setErrorConnection: (state: AppState, action: PayloadAction<boolean>) => {
             state.errorConnection = action.payload;
         },
+        changeTheme: (state: AppState, action: PayloadAction<'light' | 'dark'>) => {
+            state.theme = action.payload;
+        },
+        changeAccent: (state: AppState, action: PayloadAction<'green' | 'blue' | 'red'>) => {
+            state.accent = action.payload;
+        },
     },
 });
 
@@ -64,6 +74,8 @@ export const {
     clearSearchResult,
     updateSearchUsersResult,
     setErrorConnection,
+    changeTheme,
+    changeAccent,
 } = appSlice.actions;
 
 export default appReducer;
