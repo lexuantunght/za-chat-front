@@ -1,6 +1,6 @@
 import React from 'react';
+import { FiUserPlus, FiUserCheck } from 'react-icons/fi';
 import Avatar from '../../../common/components/Avatar';
-import Icon from '../../../common/components/Icon';
 import ConversationController from '../../../controller/chat/ConversationController';
 import MessageController from '../../../controller/chat/MessageController';
 import ContactController from '../../../controller/contact/ContactController';
@@ -60,13 +60,13 @@ const ContactMenu = ({ t }: ContactMenuProps) => {
                 <div
                     className="contact-item"
                     onClick={() => searchBoxRef.current?.openAddFriend(true)}>
-                    <Icon name="user-plus" />
+                    <FiUserPlus size={22} />
                     <span>{t('addFriendByPhone')}</span>
                 </div>
                 <div
                     className={'contact-item' + (showFriendRequest ? ' contact-item-focused' : '')}
                     onClick={() => toggleFriendRequest(true)}>
-                    <Icon name="user-check" />
+                    <FiUserCheck size={22} />
                     <span>{t('friendRequestList')}</span>
                 </div>
                 <div className="friend-list-title">{t('friend')}</div>

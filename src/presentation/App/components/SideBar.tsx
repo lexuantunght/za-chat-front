@@ -1,8 +1,13 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import {
+    IoChatbubbleEllipsesOutline,
+    IoSettingsOutline,
+    IoPeopleOutline,
+    IoPersonOutline,
+} from 'react-icons/io5';
 import Alert from '../../../common/components/Alert';
 import Divider from '../../../common/components/Divider';
-import Icon from '../../../common/components/Icon';
 import PopupMenu from '../../../common/components/PopupMenu';
 import Modal from '../../../common/components/Modal';
 import Setting from './Setting';
@@ -22,13 +27,13 @@ const menuItems = [
     {
         id: 0,
         name: 'chat',
-        icon: 'message',
+        icon: <IoChatbubbleEllipsesOutline size={30} />,
         path: '/',
     },
     {
         id: 1,
         name: 'contacts',
-        icon: 'contact',
+        icon: <IoPeopleOutline size={30} />,
         path: '/contacts',
     },
 ];
@@ -73,11 +78,11 @@ const SideBar = ({
     const MenuContent = ({ isUserContext }: { isUserContext?: boolean }) => (
         <div className="app-sidebar-setting-content">
             <button onClick={() => setIsShowProfile(true)}>
-                <Icon name="user" height={22} width={22} />
+                <IoPersonOutline size={18} />
                 <span>{t('account')}</span>
             </button>
             <button onClick={() => setIsShowSetting(true)}>
-                <Icon name="setting" height={22} width={22} />
+                <IoSettingsOutline size={18} />
                 <span>{t('setting')}</span>
             </button>
             <Divider />
@@ -104,7 +109,7 @@ const SideBar = ({
                             selectedItem === item.id ? 'app-sidebar-selected' : ''
                         }`}
                         onClick={() => onClickItem(item.path, item.id, item.name)}>
-                        <Icon name={item.icon} />
+                        {item.icon}
                     </button>
                 ))}
             </div>
@@ -112,7 +117,7 @@ const SideBar = ({
                 title={t('setting')}
                 className="app-sidebar-item app-sidebar-setting"
                 onClick={(e) => settingMenuRef.current?.toggle(e)}>
-                <Icon name="setting" />
+                <IoSettingsOutline size={30} />
             </button>
             <PopupMenu ref={settingMenuRef}>
                 <MenuContent />

@@ -1,7 +1,7 @@
 import React from 'react';
 import _debounce from 'lodash-es/debounce';
+import { IoSearch, IoClose } from 'react-icons/io5';
 import Button from '../Button';
-import Icon from '../Icon';
 
 type SearchBarProps = {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -66,7 +66,7 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarStates> {
         return (
             <div className="za-searchbar-container" style={this.props.containerStyle}>
                 <Button variant="text" type="button" onClick={() => onSearch?.(this.state.value)}>
-                    <Icon width="20" height="20" name="search" />
+                    <IoSearch size={20} />
                 </Button>
                 <input
                     className="za-searchbar-text"
@@ -82,7 +82,7 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarStates> {
                 />
                 {this.state.value !== '' && (
                     <Button variant="text" type="button" onClick={this.handleCancel}>
-                        <Icon name="reset" />
+                        <IoClose size={20} />
                     </Button>
                 )}
             </div>
