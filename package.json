@@ -113,7 +113,8 @@
             "electron/index.js"
         ],
         "win": {
-            "target": "nsis"
+            "target": "nsis",
+            "icon": "build/favicon.ico"
         }
     }
 }
