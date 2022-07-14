@@ -12,7 +12,8 @@ import AppController from '../../controller/AppController';
 import { Conversation } from '../../domain/model/Conversation';
 
 const ChatScreen = () => {
-    const { getConversations, selectConversation } = useController(ConversationController);
+    const { getConversations, selectConversation, updateConversation } =
+        useController(ConversationController);
     const { getMessages, updateStatusMessage, updateFilesMessage, appendMessage } =
         useController(MessageController);
     const { useGetState, addSocketListener, emitSocket, removeAllSocketListeners } =
@@ -24,26 +25,17 @@ const ChatScreen = () => {
     const chatSectionRef = React.useRef<ChatSectionRef>(null);
 
     const onSelectConversation = (item: Conversation) => {
-        if (!userData) return;
-        if (
-            item.lastMessage &&
-            item.lastMessageFromUid !== userData._id &&
-            item.lastMessageStatus !== 'seen'
-        ) {
-            emitSocket(
-                'action-message',
-                {
-                    fromUid: item.lastMessageFromUid,
-                    toUid: item._id,
-                    seen: [item.lastMessageFromUid, userData._id],
-                    status: 'seen',
-                },
-                'seen'
-            );
-            selectConversation({ ...item, lastMessageStatus: 'seen' });
-        } else {
-            selectConversation(item);
+        selectConversation(item);
+    };
+
+    const getMessageContent = (latestMessage: Message) => {
+        if (latestMessage.files && latestMessage.files.length > 0) {
+            if (latestMessage.files.length > 1) {
+                return t('sentSomeImages', { value: latestMessage.files.length });
+            }
+            return t('sentImage');
         }
+        return latestMessage.content;
     };
 
     React.useEffect(() => {
@@ -59,46 +51,45 @@ const ChatScreen = () => {
     React.useEffect(() => {
         removeAllSocketListeners('receive-message');
         addSocketListener('receive-message', (msg: Message) => {
-            appendMessage(msg);
             emitSocket('action-message', msg, 'received');
+            appendMessage(msg);
         });
         addSocketListener('status-message', (msg: Message) => {
-            updateFilesMessage(msg);
+            if (msg.status === 'sent') {
+                updateFilesMessage(msg);
+            }
             updateStatusMessage(msg);
         });
         return () => {
             removeAllSocketListeners('status-message');
             removeAllSocketListeners('receive-message');
             addSocketListener('receive-message', (msg: Message, user: UserData) => {
-                new Notification(user.name, { body: msg.content, icon: user.avatar });
+                new Notification(user.name, { body: getMessageContent(msg), icon: user.avatar });
                 emitSocket('action-message', msg, 'received');
             });
         };
     }, []);
 
     React.useEffect(() => {
-        if (conversations) {
-            const selectedItem = conversations.find(
-                (item) => item._id === selectedConversation?._id
+        if (
+            userData &&
+            selectedConversation &&
+            selectedConversation.lastMessageFromUid !== userData._id &&
+            selectedConversation.lastMessageStatus !== 'seen'
+        ) {
+            emitSocket(
+                'action-message',
+                {
+                    fromUid: selectedConversation.lastMessageFromUid,
+                    toUid: selectedConversation._id,
+                    seen: [selectedConversation.lastMessageFromUid, userData._id],
+                    status: 'seen',
+                },
+                'seen'
             );
-            if (
-                userData &&
-                selectedItem &&
-                selectedItem.lastMessageFromUid !== userData._id &&
-                selectedItem.lastMessageStatus !== 'seen'
-            ) {
-                emitSocket('action-message', selectedConversation?.lastMessage, 'seen');
-            }
-            if (!selectedItem) {
-                const item = conversations.find(
-                    (conv) => conv.user._id === selectedConversation?.user._id
-                );
-                if (item) {
-                    selectConversation(item);
-                }
-            }
+            updateConversation({ ...selectedConversation, lastMessageStatus: 'seen' });
         }
-    }, [conversations]);
+    }, [selectedConversation]);
 
     if (!userData) {
         return null;

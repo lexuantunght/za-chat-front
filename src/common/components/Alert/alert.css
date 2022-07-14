@@ -7,3 +7,6 @@
 .za-alert-accept {
     margin-left: 0.5rem;
 }
+.za-alert-content {
+    color: var(--text-color);
+}

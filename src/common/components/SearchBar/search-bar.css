@@ -1,7 +1,7 @@
 .za-searchbar-container {
     display: flex;
     padding: 0.5rem;
-    background-color: #eeeeee;
+    background-color: var(--little-background);
     align-items: center;
     border-radius: var(--border-radius);
     width: 100%;
@@ -13,4 +13,5 @@
     background-color: transparent;
     flex: 1;
     margin-left: 0.25rem;
+    color: var(--text-color);
 }

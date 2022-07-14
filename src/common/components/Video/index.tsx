@@ -67,7 +67,12 @@ const Video = ({
     return (
         <div
             className={className ? `za-video ${className}` : 'za-video'}
-            style={{ ...style, height: size?.height, width: size?.width }}>
+            style={{
+                ...style,
+                height: 'auto',
+                width: size?.width,
+                aspectRatio: `${size?.width}/${size?.height}`,
+            }}>
             <ReactPlayer
                 ref={(player) => {
                     videoRef = player;

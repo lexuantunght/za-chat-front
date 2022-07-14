@@ -2,15 +2,15 @@
     position: relative;
 }
 .za-dropdown-button {
-    border: 1px solid #cccccc;
+    border: 1px solid var(--separate-line);
     border-radius: var(--border-radius);
     padding: var(--padding-y) var(--padding-x);
-    border-color: #cccccc;
-    background-color: #ffffff;
+    background-color: var(--background);
     display: flex;
     align-items: center;
     justify-content: space-between;
     min-width: 10rem;
+    color: var(--text-color);
 }
 .za-dropdown-button:enabled {
     cursor: pointer;
@@ -24,7 +24,7 @@
 .za-dropdown-content {
     display: none;
     position: absolute;
-    background-color: #ffffff;
+    background-color: var(--background);
     margin-top: 0.25rem;
     min-width: 100%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
@@ -35,10 +35,12 @@
     padding-top: var(--padding-y);
     padding-bottom: var(--padding-y);
     font-size: small;
+    border: 1px solid var(--separate-line);
+    color: var(--text-color);
 }
 .za-dropdown-content > * {
     padding: var(--padding-y) var(--padding-x);
 }
 .za-dropdown-content > *:hover {
-    background-color: #eeeeee;
+    background-color: var(--little-background);
 }

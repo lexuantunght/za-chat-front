@@ -5,6 +5,7 @@ import {
     selectConversation,
     setConversations,
     setIsEndTopMsgList,
+    updateConversation,
 } from '../../presentation/Chat/reducer';
 
 class ConversationController extends BaseController {
@@ -29,6 +30,10 @@ class ConversationController extends BaseController {
 
     public addConversation = (conversation: Conversation) => {
         this.dispatch(setConversations([conversation, ...this.getState().chat.conversations]));
+    };
+
+    public updateConversation = (conversation: Conversation) => {
+        this.dispatch(updateConversation(conversation));
     };
 }
 

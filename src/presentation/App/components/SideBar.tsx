@@ -7,9 +7,9 @@ import PopupMenu from '../../../common/components/PopupMenu';
 import Modal from '../../../common/components/Modal';
 import Setting from './Setting';
 import Avatar from '../../../common/components/Avatar';
+import { UserData } from '../../../domain/model/UserData';
 interface SideBarProps {
-    avatarUrl?: string;
-    name?: string;
+    userData?: UserData;
     t: CallableFunction;
     onChangeLanguage: (lang: string) => void;
     languages: string[];
@@ -42,8 +42,7 @@ const findRouteId = (pathname: string) => {
 };
 
 const SideBar = ({
-    avatarUrl,
-    name,
+    userData,
     t,
     onChangeLanguage,
     languages,
@@ -58,6 +57,7 @@ const SideBar = ({
     const [selectedItem, setSelectedItem] = React.useState(findRouteId(location.pathname));
     const [isShowWarning, setIsShowWarning] = React.useState(false);
     const [isShowSetting, setIsShowSetting] = React.useState(false);
+    const [isShowProfile, setIsShowProfile] = React.useState(false);
 
     const onClickItem = (path: string, id: number, name: string) => {
         setSelectedItem(id);
@@ -72,7 +72,7 @@ const SideBar = ({
 
     const MenuContent = ({ isUserContext }: { isUserContext?: boolean }) => (
         <div className="app-sidebar-setting-content">
-            <button>
+            <button onClick={() => setIsShowProfile(true)}>
                 <Icon name="user" height={22} width={22} />
                 <span>{t('account')}</span>
             </button>
@@ -93,7 +93,7 @@ const SideBar = ({
             <button
                 className="app-sidebar-avatar-container"
                 onClick={(e) => userMenuRef.current?.toggle(e)}>
-                <Avatar src={avatarUrl} name={name} />
+                <Avatar src={userData?.avatar} name={userData?.name} />
             </button>
             <div className="app-sidebar-buttons">
                 {menuItems.map((item, index) => (
@@ -141,6 +141,20 @@ const SideBar = ({
                     language={language}
                     languages={languages}
                 />
+            </Modal>
+            <Modal
+                title={t('accountInfo')}
+                isOpen={isShowProfile}
+                onClose={() => setIsShowProfile(false)}>
+                <div className="account-info-container">
+                    <Avatar src={userData?.avatar} style={{ width: '5rem', height: '5rem' }} />
+                    <h3>{userData?.name}</h3>
+                    <div className="account-info-title">{t('baseInfo')}</div>
+                    <div className="account-info-base">
+                        <div>{`${t('username')}: ${userData?.username}`}</div>
+                        <div>{`${t('phoneNumber')}: ${userData?.phoneNumber}`}</div>
+                    </div>
+                </div>
             </Modal>
         </div>
     );

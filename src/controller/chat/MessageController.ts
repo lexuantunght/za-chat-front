@@ -101,6 +101,7 @@ class MessageController extends BaseController {
             this.dispatch(setMessages([...this.getState().chat.messages, message]));
             this.dispatch(setTotalMessages(this.getState().chat.totalMessages + 1));
         }
+        this.dispatch(updateNewMessageToConversation(message));
     };
 
     public updateStatusMessage = (message: Message) => {

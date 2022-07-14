@@ -4,7 +4,7 @@
     padding: var(--padding-y) var(--padding-x);
     border-radius: var(--border-radius);
     background-color: var(--primary);
-    color: #ffffff;
+    color: var(--text-indark);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -29,7 +29,7 @@
 .za-button-outlined {
     cursor: pointer;
     border: 1px solid var(--primary);
-    background-color: #ffffff;
+    background-color: transparent;
     color: var(--primary);
     padding: var(--padding-y) var(--padding-x);
     border-radius: var(--border-radius);

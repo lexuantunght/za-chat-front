@@ -1,4 +1,13 @@
-const { BrowserWindow, app, ipcMain, Menu, Tray, session, dialog } = require('electron');
+const {
+    BrowserWindow,
+    app,
+    ipcMain,
+    Menu,
+    Tray,
+    session,
+    dialog,
+    nativeTheme,
+} = require('electron');
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
@@ -178,6 +187,15 @@ ipcMain.on('openSaveDialog', (event, file) => {
                 response.pipe(fs.createWriteStream(result.filePath));
             });
         });
+});
+
+ipcMain.handle('dark-mode:toggle', () => {
+    if (nativeTheme.shouldUseDarkColors) {
+        nativeTheme.themeSource = 'light';
+    } else {
+        nativeTheme.themeSource = 'dark';
+    }
+    return nativeTheme.shouldUseDarkColors;
 });
 
 ipcMain.once('quit', () => {

@@ -15,7 +15,7 @@ type AlertProps = {
     severity?: 'error' | 'success';
 };
 
-const Alert: React.FC<AlertProps> = ({
+const Alert = ({
     title,
     isShow,
     onCancel,
@@ -26,7 +26,7 @@ const Alert: React.FC<AlertProps> = ({
     acceptText = 'Đồng ý',
     className,
     severity,
-}) => {
+}: AlertProps) => {
     const [alertContent, setAlertContent] = React.useState(content);
 
     React.useEffect(() => {
@@ -37,7 +37,7 @@ const Alert: React.FC<AlertProps> = ({
 
     return (
         <Modal title={title} isOpen={isShow} onClose={onClose} className={className}>
-            <div>{alertContent}</div>
+            <div className="za-alert-content">{alertContent}</div>
             <div className="za-alert-footer">
                 {onCancel && (
                     <Button variant="outlined" onClick={onCancel}>

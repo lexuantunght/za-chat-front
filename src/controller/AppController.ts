@@ -1,7 +1,13 @@
 import BaseController from './BaseController';
 import { Authorize } from '../domain/usecase/authentication/Authorize';
 import { SocketAction } from '../domain/usecase/realtime/SocketAction';
-import { clearSearchResult, setErrorConnection, setUserData } from '../presentation/App/reducer';
+import {
+    changeAccent,
+    changeTheme,
+    clearSearchResult,
+    setErrorConnection,
+    setUserData,
+} from '../presentation/App/reducer';
 
 class AppController extends BaseController {
     private authorizeUseCase;
@@ -36,6 +42,14 @@ class AppController extends BaseController {
 
     public clearSearchResult = () => {
         this.dispatch(clearSearchResult());
+    };
+
+    public changeTheme = (theme: 'light' | 'dark') => {
+        this.dispatch(changeTheme(theme));
+    };
+
+    public changeAccent = (accent: 'green' | 'blue' | 'red') => {
+        this.dispatch(changeAccent(accent));
     };
 }
 
