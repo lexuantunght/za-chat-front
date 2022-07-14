@@ -38,6 +38,14 @@ const ChatScreen = () => {
         return latestMessage.content;
     };
 
+    const handleAppendMessage = (msg: Message) => {
+        if (!conversations.some((conv) => conv._id === msg.toUid)) {
+            getConversations();
+            return;
+        }
+        appendMessage(msg);
+    };
+
     React.useEffect(() => {
         getConversations();
     }, []);
@@ -52,7 +60,7 @@ const ChatScreen = () => {
         removeAllSocketListeners('receive-message');
         addSocketListener('receive-message', (msg: Message) => {
             emitSocket('action-message', msg, 'received');
-            appendMessage(msg);
+            handleAppendMessage(msg);
         });
         addSocketListener('status-message', (msg: Message) => {
             if (msg.status === 'sent') {

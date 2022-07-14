@@ -41,6 +41,9 @@ const chatSlice = createSlice({
         setConversations: (state: ChatState, action: PayloadAction<Conversation[]>) => {
             state.conversations = action.payload;
         },
+        appendConversation: (state: ChatState, action: PayloadAction<Conversation>) => {
+            state.conversations = [action.payload, ...state.conversations];
+        },
         setMessages: (state: ChatState, action: PayloadAction<Message[]>) => {
             state.messages = action.payload;
         },
@@ -114,6 +117,7 @@ export const {
     selectConversation,
     setLoading,
     setConversations,
+    appendConversation,
     setMessages,
     updateStatusMessage,
     updateFilesMessage,
