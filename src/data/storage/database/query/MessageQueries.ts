@@ -12,10 +12,14 @@ export class MessageQueries {
             where: 'toUid',
             equals: conversationId,
         });
+        const remaining = await this.adapter.count('messages', {
+            where: '[toUid+sendTime]',
+            between: { lower: [conversationId], upper: [conversationId, fromSendTime] },
+        });
         const messages = await this.adapter.getAsArray('messages', {
             where: '[toUid+sendTime]',
             between: { lower: [conversationId], upper: [conversationId, fromSendTime] },
-            offset: Math.max(total - (limit || 0), 0),
+            offset: Math.max(remaining - (limit || 0), 0),
         });
         return { data: messages as Array<MessageAPIEntity>, total };
     }
