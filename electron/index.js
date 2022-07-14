@@ -115,7 +115,7 @@ app.on('ready', () => {
     }
     createBaseWindow();
     createLoginWindow();
-    tray = iconPath;
+    tray = new Tray(iconPath);
     tray.setContextMenu(
         Menu.buildFromTemplate([
             {
