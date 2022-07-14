@@ -1,4 +1,5 @@
 import React from 'react';
+import { ObjectID } from 'bson';
 import { FiUserPlus, FiUserCheck } from 'react-icons/fi';
 import Avatar from '../../../common/components/Avatar';
 import ConversationController from '../../../controller/chat/ConversationController';
@@ -44,7 +45,7 @@ const ContactMenu = ({ t }: ContactMenuProps) => {
             getMessages(conversation._id);
         } else {
             selectConversation({
-                _id: '',
+                _id: new ObjectID().toString(),
                 userId: contact._id,
                 user: { ...contact, relationshipStatus: 'friend' },
                 isGroup: false,

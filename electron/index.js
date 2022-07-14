@@ -26,6 +26,10 @@ function getWindowUrl(windowName = 'index') {
     });
 }
 
+const iconPath = isDev
+    ? path.join(__dirname, '/../public/favicon.ico')
+    : path.join(__dirname, `/../build/favicon.ico`);
+
 let appWindow;
 let fileViewerWindow;
 let isQuiting;
@@ -36,7 +40,7 @@ function createBaseWindow() {
         width: 360,
         height: 540,
         title: 'ZaChat',
-        icon: path.join(__dirname, '/../public/favicon.ico'),
+        icon: iconPath,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -67,7 +71,7 @@ function createFileViewerWindow(data) {
         minWidth: 540,
         minHeight: 540,
         title: 'ZaChat',
-        icon: path.join(__dirname, '/../public/favicon.ico'),
+        icon: iconPath,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -111,7 +115,7 @@ app.on('ready', () => {
     }
     createBaseWindow();
     createLoginWindow();
-    tray = new Tray(path.join(__dirname, '/../public/favicon.ico'));
+    tray = iconPath;
     tray.setContextMenu(
         Menu.buildFromTemplate([
             {
