@@ -11,12 +11,15 @@ import { GetFriends } from '../../domain/usecase/contact/GetFriends';
 import {
     appendFriend,
     removeFriendRequest,
+    removeSuggestedContact,
     setFriendRequests,
     setFriends,
+    setSuggestedContacts,
     toggleChatbox,
     toggleFriendRequest,
 } from '../../presentation/Contact/reducer';
 import { GetInvitations } from '../../domain/usecase/contact/GetInvitations';
+import { GetSuggestContacts } from '../../domain/usecase/contact/GetSuggestContacts';
 
 class ContactController extends BaseController {
     private requestFriendUseCase;
@@ -26,6 +29,7 @@ class ContactController extends BaseController {
     private findContactsUseCase;
     private getFriendsUseCase;
     private getFriendInvitationsUseCase;
+    private getSuggestContactsUseCase;
 
     constructor() {
         super();
@@ -36,6 +40,7 @@ class ContactController extends BaseController {
         this.findContactsUseCase = new FindUsers();
         this.getFriendsUseCase = new GetFriends();
         this.getFriendInvitationsUseCase = new GetInvitations();
+        this.getSuggestContactsUseCase = new GetSuggestContacts();
     }
 
     public requestFriend = (userId: string) => {
@@ -98,6 +103,16 @@ class ContactController extends BaseController {
         this.getFriendInvitationsUseCase
             .invoke()
             .then((friendRequests) => this.dispatch(setFriendRequests(friendRequests)));
+    };
+
+    public getSuggestContacts = () => {
+        this.getSuggestContactsUseCase
+            .invoke()
+            .then((suggestedContacts) => this.dispatch(setSuggestedContacts(suggestedContacts)));
+    };
+
+    public removeSuggestedContact = (contact: UserData) => {
+        this.dispatch(removeSuggestedContact(contact));
     };
 }
 

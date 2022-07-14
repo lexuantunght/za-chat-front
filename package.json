@@ -1,6 +1,6 @@
 {
     "name": "za-chat",
-    "version": "1.0.0",
+    "version": "2022.07.14",
     "description": "Chat application for onboarding ZA",
     "main": "electron/index.js",
     "author": "TungLX2",

@@ -103,6 +103,27 @@
 .friend-request-list {
     background-color: var(--little-fade-background);
     flex: 1;
+    .suggest-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+        margin: 1rem;
+    }
+    .suggest-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: var(--background);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--separate-line);
+        padding: 1rem;
+        .suggest-name {
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+    }
 }
 .friend-request-list > .friend-request-total {
     margin: 1rem 1rem 0 1rem;

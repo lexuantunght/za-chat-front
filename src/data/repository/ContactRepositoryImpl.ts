@@ -40,6 +40,10 @@ export class ContactRepositoryImpl implements ContactRepository {
     async getInvitations() {
         return this.dataSource.getInvitations();
     }
+
+    async getSuggestContacts() {
+        return this.dataSource.getSuggestContacts();
+    }
 }
 
 export const contactRepository = new ContactRepositoryImpl();
