@@ -33,10 +33,15 @@ const AppScreen = () => {
                     onQuitApp={quitApp}
                     userData={userData}
                 />
-                <Switch>
-                    <Route path="/contacts" component={ContactScreen} />
-                    <Route path="/" component={ChatScreen} />
-                </Switch>
+                <div className="app-tabs">
+                    <div className="app-title-bar">ZaChat - {userData?.name}</div>
+                    <div className="app-tab-item">
+                        <Switch>
+                            <Route path="/contacts" component={ContactScreen} />
+                            <Route path="/" component={ChatScreen} />
+                        </Switch>
+                    </div>
+                </div>
             </div>
         </HashRouter>
     );

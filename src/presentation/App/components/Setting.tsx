@@ -6,6 +6,7 @@ import lightRed from '../../../common/resources/light_red.png';
 import darkBlue from '../../../common/resources/dark_blue.png';
 import useController from '../../../controller/hooks';
 import AppController from '../../../controller/AppController';
+import { darkModeToggle } from '../../../utils/app/eventHandler';
 
 interface SettingProps {
     onChangeLanguage: (lang: string) => void;
@@ -52,6 +53,7 @@ const Setting = ({ t, languages, onChangeLanguage, language }: SettingProps) => 
     const onChangeTheme = (theme: 'dark' | 'light') => {
         document.body.setAttribute('data-theme', theme);
         changeTheme(theme);
+        darkModeToggle(theme === 'dark');
     };
 
     const onChangeAccent = (accent: 'green' | 'blue' | 'red') => {

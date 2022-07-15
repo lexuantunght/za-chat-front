@@ -36,6 +36,6 @@ export const removeAllListeners = (key: string) => {
     ipcRenderer.removeAllListeners(key);
 };
 
-export const darkModeToggle = () => {
-    ipcRenderer.invoke('dark-mode:toggle');
+export const darkModeToggle = (isDarkMode?: boolean) => {
+    ipcRenderer.invoke('dark-mode:toggle', isDarkMode);
 };

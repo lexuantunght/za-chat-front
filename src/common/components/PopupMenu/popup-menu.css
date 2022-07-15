@@ -9,6 +9,7 @@
     padding-bottom: var(--padding-y);
     border-radius: var(--border-radius);
     border: 1px solid var(--separate-line);
+    z-index: 5;
 }
 
 .za-popup-toggle {

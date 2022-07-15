@@ -2,7 +2,7 @@
 
 .login-container {
     width: 70%;
-    min-height: 100vh;
+    min-height: calc(100vh - 25px);
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -37,5 +37,5 @@
 
 .login-auth-loading {
     width: 100%;
-    min-height: 100vh;
+    min-height: calc(100vh - 25px);
 }

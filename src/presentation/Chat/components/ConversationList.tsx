@@ -141,7 +141,7 @@ const ConversationList = ({
                 onClose={() => getConversations()}
             />
             <div className="chat-list-title">{t('conversations')}</div>
-            <div className="chat-tab-messages">
+            <div className="chat-tab-messages custom-scroll">
                 {data.map((chatItem, index) => (
                     <div
                         key={'chat-' + index}

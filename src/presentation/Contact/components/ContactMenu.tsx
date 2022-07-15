@@ -25,11 +25,11 @@ const ContactMenu = ({ t }: ContactMenuProps) => {
     const showChatbox = useGetState((state) => state.contact.showChatbox);
 
     const onClickItem = () => {
-        const sideTab = document.getElementById(`contact-side-tab-container`);
-        if (sideTab?.classList.contains(`contact-side-tab-container-show`)) {
-            sideTab?.classList.remove(`contact-side-tab-container-show`);
+        const sideTab = document.getElementById(`contacts-side-tab-container`);
+        if (sideTab?.classList.contains(`contacts-side-tab-container-show`)) {
+            sideTab?.classList.remove(`contacts-side-tab-container-show`);
         } else {
-            sideTab?.classList.add(`contact-side-tab-container-show`);
+            sideTab?.classList.add(`contacts-side-tab-container-show`);
         }
     };
 
@@ -57,7 +57,7 @@ const ContactMenu = ({ t }: ContactMenuProps) => {
     return (
         <div className="contact-tab">
             <SearchBox t={t} ref={searchBoxRef} />
-            <div className="contact-tab-list custom-scroll scrolling">
+            <div className="contact-tab-list custom-scroll">
                 <div
                     className="contact-item"
                     onClick={() => searchBoxRef.current?.openAddFriend(true)}>
@@ -66,7 +66,10 @@ const ContactMenu = ({ t }: ContactMenuProps) => {
                 </div>
                 <div
                     className={'contact-item' + (showFriendRequest ? ' contact-item-focused' : '')}
-                    onClick={() => toggleFriendRequest(true)}>
+                    onClick={() => {
+                        toggleFriendRequest(true);
+                        onClickItem();
+                    }}>
                     <FiUserCheck size={22} />
                     <span>{t('friendRequestList')}</span>
                 </div>

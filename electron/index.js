@@ -41,6 +41,12 @@ function createBaseWindow() {
         height: 540,
         title: 'ZaChat',
         icon: iconPath,
+        titleBarStyle: 'hidden',
+        titleBarOverlay: {
+            height: 25,
+            color: '#eeeeee',
+            symbolColor: '#555555',
+        },
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -193,11 +199,13 @@ ipcMain.on('openSaveDialog', (event, file) => {
         });
 });
 
-ipcMain.handle('dark-mode:toggle', () => {
-    if (nativeTheme.shouldUseDarkColors) {
+ipcMain.handle('dark-mode:toggle', (e, isDarkMode) => {
+    if (!isDarkMode) {
         nativeTheme.themeSource = 'light';
+        appWindow.setTitleBarOverlay({ color: '#eeeeee', symbolColor: '#555555' });
     } else {
         nativeTheme.themeSource = 'dark';
+        appWindow.setTitleBarOverlay({ color: '#071426', symbolColor: '#eeeeee' });
     }
     return nativeTheme.shouldUseDarkColors;
 });
