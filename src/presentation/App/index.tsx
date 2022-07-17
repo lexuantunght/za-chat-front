@@ -7,6 +7,7 @@ import useMultilingual from '../../utils/multilingual';
 import ChatScreen from '../Chat';
 import ContactScreen from '../Contact';
 import SideBar from './components/SideBar';
+import Titlebar from './components/Titlebar';
 
 const AppScreen = () => {
     const { t, language, languages, changeLanguage } = useMultilingual();
@@ -34,7 +35,7 @@ const AppScreen = () => {
                     userData={userData}
                 />
                 <div className="app-tabs">
-                    <div className="app-title-bar">ZaChat - {userData?.name}</div>
+                    <Titlebar title={userData ? 'ZaChat - ' + userData.name : 'ZaChat'} />
                     <div className="app-tab-item">
                         <Switch>
                             <Route path="/contacts" component={ContactScreen} />

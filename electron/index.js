@@ -12,6 +12,7 @@ const path = require('path');
 const url = require('url');
 const fs = require('fs');
 const client = require('https');
+require('@electron/remote/main').initialize();
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -41,12 +42,7 @@ function createBaseWindow() {
         height: 540,
         title: 'ZaChat',
         icon: iconPath,
-        titleBarStyle: 'hidden',
-        titleBarOverlay: {
-            height: 25,
-            color: '#eeeeee',
-            symbolColor: '#555555',
-        },
+        frame: false,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -54,6 +50,7 @@ function createBaseWindow() {
             webSecurity: false,
             webgl: true,
             partition: 'persist:app',
+            preload: path.join(__dirname, 'preload.js'),
         },
         maximizable: false,
         resizable: false,
@@ -152,6 +149,10 @@ app.on('before-quit', function () {
     isQuiting = true;
 });
 
+app.on('browser-window-created', (_, window) => {
+    require('@electron/remote/main').enable(window.webContents);
+});
+
 ipcMain.on('navigation', (events, windowName) => {
     appWindow.loadURL(getWindowUrl(windowName));
 });
@@ -202,10 +203,8 @@ ipcMain.on('openSaveDialog', (event, file) => {
 ipcMain.handle('dark-mode:toggle', (e, isDarkMode) => {
     if (!isDarkMode) {
         nativeTheme.themeSource = 'light';
-        appWindow.setTitleBarOverlay({ color: '#eeeeee', symbolColor: '#555555' });
     } else {
         nativeTheme.themeSource = 'dark';
-        appWindow.setTitleBarOverlay({ color: '#071426', symbolColor: '#eeeeee' });
     }
     return nativeTheme.shouldUseDarkColors;
 });

@@ -115,18 +115,6 @@
         height: 100vh;
         flex: 1;
     }
-    .app-title-bar {
-        user-select: none;
-        -webkit-app-region: drag;
-        height: 25px;
-        background-color: var(--little-background);
-        color: var(--text-color);
-        padding: 0 1rem;
-        display: flex;
-        align-items: center;
-        font-size: small;
-        font-weight: 600;
-    }
     .app-tab-item {
         flex: 1;
         height: calc(100vh - 25px);

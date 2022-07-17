@@ -44,3 +44,54 @@ body.scrolling {
     background-color: var(--scrollbar-color);
     border-radius: 24px;
 }
+
+.app-title-bar {
+    height: 25px;
+    background-color: var(--little-background);
+    color: var(--text-color);
+    display: flex;
+    justify-content: space-between;
+    .app-name-bar {
+        flex: 1;
+        padding: 0 1rem;
+        display: flex;
+        align-items: center;
+        font-size: small;
+        font-weight: 600;
+        -webkit-app-region: drag;
+        user-select: none;
+    }
+    .app-title-bar-controls {
+        display: grid;
+        grid-template-columns: repeat(3, 46px);
+        .window-button {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            &:not(.window-button-disabled):hover {
+                background-color: var(--separate-line);
+            }
+            transition: 0.2s;
+        }
+        #window-button-close {
+            &:hover {
+                background-color: var(--error-color);
+                color: var(--text-indark);
+            }
+        }
+        #window-button-restore {
+            display: none;
+        }
+        #window-button-max.window-button-disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+    }
+}
+.maximized #window-button-max {
+    display: none;
+}
+.maximized #window-button-restore {
+    display: flex !important;
+}
