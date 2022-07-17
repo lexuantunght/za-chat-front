@@ -12,7 +12,9 @@ const path = require('path');
 const url = require('url');
 const fs = require('fs');
 const client = require('https');
-require('@electron/remote/main').initialize();
+const remote = require('@electron/remote/main');
+
+remote.initialize();
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -59,6 +61,7 @@ function createBaseWindow() {
     if (!isDev) {
         appWindow.removeMenu();
     }
+    remote.enable(appWindow.webContents);
 }
 
 function createLoginWindow() {
@@ -147,10 +150,6 @@ app.on('activate', function () {
 
 app.on('before-quit', function () {
     isQuiting = true;
-});
-
-app.on('browser-window-created', (_, window) => {
-    require('@electron/remote/main').enable(window.webContents);
 });
 
 ipcMain.on('navigation', (events, windowName) => {

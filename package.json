@@ -1,7 +1,7 @@
 {
     "name": "za-chat",
     "productName": "ZaChat",
-    "version": "2022.7.14",
+    "version": "2022.7.17",
     "description": "Chat application for onboarding ZA",
     "main": "electron/index.js",
     "author": "TungLX2",
@@ -112,7 +112,7 @@
         "productName": "ZaChat",
         "files": [
             "build/**/*",
-            "electron/index.js"
+            "electron/**/*"
         ],
         "win": {
             "target": "nsis",
