@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import Highlighter from 'react-highlight-words';
+import { HiOutlineDownload } from 'react-icons/hi';
 import { Message } from '../../../domain/model/Message';
 import { UserData } from '../../../domain/model/UserData';
 import Image, { ImageRef } from '../../../common/components/Image';
@@ -8,7 +9,6 @@ import { FileData, WordRecognized } from '../../../domain/model/FileData';
 import Video from '../../../common/components/Video';
 import fileHolder from '../../../common/resources/file-holder.png';
 import Button from '../../../common/components/Button';
-import Icon from '../../../common/components/Icon';
 import { openSaveDialog } from '../../../utils/app/eventHandler';
 
 type MessageItemProps = {
@@ -159,7 +159,7 @@ const FileMessageItem = ({
             </div>
             <div>
                 <Button variant="text" onClick={handleDownload}>
-                    <Icon name="download" />
+                    <HiOutlineDownload size={25} />
                 </Button>
             </div>
         </div>
