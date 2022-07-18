@@ -6,7 +6,7 @@ export class SearchQueries {
     private worker;
     public constructor() {
         this.worker = new Worker(
-            new URL('../../../../utils/worker/search.worker', import.meta.url)
+            new URL('../../../../utils/worker/search.worker.js', import.meta.url)
         );
     }
 

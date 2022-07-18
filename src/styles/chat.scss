@@ -418,6 +418,10 @@
 }
 .chat-message-item.chat-self-message > div:not(.chat-message-image-only) {
     background-color: #d7e9f7;
+    .chat-message-time,
+    .chat-message-time + small {
+        color: #000000;
+    }
 }
 .chat-message-item > div:not(.chat-message-image-only) {
     background-color: #ffffff;
@@ -505,6 +509,10 @@
 .message-other-file-size {
     font-size: smaller;
     margin-top: 0.5rem;
+}
+.message-other-file-download {
+    cursor: pointer;
+    color: var(--primary-background);
 }
 
 .chat-message-content {

@@ -8,7 +8,6 @@ import Image, { ImageRef } from '../../../common/components/Image';
 import { FileData, WordRecognized } from '../../../domain/model/FileData';
 import Video from '../../../common/components/Video';
 import fileHolder from '../../../common/resources/file-holder.png';
-import Button from '../../../common/components/Button';
 import { openSaveDialog } from '../../../utils/app/eventHandler';
 
 type MessageItemProps = {
@@ -157,10 +156,8 @@ const FileMessageItem = ({
                 <div className="message-other-file-name">{file.name}</div>
                 <div className="message-other-file-size">{getFileSizeDisplay(file.size)}</div>
             </div>
-            <div>
-                <Button variant="text" onClick={handleDownload}>
-                    <HiOutlineDownload size={25} />
-                </Button>
+            <div onClick={handleDownload} className="message-other-file-download">
+                <HiOutlineDownload size={25} />
             </div>
         </div>
     );
