@@ -12,6 +12,9 @@ const path = require('path');
 const url = require('url');
 const fs = require('fs');
 const client = require('https');
+const remote = require('@electron/remote/main');
+
+remote.initialize();
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -26,6 +29,10 @@ function getWindowUrl(windowName = 'index') {
     });
 }
 
+const iconPath = isDev
+    ? path.join(__dirname, '/../public/favicon.ico')
+    : path.join(__dirname, `/../build/favicon.ico`);
+
 let appWindow;
 let fileViewerWindow;
 let isQuiting;
@@ -36,7 +43,8 @@ function createBaseWindow() {
         width: 360,
         height: 540,
         title: 'ZaChat',
-        icon: path.join(__dirname, '/../public/favicon.ico'),
+        icon: iconPath,
+        frame: false,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -44,6 +52,7 @@ function createBaseWindow() {
             webSecurity: false,
             webgl: true,
             partition: 'persist:app',
+            preload: path.join(__dirname, 'preload.js'),
         },
         maximizable: false,
         resizable: false,
@@ -52,6 +61,7 @@ function createBaseWindow() {
     if (!isDev) {
         appWindow.removeMenu();
     }
+    remote.enable(appWindow.webContents);
 }
 
 function createLoginWindow() {
@@ -67,7 +77,7 @@ function createFileViewerWindow(data) {
         minWidth: 540,
         minHeight: 540,
         title: 'ZaChat',
-        icon: path.join(__dirname, '/../public/favicon.ico'),
+        icon: iconPath,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -111,7 +121,7 @@ app.on('ready', () => {
     }
     createBaseWindow();
     createLoginWindow();
-    tray = new Tray(path.join(__dirname, '/../public/favicon.ico'));
+    tray = new Tray(iconPath);
     tray.setContextMenu(
         Menu.buildFromTemplate([
             {
@@ -189,8 +199,8 @@ ipcMain.on('openSaveDialog', (event, file) => {
         });
 });
 
-ipcMain.handle('dark-mode:toggle', () => {
-    if (nativeTheme.shouldUseDarkColors) {
+ipcMain.handle('dark-mode:toggle', (e, isDarkMode) => {
+    if (!isDarkMode) {
         nativeTheme.themeSource = 'light';
     } else {
         nativeTheme.themeSource = 'dark';

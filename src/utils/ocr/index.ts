@@ -5,13 +5,7 @@ import { OCRAdapter } from './adapter';
 export class TextRecognization {
     private adapter: OCRAdapter;
     constructor() {
-        this.adapter = new OCRAdapter(
-            createWorker({
-                logger: (m) => console.log(m),
-            }),
-            'eng',
-            80
-        );
+        this.adapter = new OCRAdapter(createWorker(), 'eng', 80);
     }
 
     public recognize(imageUrl: string, callback?: (words: Array<WordRecognized>) => void) {

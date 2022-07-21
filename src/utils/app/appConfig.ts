@@ -1,6 +1,6 @@
 const appConfig = {
-    baseUrl: 'http://localhost:8080',
-    domain: 'localhost', // for save token
+    baseUrl: 'https://zachat.onrender.com',
+    domain: 'zachat.onrender.com', // for save token
 };
 
 export default appConfig;

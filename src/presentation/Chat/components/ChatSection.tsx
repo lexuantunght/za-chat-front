@@ -1,8 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 import { ObjectID } from 'bson';
+import { IoSearch, IoChevronDownOutline, IoPersonAddOutline } from 'react-icons/io5';
 import Button from '../../../common/components/Button';
-import Icon from '../../../common/components/Icon';
 import ChatTyping from './ChatTyping';
 import { Conversation } from '../../../domain/model/Conversation';
 import { Message } from '../../../domain/model/Message';
@@ -175,14 +175,14 @@ const ChatSection = (
                         variant="text"
                         title={t('searchMessages')}
                         onClick={() => toggleSearch(true)}>
-                        <Icon name="search" />
+                        <IoSearch size={25} />
                     </Button>
                 )}
                 {conversation.user.relationshipStatus !== 'friend' && (
                     <div className="chat-title-add-friend">
                         {conversation.user.relationshipStatus === 'stranger' && (
                             <Button variant="text" onClick={() => requestFriend(partnerId)}>
-                                <Icon name="user-plus" strokeWidth={1.25} />
+                                <IoPersonAddOutline size={20} />
                                 <span className="add-friend">{t('addFriend')}</span>
                             </Button>
                         )}
@@ -285,7 +285,7 @@ const ChatSection = (
                 />
                 {showUnobtrusive && (
                     <div className="chat-section-scroll-end" onClick={handleScrollToEnd}>
-                        <Icon name="chevron-down" width={24} height={24} color="#555555" />
+                        <IoChevronDownOutline size={20} color="#555555" />
                     </div>
                 )}
             </div>

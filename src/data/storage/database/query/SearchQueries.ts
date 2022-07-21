@@ -5,7 +5,9 @@ import { MessageEntity } from '../entity/MessageEntity';
 export class SearchQueries {
     private worker;
     public constructor() {
-        this.worker = new Worker('worker/search.worker.js');
+        this.worker = new Worker(
+            new URL('../../../../utils/worker/search.worker.js', import.meta.url)
+        );
     }
 
     public addMessages(messages: MessageEntity[]) {

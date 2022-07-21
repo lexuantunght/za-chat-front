@@ -1,7 +1,8 @@
 import React from 'react';
+import { FiSend, FiImage } from 'react-icons/fi';
+import { ImAttachment } from 'react-icons/im';
 import { useValidation } from '../../../utils/form/validation';
 import Button from '../../../common/components/Button';
-import Icon from '../../../common/components/Icon';
 import MessageInput from './MessageInput';
 import { useForm } from '../../../utils/form/formContent';
 import useController from '../../../controller/hooks';
@@ -179,10 +180,10 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
                     variant="text"
                     title={t('sendPhoto')}
                     onClick={() => onClickUploader(true)}>
-                    <Icon name="photo" />
+                    <FiImage size={25} />
                 </Button>
                 <Button variant="text" title={t('sendFile')} onClick={() => onClickUploader()}>
-                    <Icon name="file-plus" />
+                    <ImAttachment size={22} />
                 </Button>
             </div>
             <form className="chat-typing-container" onSubmit={form.handleSubmit}>
@@ -206,7 +207,7 @@ const ChatTyping = ({ onSend, conversationId, userId, t }: ChatTypingProps) => {
                         variant="text"
                         disabled={!form.isValid}
                         title={t('sendMessage')}>
-                        <Icon name="send" />
+                        <FiSend size={25} />
                     </Button>
                 </>
             </form>

@@ -31,7 +31,7 @@ const ContactScreen = () => {
     }, []);
     return (
         <div className="contact-container">
-            <div id="contact-side-tab-container">
+            <div id="contacts-side-tab-container">
                 <ContactMenu t={t} />
             </div>
             {showFriendRequest ? (

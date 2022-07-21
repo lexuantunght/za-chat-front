@@ -10,4 +10,5 @@ export interface ContactRepository {
     rejectFriend(userId: string): Promise<void>;
     cancelRequest(userId: string): Promise<void>;
     getInvitations(): Promise<FriendRequest[]>;
+    getSuggestContacts(): Promise<UserData[]>;
 }

@@ -86,5 +86,7 @@
     "imageEditor": "Image editor",
     "accountInfo": "Account information",
     "baseInfo": "Base information",
-    "preferences": "Preferences"
+    "preferences": "Preferences",
+    "maybeKnow": "You maybe know",
+    "send": "Send message"
 }

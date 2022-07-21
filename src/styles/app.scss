@@ -12,7 +12,7 @@
     background-color: transparent;
     cursor: pointer;
     margin-bottom: 0.5rem;
-    margin-top: 0.5rem;
+    margin-top: 1.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -109,6 +109,17 @@
 
 .app-content {
     display: flex;
+    .app-tabs {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        flex: 1;
+    }
+    .app-tab-item {
+        flex: 1;
+        height: calc(100vh - 25px);
+        display: flex;
+    }
 }
 
 .app-search-view {
@@ -129,7 +140,7 @@
     top: 4.25rem;
     left: 0;
     width: 100%;
-    height: calc(100vh - 4rem);
+    height: calc(100vh - 4.25rem - 25px);
 }
 
 .app-search-result-title {

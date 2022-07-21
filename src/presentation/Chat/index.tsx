@@ -52,7 +52,7 @@ const ChatScreen = () => {
         removeAllSocketListeners('receive-message');
         addSocketListener('receive-message', (msg: Message) => {
             emitSocket('action-message', msg, 'received');
-            appendMessage(msg);
+            appendMessage(msg, getConversations);
         });
         addSocketListener('status-message', (msg: Message) => {
             if (msg.status === 'sent') {

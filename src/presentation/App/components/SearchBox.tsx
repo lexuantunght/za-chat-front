@@ -1,7 +1,8 @@
 import React from 'react';
+import { RiUserAddLine } from 'react-icons/ri';
+import { BsPersonCheck } from 'react-icons/bs';
 import Avatar from '../../../common/components/Avatar';
 import Button from '../../../common/components/Button';
-import Icon from '../../../common/components/Icon';
 import Modal from '../../../common/components/Modal';
 import SearchBar from '../../../common/components/SearchBar';
 import noResultLogo from '../../../common/resources/no-result.png';
@@ -84,7 +85,7 @@ const SearchBox = (
                     className="app-search-view-add-contact"
                     title={t('addContact')}
                     onClick={() => setIsOpenAddFriend(true)}>
-                    <Icon name="user-plus" />
+                    <RiUserAddLine size={25} />
                 </Button>
             )}
             {isFocused && (
@@ -152,7 +153,7 @@ const SearchBox = (
                                 )}
                                 {user.relationshipStatus === 'friend' && (
                                     <div className="friend-item-check">
-                                        <Icon name="check" />
+                                        <BsPersonCheck size={20} />
                                         <span>{t('friend')}</span>
                                     </div>
                                 )}

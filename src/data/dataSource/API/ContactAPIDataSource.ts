@@ -44,6 +44,12 @@ export class ContactAPIDataSourceImpl implements ContactDataSource {
         );
         return response.data;
     }
+    async getSuggestContacts() {
+        const response = await Network.getInstance().getHelper<UserDataAPIEntity[]>(
+            `${appConfig.baseUrl}/contacts/suggest`
+        );
+        return response.data;
+    }
 }
 
 export const contactDataSource = new ContactAPIDataSourceImpl();

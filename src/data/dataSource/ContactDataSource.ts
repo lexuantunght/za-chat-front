@@ -10,4 +10,5 @@ export default interface ContactDataSource {
     rejectFriend(userId: string): Promise<void>;
     cancelRequest(userId: string): Promise<void>;
     getInvitations(): Promise<FriendRequestAPIEntity[]>;
+    getSuggestContacts(): Promise<UserDataAPIEntity[]>;
 }

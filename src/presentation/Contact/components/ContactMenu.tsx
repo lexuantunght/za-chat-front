@@ -1,6 +1,7 @@
 import React from 'react';
+import { ObjectID } from 'bson';
+import { FiUserPlus, FiUserCheck } from 'react-icons/fi';
 import Avatar from '../../../common/components/Avatar';
-import Icon from '../../../common/components/Icon';
 import ConversationController from '../../../controller/chat/ConversationController';
 import MessageController from '../../../controller/chat/MessageController';
 import ContactController from '../../../controller/contact/ContactController';
@@ -24,11 +25,11 @@ const ContactMenu = ({ t }: ContactMenuProps) => {
     const showChatbox = useGetState((state) => state.contact.showChatbox);
 
     const onClickItem = () => {
-        const sideTab = document.getElementById(`contact-side-tab-container`);
-        if (sideTab?.classList.contains(`contact-side-tab-container-show`)) {
-            sideTab?.classList.remove(`contact-side-tab-container-show`);
+        const sideTab = document.getElementById(`contacts-side-tab-container`);
+        if (sideTab?.classList.contains(`contacts-side-tab-container-show`)) {
+            sideTab?.classList.remove(`contacts-side-tab-container-show`);
         } else {
-            sideTab?.classList.add(`contact-side-tab-container-show`);
+            sideTab?.classList.add(`contacts-side-tab-container-show`);
         }
     };
 
@@ -44,7 +45,7 @@ const ContactMenu = ({ t }: ContactMenuProps) => {
             getMessages(conversation._id);
         } else {
             selectConversation({
-                _id: '',
+                _id: new ObjectID().toString(),
                 userId: contact._id,
                 user: { ...contact, relationshipStatus: 'friend' },
                 isGroup: false,
@@ -56,17 +57,20 @@ const ContactMenu = ({ t }: ContactMenuProps) => {
     return (
         <div className="contact-tab">
             <SearchBox t={t} ref={searchBoxRef} />
-            <div className="contact-tab-list custom-scroll scrolling">
+            <div className="contact-tab-list custom-scroll">
                 <div
                     className="contact-item"
                     onClick={() => searchBoxRef.current?.openAddFriend(true)}>
-                    <Icon name="user-plus" />
+                    <FiUserPlus size={22} />
                     <span>{t('addFriendByPhone')}</span>
                 </div>
                 <div
                     className={'contact-item' + (showFriendRequest ? ' contact-item-focused' : '')}
-                    onClick={() => toggleFriendRequest(true)}>
-                    <Icon name="user-check" />
+                    onClick={() => {
+                        toggleFriendRequest(true);
+                        onClickItem();
+                    }}>
+                    <FiUserCheck size={22} />
                     <span>{t('friendRequestList')}</span>
                 </div>
                 <div className="friend-list-title">{t('friend')}</div>

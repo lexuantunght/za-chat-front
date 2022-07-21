@@ -1,3 +1,4 @@
+/* eslint-disable */
 importScripts('https://unpkg.com/dexie@3.2.2/dist/dexie.js');
 
 const segmenter = new Intl.Segmenter(['en', 'vi'], {

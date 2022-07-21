@@ -1,10 +1,10 @@
 .contact-container {
     display: flex;
     flex: 1;
-    height: 100vh;
+    height: 100%;
 }
 
-#contact-side-tab-container {
+#contacts-side-tab-container {
     width: 20rem;
     border-right: 1px solid var(--separate-line);
     background-color: var(--background);
@@ -13,14 +13,15 @@
 }
 
 @media (max-width: 768px) {
-    #contact-side-tab-container {
+    #contacts-side-tab-container {
         width: 0;
         border: none;
     }
-    #contact-side-tab-container.contact-side-tab-container-show {
+    #contacts-side-tab-container.contacts-side-tab-container-show {
         width: calc(100vw - 4rem);
         position: absolute;
-        z-index: 10;
+        z-index: 4;
+        height: calc(100% - 25px);
     }
 }
 
@@ -30,7 +31,7 @@
     flex-direction: column;
 }
 .contact-tab-list {
-    flex: 1;
+    height: calc(100% - 4.25rem);
 }
 .contact-item {
     display: flex;
@@ -103,6 +104,27 @@
 .friend-request-list {
     background-color: var(--little-fade-background);
     flex: 1;
+    .suggest-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+        margin: 1rem;
+    }
+    .suggest-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: var(--background);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--separate-line);
+        padding: 1rem;
+        .suggest-name {
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+    }
 }
 .friend-request-list > .friend-request-total {
     margin: 1rem 1rem 0 1rem;

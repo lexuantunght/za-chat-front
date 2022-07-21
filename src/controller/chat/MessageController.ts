@@ -96,7 +96,11 @@ class MessageController extends BaseController {
             });
     };
 
-    public appendMessage = (message: Message) => {
+    public appendMessage = (message: Message, needFetchConvCb?: () => void) => {
+        if (!this.getState().chat.conversations.some((conv) => conv._id === message.toUid)) {
+            needFetchConvCb?.();
+            return;
+        }
         if (message.fromUid === this.getState().chat.selectedConversation?.user._id) {
             this.dispatch(setMessages([...this.getState().chat.messages, message]));
             this.dispatch(setTotalMessages(this.getState().chat.totalMessages + 1));
