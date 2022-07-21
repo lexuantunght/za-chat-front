@@ -1,6 +1,6 @@
 {
     "name": "za-chat",
-    "productName": "ZaChat-Test",
+    "productName": "ZaChat",
     "version": "2022.7.21",
     "description": "Chat application for onboarding ZA",
     "main": "electron/index.js",
