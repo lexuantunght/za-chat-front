@@ -10,7 +10,8 @@ document.onreadystatechange = (event) => {
 };
 
 window.onbeforeunload = (event) => {
-    win.removeAllListeners();
+    win.removeListener('maximize', toggleMaxRestoreButtons);
+    win.removeListener('unmaximize', toggleMaxRestoreButtons);
 };
 
 function handleWindowControls() {
@@ -38,12 +39,12 @@ function handleWindowControls() {
     toggleMaxRestoreButtons();
     win.on('maximize', toggleMaxRestoreButtons);
     win.on('unmaximize', toggleMaxRestoreButtons);
+}
 
-    function toggleMaxRestoreButtons() {
-        if (win.isMaximized()) {
-            document.body.classList.add('maximized');
-        } else {
-            document.body.classList.remove('maximized');
-        }
+function toggleMaxRestoreButtons() {
+    if (win.isMaximized()) {
+        document.body.classList.add('maximized');
+    } else {
+        document.body.classList.remove('maximized');
     }
 }
