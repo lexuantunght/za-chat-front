@@ -89,6 +89,9 @@ function createFileViewerWindow(data) {
         resizable: true,
         show: true,
     });
+    if (!isDev) {
+        fileViewerWindow.removeMenu();
+    }
     fileViewerWindow
         .loadURL(getWindowUrl('file-viewer'))
         .then(() => fileViewerWindow.webContents.send('fileView', data));

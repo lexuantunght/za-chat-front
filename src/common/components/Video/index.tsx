@@ -19,6 +19,7 @@ interface VideoProps {
     originHeight?: number;
     maxHeight?: number;
     maxWidth?: number;
+    isFileViewer?: boolean;
 }
 
 const Video = ({
@@ -35,6 +36,7 @@ const Video = ({
     originHeight,
     maxHeight,
     maxWidth,
+    isFileViewer,
 }: VideoProps) => {
     let videoRef: ReactPlayer | null;
     const [isPlaying, setIsPlaying] = React.useState(autoPlay);
@@ -69,7 +71,7 @@ const Video = ({
             className={className ? `za-video ${className}` : 'za-video'}
             style={{
                 ...style,
-                height: 'auto',
+                height: isFileViewer ? '100%' : 'auto',
                 width: size?.width,
                 aspectRatio: `${size?.width}/${size?.height}`,
             }}>

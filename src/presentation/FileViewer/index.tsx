@@ -33,6 +33,7 @@ const FileViewer = () => {
                     showControllers
                     showExtendButton={false}
                     isNative
+                    isFileViewer
                 />
             ) : (
                 <ImageViewer
