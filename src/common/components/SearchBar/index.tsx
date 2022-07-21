@@ -51,7 +51,7 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarStates> {
             this.props.onEndEditing?.(this.state.value);
         }
         this.setState({ isTyping: false });
-    }, 1000);
+    }, 300);
 
     handleCancel = () => {
         this.setState({
